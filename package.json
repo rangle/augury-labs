@@ -1,0 +1,28 @@
+{
+  "name": "root",
+  "version": "0.0.1",
+  "private": true,
+  "repository": {
+    "type" : "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "workspaces": [
+    "packages/**/*"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "build:watch": "lerna run --parallel build:watch",
+    "clean": "lerna run clean",
+    "changelog": "lerna-changelog",
+    "publish": "lerna publish",
+    "test": "lerna run test",
+    "test:watch": "lerna run --parallel test:watch",
+    "coverage": "lerna run coverage",
+    "lint": "lerna run lint"
+  },
+  "devDependencies": {
+    "@augury/tools": "^0.0.1",
+    "lerna": "^3.0.5",
+    "lerna-changelog": "^0.8.0"
+  }
+}

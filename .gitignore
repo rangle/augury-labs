@@ -1,0 +1,24 @@
+# dependencies
+node_modules
+
+# testing
+coverage
+
+# production
+build
+dist
+
+# no npm lock files
+package-lock.json
+
+# npm/yarn/lerna
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# os/misc
+.DS_Store
+
+# output of 'npm pack'
+*.tgz
