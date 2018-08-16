@@ -1,7 +1,7 @@
 import { EventDispatcher } from './dispatcher'
 import { ProbeService, ProbeRegistry } from './probes'
 import { EnhancerService, EnhancerRegistry } from './enhancers'
-import { ReactionService, ReactionRegistry } from './reactions' 
+import { ReactionService, ReactionRegistry } from './reactions'
 import { CommandService, CommandRegistry, Command } from './commands'
 import { ChannelService } from './channels'
 import { PluginService, Plugin } from './plugins'
@@ -16,7 +16,7 @@ export interface BootstrapParams {
 export class AuguryCore {
 
   private dispatcher: EventDispatcher
-  
+
   private probes: ProbeService
   private enhancers: EnhancerService
   private channels: ChannelService
@@ -29,7 +29,7 @@ export class AuguryCore {
     enhancerRegistry: EnhancerRegistry,
     reactionRegistry: ReactionRegistry,
     commandRegistry: CommandRegistry
-  ){
+  ) {
     this.probes = new ProbeService(probeRegistry)
     this.enhancers = new EnhancerService(this.probes, enhancerRegistry)
     this.channels = new ChannelService()
@@ -57,7 +57,7 @@ export class AuguryCore {
 
     return platform().bootstrapModule(ngModule, { ngZone })
       .then((moduleRef: any) => {
-        
+
         this.probes.afterNgBootstrapHook(moduleRef)
 
         return moduleRef
