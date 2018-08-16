@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es2015",
+    "lib": ["es2018"],
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "sourceMap": true
+  }
+}

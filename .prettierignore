@@ -3,6 +3,4 @@ dist
 build
 package.json
 package-lock.json
-tsconfig.json
 tslint.json
-.angular*.json
