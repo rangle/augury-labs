@@ -1,5 +1,10 @@
 import { createStylesheet } from './create-stylesheet'
 
+// @todo: put in shared utils
+function round2(num) {
+  return Math.round(num * 100) / 100
+}
+
 let count = 0
 
 export class TimelineUI {
@@ -59,15 +64,21 @@ export class TimelineUI {
   }
 
   addSegment(segmentData) {
+    let autoScroll = this.element.scrollWidth <= this.element.scrollLeft + this.element.offsetWidth + 20
     const s = this.createSegment(segmentData)
     this.segments.push(s)
     this.element.appendChild(s.element)
+    if (autoScroll)
+      this.element.scrollLeft = 9999999999
   }
 
   createSegment(segmentData) {
 
-    const zoneRow = document.createElement('div')
+    const runningTimeTotalRow = document.createElement('div')
+    runningTimeTotalRow.className = 'running-time-total-row'
+    runningTimeTotalRow.innerHTML = round2(segmentData.runningTime) + ''
 
+    const zoneRow = document.createElement('div')
     zoneRow.className = 'zone-row'
 
     if (segmentData.zone === 'root')
@@ -78,10 +89,15 @@ export class TimelineUI {
 
     const element = document.createElement('div')
     element.className = 'segment'
+    element.style.width = (segmentData.runningTime > 3) ?
+      `${round2(segmentData.runningTime) * 10}px`
+      : '30px'
 
+    element.appendChild(runningTimeTotalRow)
     element.appendChild(zoneRow)
 
     return {
+      runningTimeTotalRow,
       zoneRow,
       element
     }

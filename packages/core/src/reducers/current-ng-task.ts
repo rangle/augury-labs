@@ -1,7 +1,7 @@
 import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
-const INIT_STATE = null
+const INIT_STATE = undefined
 
 // @todo: rename to CurrentNgZoneTaskReducer (ngZone everywhere, because this is public api, should be clear)
 export class CurrentNgTaskReducer extends Reducer {
@@ -12,11 +12,14 @@ export class CurrentNgTaskReducer extends Reducer {
 
       this.assumption('a `task` cannot begin until the previous one is complete', !prevState)
 
-      return nextEvent.payload.task
+      return {
+        task: nextEvent.payload.task,
+        startTime: nextEvent.creationAtPerformanceStamp
+      }
 
     }
 
-    if (nextEvent.name === 'onInvokeTask_completed') return null
+    if (nextEvent.name === 'onInvokeTask_completed') return undefined
 
     return prevState
   }

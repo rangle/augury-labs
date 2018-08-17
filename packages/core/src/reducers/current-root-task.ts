@@ -1,7 +1,7 @@
 import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
-const INIT_STATE = null
+const INIT_STATE = undefined
 
 export class CurrentRootTaskReducer extends Reducer {
 
@@ -11,11 +11,13 @@ export class CurrentRootTaskReducer extends Reducer {
 
       this.assumption('a `task` cannot begin until the previous one is complete', !prevState)
 
-      return nextEvent.payload.task
-
+      return {
+        task: nextEvent.payload.task,
+        startTime: nextEvent.creationAtPerformanceStamp
+      }
     }
 
-    if (nextEvent.name === 'root_task_completed') return null
+    if (nextEvent.name === 'root_task_completed') return undefined
 
     return prevState
   }

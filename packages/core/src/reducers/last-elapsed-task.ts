@@ -5,7 +5,7 @@ import { Reducer } from '../framework/reducers'
 import { CurrentRootTaskReducer } from './current-root-task'
 import { CurrentNgTaskReducer } from './current-ng-task'
 
-const INIT_STATE = null
+const INIT_STATE = undefined
 
 export class LastElapsedTaskReducer extends Reducer {
 
@@ -16,14 +16,15 @@ export class LastElapsedTaskReducer extends Reducer {
 
   deriveShallowState({ prevState = INIT_STATE, nextEvent, nextDepState, prevDepState }) {
 
+    // @todo: generalize this logic
     const {
-      currentRootTask: prevRootTask,
-      currentNgTask: prevNgTask
+      currentRootTask: { task: prevRootTask, startTime: prevRootStartTime } = { task: null, startTime: null },
+      currentNgTask: { task: prevNgTask, startTime: prevNgStartTime } = { task: null, startTime: null },
     } = prevDepState
 
     const {
-      currentRootTask: nextRootTask,
-      currentNgTask: nextNgTask
+      currentRootTask: { task: nextRootTask, startTime: nextRootStartTime } = { task: null, startTime: null },
+      currentNgTask: { task: nextNgTask, startTime: nextNgStartTime } = { task: null, startTime: null },
     } = nextDepState
 
     this.assumption(
@@ -34,13 +35,15 @@ export class LastElapsedTaskReducer extends Reducer {
     if (prevRootTask && !nextRootTask)
       return {
         zone: 'root',
-        task: prevRootTask
+        task: prevRootTask,
+        runningTime: nextEvent.creationAtPerformanceStamp - prevRootStartTime
       }
 
     if (prevNgTask && !nextNgTask)
       return {
         zone: 'ng',
-        task: prevNgTask
+        task: prevNgTask,
+        runningTime: nextEvent.creationAtPerformanceStamp - prevNgStartTime
       }
 
     return prevState

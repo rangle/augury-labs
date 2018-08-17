@@ -28,8 +28,5 @@ timeline.appendTo(document.body)
 
 bridge.in.subscribe((lastElapsedTask) => {
   console.log(lastElapsedTask)
-  timeline.addSegment({
-    zone: lastElapsedTask.zone,
-    task: lastElapsedTask.task
-  })
+  timeline.addSegment(lastElapsedTask)
 })
