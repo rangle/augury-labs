@@ -10,5 +10,5 @@ export const probeRegistry: ProbeRegistry
     RootZoneProbe,
     NgZoneProbe,
     NgDebugProbe,
-    // ComponentHooksProbe
+    ComponentHooksProbe
   ]

@@ -4,15 +4,13 @@ import { Reducer } from '../framework/reducers'
 import { CurrentNgTaskReducer } from './current-ng-task'
 import { IsStableReducer } from './is-stable-reducer'
 
-const INIT_STATE = null
-
 export class CurrentCycleReducer extends Reducer {
   dependencies = {
     isStable: new IsStableReducer(),
     currentTask: new CurrentNgTaskReducer(),
   }
 
-  deriveShallowState({ prevState = INIT_STATE, nextEvent, nextDepState, prevDepState }) {
+  deriveShallowState({ prevState, nextEvent, nextDepState, prevDepState }) {
     const { isStable: nextIsStable, currentTask: nextTask } = nextDepState
     const { isStable: prevIsStable } = prevDepState
 
@@ -25,7 +23,7 @@ export class CurrentCycleReducer extends Reducer {
       }
 
     // @definition if we've just become stable, we're done the `job`
-    if (!prevIsStable && nextIsStable) return null
+    if (!prevIsStable && nextIsStable) return undefined
 
     return prevState
   }

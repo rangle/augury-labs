@@ -1,51 +1,63 @@
-import { Plugin, Reducer, CurrentNgTaskReducer, LastElapsedTaskReducer } from '../../../../core/dist'
+import { Plugin, Reducer, CurrentNgTaskReducer, LastElapsedTaskReducer, CurrentCycleReducer, CurrentCDReducer } from '../../../../core/dist'
 
 // @todo: this should be shared across popout plugins
 import { openPopout } from './popout'
 
+// @todo: figure out how to do this with reducers. (hack)
+let taskCycle
+let taskCDRuns: any[] = []
 
-class LastElapsedTask extends Reducer {
-
-  dependencies = {
-    'currentTask': new CurrentNgTaskReducer()
-  }
-
-  deriveShallowState({ prevState, prevDepState, nextDepState }) {
-    const { currentTask: nextCurrentTask } = nextDepState
-    const { currentTask: prevCurrentTask } = prevDepState
-
-    if (!nextCurrentTask && prevCurrentTask)
-      return prevCurrentTask
-
-    return prevState
-  }
-
-}
-
-// @todo: how to type the output of reducers? this should be an array of tasks
-class LastNElapsedTasks extends Reducer {
-
-  constructor(
-    private n: number
-  ) { super() }
+class LastElapsedTaskWithCycleReducer extends Reducer {
 
   dependencies = {
-    'lastElapsedTask': new LastElapsedTask()
+    currentLastTask: new LastElapsedTaskReducer(),
+    currentCycle: new CurrentCycleReducer(),
+    currentCD: new CurrentCDReducer()
   }
 
-  deriveShallowState({ prevState, prevDepState, nextDepState }) {
-    const { lastElapsedTask: nextLastElapsedTask } = nextDepState
-    const { lastElapsedTask: prevLastElapsedTask } = prevDepState
+  deriveShallowState({ nextEvent, prevState, prevDepState, nextDepState }) {
 
-    if (!prevState)
-      return []
+    // @todo: generalize? (provide function?)
+    const {
+      currentLastTask: prevLastTask,
+      currentCycle: prevCycle,
+      currentCD: prevCD
+    } = prevDepState
 
-    if (nextLastElapsedTask !== prevLastElapsedTask)
-      return [nextLastElapsedTask].concat(
-        prevState.length >= this.n
-          ? prevState.slice(0, -1)
-          : prevState
-      )
+    const {
+      currentLastTask: nextLastTask,
+      currentCycle: nextCycle,
+      currentCD: nextCD
+    } = nextDepState
+
+    this.assumption(
+      'max 1 cycle within a single task',
+      !nextCycle || !taskCycle || nextCycle === taskCycle
+    )
+
+    // @todo: figure out how to do this with reducers. (hack)
+    taskCycle = taskCycle || nextCycle
+
+    // @todo: figure out how to do this with reducers. (hack)
+    if (!prevCD && nextCD)
+      taskCDRuns.push(nextCD)
+
+    // if (!prevCycle && nextCycle) debugger
+    // if (nextEvent.id === 167) debugger
+
+    if (prevLastTask !== nextLastTask) {
+      try {
+        return {
+          task: nextLastTask,
+          cycle: taskCycle,
+          cdRuns: taskCDRuns
+        }
+        // @todo: figure out how to do this with reducers. (hack)
+      } finally {
+        taskCycle = undefined
+        taskCDRuns = []
+      }
+    }
 
     return prevState
   }
@@ -86,7 +98,7 @@ export class PopoutZoneMonitor extends Plugin {
   onInit() {
 
     const { channel } = this.api!.createChannel({
-      reducer: new LastElapsedTaskReducer()
+      reducer: new LastElapsedTaskWithCycleReducer()
     })
 
       ; (window as any).channel = channel
