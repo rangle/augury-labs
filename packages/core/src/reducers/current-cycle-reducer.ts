@@ -1,7 +1,7 @@
 import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
-import { CurrentTaskReducer } from './current-task-reducer'
+import { CurrentNgTaskReducer } from './current-ng-task'
 import { IsStableReducer } from './is-stable-reducer'
 
 const INIT_STATE = null
@@ -9,7 +9,7 @@ const INIT_STATE = null
 export class CurrentCycleReducer extends Reducer {
   dependencies = {
     isStable: new IsStableReducer(),
-    currentTask: new CurrentTaskReducer(),
+    currentTask: new CurrentNgTaskReducer(),
   }
 
   deriveShallowState({ prevState = INIT_STATE, nextEvent, nextDepState, prevDepState }) {
