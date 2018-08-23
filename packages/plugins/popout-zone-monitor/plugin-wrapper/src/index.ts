@@ -1,68 +1,8 @@
-import { Plugin, Reducer, CurrentNgTaskReducer, LastElapsedTaskReducer, CurrentCycleReducer, CurrentCDReducer } from '../../../../core/dist'
+import { Plugin, Reducer, CurrentNgTaskReducer, LastElapsedCDReducer, LastElapsedTaskReducer, CurrentCycleReducer, CurrentCDReducer } from '../../../../core/dist'
 
 // @todo: this should be shared across popout plugins
 import { openPopout } from './popout'
-
-// @todo: figure out how to do this with reducers. (hack)
-let taskCycle
-let taskCDRuns: any[] = []
-
-class LastElapsedTaskWithCycleReducer extends Reducer {
-
-  dependencies = {
-    currentLastTask: new LastElapsedTaskReducer(),
-    currentCycle: new CurrentCycleReducer(),
-    currentCD: new CurrentCDReducer()
-  }
-
-  deriveShallowState({ nextEvent, prevState, prevDepState, nextDepState }) {
-
-    // @todo: generalize? (provide function?)
-    const {
-      currentLastTask: prevLastTask,
-      currentCycle: prevCycle,
-      currentCD: prevCD
-    } = prevDepState
-
-    const {
-      currentLastTask: nextLastTask,
-      currentCycle: nextCycle,
-      currentCD: nextCD
-    } = nextDepState
-
-    this.assumption(
-      'max 1 cycle within a single task',
-      !nextCycle || !taskCycle || nextCycle === taskCycle
-    )
-
-    // @todo: figure out how to do this with reducers. (hack)
-    taskCycle = taskCycle || nextCycle
-
-    // @todo: figure out how to do this with reducers. (hack)
-    if (!prevCD && nextCD)
-      taskCDRuns.push(nextCD)
-
-    // if (!prevCycle && nextCycle) debugger
-    // if (nextEvent.id === 167) debugger
-
-    if (prevLastTask !== nextLastTask) {
-      try {
-        return {
-          task: nextLastTask,
-          cycle: taskCycle,
-          cdRuns: taskCDRuns
-        }
-        // @todo: figure out how to do this with reducers. (hack)
-      } finally {
-        taskCycle = undefined
-        taskCDRuns = []
-      }
-    }
-
-    return prevState
-  }
-
-}
+import { LastElapsedCycleReducer } from '../../../../core/src';
 
 /** 
  * needs webpack.
@@ -91,17 +31,26 @@ const html_index = `
 
 export class PopoutZoneMonitor extends Plugin {
 
+  cycles: any = {}
+  queuedTasks: any[] = []
+
   name() {
     return 'PopoutZoneMonitor';
   }
 
   onInit() {
 
-    const { channel } = this.api!.createChannel({
-      reducer: new LastElapsedTaskWithCycleReducer()
+    const { channel: tasksChannel } = this.api!.createChannel({
+      reducer: new LastElapsedTaskReducer()
     })
 
-      ; (window as any).channel = channel
+    const { channel: cyclesChannel } = this.api!.createChannel({
+      reducer: new LastElapsedCycleReducer()
+    })
+
+    const { channel: cdChannel } = this.api!.createChannel({
+      reducer: new LastElapsedCDReducer()
+    })
 
     // @todo: need post-augury bootstrap hook, hence timeout
     const popout = openPopout('Augury Zone Monitor')
@@ -109,9 +58,48 @@ export class PopoutZoneMonitor extends Plugin {
     popout.write(html_index)
     popout.injectScript(require('!!raw-loader!../../ui-app/dist/index.js'))
 
-    channel.events.subscribe(lastElapsedRootTask =>
-      popout.bridge.in.emit(lastElapsedRootTask)
-    )
+    // @todo: core requesters (needs history)
+    // popout.function('getTask', startEID => {
+    //   return this.api!.getFirst({ reducer: ... })
+    // })
+
+    tasksChannel.events.subscribe(lastElapsedTask => {
+      popout.bridge.in.emit({
+        type: 'task',
+        lastElapsedTask
+      })
+    })
+
+    cdChannel.events.subscribe(lastElapsedCD => {
+      popout.bridge.in.emit({
+        type: 'cd',
+        lastElapsedCD
+      })
+    })
+
+    cyclesChannel.events.subscribe(lastElapsedCycle => {
+      popout.bridge.in.emit({
+        type: 'cycle',
+        lastElapsedCycle
+      })
+      // this.cycles[lastElapsedCycle.startEID] = lastElapsedCycle
+      // this.queuedTasks.forEach(task => {
+      //   if (task.cycle.startEID === lastElapsedCycle.startEID)
+      //     task.cycle = lastElapsedCycle
+      //   popout.bridge.in.emit(task)
+      // })
+      // this.queuedTasks = []
+    })
+
+    // tasksChannel.events.subscribe(lastElapsedTask => {
+    //   const fullCycle = this.cycles[lastElapsedTask.cycle.startEID]
+    //   if (!fullCycle)
+    //     this.queuedTasks.push(lastElapsedTask)
+    //   else {
+    //     this.queuedTasks = []
+    //     popout.bridge.in.emit(lastElapsedTask)
+    //   }
+    // })
 
   }
 }

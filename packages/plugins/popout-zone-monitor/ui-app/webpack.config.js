@@ -42,7 +42,6 @@ module.exports = {
         use: [
           'to-string-loader',
           'css-loader',
-          'postcss-loader',
         ],
       },
       {

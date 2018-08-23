@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "d3-timeline": "^1.0.1"
+  }
+}

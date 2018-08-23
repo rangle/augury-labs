@@ -14,6 +14,7 @@ export class CurrentNgTaskReducer extends Reducer {
 
       return {
         task: nextEvent.payload.task,
+        startEID: nextEvent.id,
         startTime: nextEvent.creationAtPerformanceStamp
       }
 

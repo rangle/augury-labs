@@ -1,4 +1,5 @@
 import * as tippy from 'tippy.js'
+import * as d3 from 'd3'
 
 import { createStylesheet } from './create-stylesheet'
 
@@ -116,11 +117,12 @@ export class TimelineUI {
       this.element.scrollLeft = 9999999999
   }
 
-  createSegment({ task, cycle, cdRuns }) {
+  createSegment({ task, cycle }) {
 
     const zoneRow = document.createElement('div')
     zoneRow.className = 'zone-row'
 
+    // @todo: get actual data logic out of here, this should just be a UI tool
     if (task) {
       if (task.zone === 'root')
         zoneRow.className += ' root-zone'
@@ -136,6 +138,7 @@ export class TimelineUI {
     tipContent.style.textAlign = 'left'
     tipContent.style.color = 'white'
 
+    // @todo: get actual data logic out of here, this should just be a UI tool
     const taskCallbackFunc = document.createElement('span')
     taskCallbackFunc.style.cursor = 'pointer'
     taskCallbackFunc.style.textDecoration = 'underline'
@@ -179,14 +182,18 @@ export class TimelineUI {
 
     // ---
 
+    // @todo: get actual data logic out of here, this should just be a UI tool
     const cdRow = document.createElement('div')
     cdRow.className = 'cd-row'
 
-    if (cdRuns.length) {
-      cdRuns.forEach(cdRunData => {
+    if (cycle && !cycle.cdRuns.length) debugger
+    if (cycle && cycle.cdRuns.length) {
+      cycle.cdRuns.forEach(({ finishTime, startTime, startEID }) => {
+        const runningTime = finishTime - startTime
+        const widthPercentage = (runningTime / task.runningTime) * 100
         const cdRun = document.createElement('div')
         cdRun.className = 'cd-run'
-        cdRun.style.width = `10px`
+        cdRun.style.width = `${widthPercentage}%`
         cdRow.appendChild(cdRun)
       })
     }

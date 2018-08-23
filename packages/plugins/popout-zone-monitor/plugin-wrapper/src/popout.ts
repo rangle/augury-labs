@@ -43,4 +43,8 @@ export class PopoutController {
     this.window.document.body.appendChild(tag)
   }
 
+  function(name, implementation) {
+    this.window[name] = implementation
+  }
+
 }
