@@ -4,12 +4,18 @@ import { objToPairs, merge } from '../utils'
 // @todo: these types
 export interface ShallowStateDerivationParams {
   nextEvent: AuguryEvent
-  nextDepState
+  nextDepResults
   prevEvent: AuguryEvent | null
-  prevState
-  prevDepState
+  prevShallowState
+  prevDepResults
   // @todo: can we do this better?
   resetDependency: (depName: string) => void
+}
+
+// @todo: types
+export interface ShallowState {
+  result?: any,
+  auxiliary?: { [key: string]: any }
 }
 
 const DEEP_INIT = {
@@ -22,9 +28,22 @@ const DEEP_INIT = {
 //        how to bring in the reducer state shape?
 export abstract class Reducer {
 
+  static getResultFromState(state) {
+    if (!state) return undefined
+    const shallow = state.shallow
+    if (!shallow) return undefined
+    return shallow.result
+  }
+
+  static getDepResults(depState) {
+    return objToPairs(depState)
+      .map(({ k: depName, v: depState }) => ({ k: depName, v: Reducer.getResultFromState(depState) }))
+      .reduce((nextDepState, { k, v }) => merge(nextDepState, { [k]: v }), {})
+  }
+
   dependencies = {}
 
-  abstract deriveShallowState(params: ShallowStateDerivationParams) // @todo: return type
+  abstract deriveShallowState(params: ShallowStateDerivationParams): any
 
   public deriveState(prevState = DEEP_INIT, event: AuguryEvent) {
 
@@ -35,10 +54,10 @@ export abstract class Reducer {
 
     const nextShallowState = this.deriveShallowState({
       nextEvent: event,
-      nextDepState: this.getShallowDepState(nextDepState),
+      nextDepResults: Reducer.getDepResults(nextDepState),
       prevEvent: prevState.lastEvent,
-      prevState: prevState.shallow,
-      prevDepState: this.getShallowDepState(prevState.deps),
+      prevShallowState: prevState.shallow,
+      prevDepResults: Reducer.getDepResults(prevState.deps),
       resetDependency// @todo: can we do this better?
     })
 
@@ -46,11 +65,9 @@ export abstract class Reducer {
   }
 
   protected assumption(name: string, assertion) {
-    if (!assertion) throw new Error(`${this.constructor.name} assumption broken`)
+    if (!assertion) throw new Error(`${this.constructor.name} assumption broken: ${name}`)
   }
 
-  // @todo: move this out, so reactors can use this too
-  // @todo: if we used a Map(), we wouldnt have to use pair() and .reduce()
   private deriveDepState(prevDepState = {}, agEvent: AuguryEvent) {
     return objToPairs(this.dependencies)
       .map(({ k: name, v: reducer }) => ({
@@ -58,12 +75,5 @@ export abstract class Reducer {
         state: this.dependencies[name].deriveState(prevDepState[name], agEvent),
       }))
       .reduce((nextDepState, { name, state }) => merge(nextDepState, { [name]: state }), {})
-  }
-
-  // @todo: either use a Map(), or generalize and put the pair().map().reduce() thing in utils
-  private getShallowDepState(depState) {
-    return objToPairs(depState)
-      .map(({ k: depName, v: ds }) => ({ k: depName, v: ds ? ds.shallow : undefined }))
-      .reduce((nextDepState, { k, v }) => merge(nextDepState, { [k]: v }), {})
   }
 }
