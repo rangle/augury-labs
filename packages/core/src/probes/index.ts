@@ -1,3 +1,5 @@
 export * from './registry'
-export * from './ng-zone-probe'
-export * from './ng-app-debug-probe'
+export * from './root-zone'
+export * from './ng-zone'
+export * from './ng-debug'
+export * from './component-hooks'

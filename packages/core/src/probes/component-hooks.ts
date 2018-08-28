@@ -28,7 +28,7 @@ export class ComponentHooksProbe extends Probe {
         (all, importedModule) => all.concat(getAllFromModule(importedModule)),
         [],
       )
-      return allInModule.concat(allInImports)
+      return new Set(allInModule.concat(allInImports))
     }
 
     const components = getAllRecursively(ngModuleHelpers.getComponentsFromModule, this.ngModule)
