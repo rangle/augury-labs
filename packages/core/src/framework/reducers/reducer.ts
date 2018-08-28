@@ -26,7 +26,7 @@ const DEEP_INIT = {
 
 // @todo: types!
 //        how to bring in the reducer state shape?
-export abstract class Reducer<> {
+export abstract class Reducer {
 
   static getResultFromState(state) {
     if (!state) return undefined
