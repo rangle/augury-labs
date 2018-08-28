@@ -2,14 +2,14 @@ import { merge } from '../framework/utils'
 import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
-import { CurrentRootTaskReducer } from './current-root-task'
-import { CurrentNgTaskReducer } from './current-ng-task'
-import { CurrentCDReducer } from './current-cd' // @todo: rename - remove "reducer"
+import { CurrentCDReducer } from './current-cd'
 
-const INIT_STATE = undefined
-
-// @todo: fix reducers to do this properly. this is a bad hack (shared across instances)
-let componentsChecked: any[] = []
+const INIT_STATE = {
+  result: undefined,
+  auxiliary: {
+    componentsChecked: []
+  }
+}
 
 export class LastElapsedCDReducer extends Reducer {
 
@@ -17,34 +17,42 @@ export class LastElapsedCDReducer extends Reducer {
     currentCD: new CurrentCDReducer()
   }
 
-  deriveShallowState({ prevState = INIT_STATE, nextEvent, nextDepState, prevDepState }) {
+  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent, nextDepResults, prevDepResults }) {
 
     // @todo: generalize this logic ?
     const {
       currentCD: prevCD
-    } = prevDepState
+    } = prevDepResults
 
     const {
       currentCD: nextCD
-    } = nextDepState
+    } = nextDepResults
 
-    // @todo: fix reducers to do this properly.
+    const updatedComponentsChecked: any[]
+      = prevShallowState.auxiliary.componentsChecked.concat([]) // copy, so we dont mutate original
+
     if (nextCD && nextEvent.name === 'component_lifecycle_hook_invoked' && nextEvent.payload.hook === 'ngDoCheck') {
-      componentsChecked.push(nextEvent.payload.componentInstance)
+      updatedComponentsChecked.push(nextEvent.payload.componentInstance)
     }
 
     if (prevCD && !nextCD)
-      try {
-        return {
+      return {
+        result: {
           startEID: prevCD.startEID,
           startPerformanceStamp: prevCD.startTime,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
-          componentsChecked
+          componentsChecked: updatedComponentsChecked
+        },
+        auxiliary: {
+          componentsChecked: []
         }
-      } finally {
-        componentsChecked = []
       }
 
-    return prevState
+    return {
+      result: prevShallowState.result,
+      auxiliary: {
+        componentsChecked: updatedComponentsChecked
+      }
+    }
   }
 }

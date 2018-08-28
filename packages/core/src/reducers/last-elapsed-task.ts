@@ -2,29 +2,33 @@ import { merge } from '../framework/utils'
 import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
-import { CurrentRootTaskReducer } from './current-root-task'
-import { CurrentNgTaskReducer } from './current-ng-task'
-import { CurrentCycleReducer } from './current-cycle-reducer' // @todo: rename - remove "reducer"
+import { CurrentRootZoneTaskReducer } from './current-root-zone-task'
+import { CurrentNgZoneTaskReducer } from './current-ng-zone-task'
 
-const INIT_STATE = undefined
-
-// @todo: hack
-let flamegraph: any[] = []
+const INIT_STATE = {
+  result: undefined,
+  auxiliary: {
+    // @todo: should this be a flamegraph? 
+    //        i think it should just be a list of invoked methods.
+    //        the flamegraph structure should be imposed by the consumer
+    flamegraph: []
+  }
+}
 
 export class LastElapsedTaskReducer extends Reducer {
 
   dependencies = {
-    currentRootTask: new CurrentRootTaskReducer(),
-    currentNgTask: new CurrentNgTaskReducer()
+    currentRootTask: new CurrentRootZoneTaskReducer(),
+    currentNgTask: new CurrentNgZoneTaskReducer()
   }
 
-  deriveShallowState({ prevState = INIT_STATE, nextEvent, nextDepState, prevDepState }) {
+  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent, nextDepResults, prevDepResults }) {
 
     // @todo: generalize this logic ?
     const {
       currentRootTask: prevRootTask,
       currentNgTask: prevNgTask,
-    } = prevDepState
+    } = prevDepResults
 
     const {
       currentRootTask: {
@@ -35,7 +39,7 @@ export class LastElapsedTaskReducer extends Reducer {
         task: nextNgTask,
         startTime: nextNgStartTime
       } = {} as any,
-    } = nextDepState
+    } = nextDepResults
 
     const rootTaskIsOngoing = () => prevRootTask && nextRootTask
     const ngTaskIsOngoing = () => prevNgTask && nextNgTask
@@ -46,43 +50,50 @@ export class LastElapsedTaskReducer extends Reducer {
       !(prevNgTask && prevRootTask) && !(nextNgTask && nextRootTask)
     )
 
-    // @todo: hack
-    flamegraph = updateFlamegraph(flamegraph, nextEvent)
+    let updatedFlamegraph = updateFlamegraph(prevShallowState.auxiliary.flamegraph, nextEvent)
 
     // start new flamegraph every task
     // @todo: if methods invoked outside of task -> red flag! something is going undetected.
     if (!prevRootTask && nextRootTask)
-      flamegraph = []
+      updatedFlamegraph = []
 
     if (prevRootTask && !nextRootTask)
-      try {
-        return {
+      return {
+        result: {
           zone: 'root',
           task: prevRootTask.task,
           startEID: prevRootTask.startEID,
-          startPerformanceStamp: prevRootTask.startTime,
+          startPerformanceStamp: prevRootTask.startPerfStamp,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
-          flamegraph
+          flamegraph: updatedFlamegraph
+        },
+        auxiliary: {
+          flamegraph: []
         }
-      } finally {
-        flamegraph = []
       }
 
     if (prevNgTask && !nextNgTask)
-      try {
-        return {
+      return {
+        result: {
           zone: 'ng',
           task: prevNgTask.task,
           startEID: prevNgTask.startEID,
-          startPerformanceStamp: prevNgTask.startTime,
+          startPerformanceStamp: prevNgTask.startPerfStamp,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
-          flamegraph
+          flamegraph: updatedFlamegraph
+        },
+        auxiliary: {
+          flamegraph: []
         }
-      } finally {
-        flamegraph = []
       }
 
-    return prevState
+    return {
+      result: prevShallowState.result,
+      auxiliary: {
+        flamegraph: updatedFlamegraph
+      }
+    }
+
   }
 }
 
@@ -104,9 +115,7 @@ function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
         event: e,
         startPerfstamp: e.payload.perfstamp,
         moduleName: e.payload.module.name,
-        name: `${e.payload.Class.name}.${e.payload.methodName}() [module: ${
-          e.payload.module.name
-          }]`,
+        name: `${e.payload.Class.name}.${e.payload.methodName}() [module: ${e.payload.module.name}]`,
         reachedCompletion: false,
         children: [],
       })
@@ -140,5 +149,5 @@ function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
     }
   }
 
-  return prevFlameGraph
+  return prevFlameGraph.concat([])
 }

@@ -1,7 +1,11 @@
 import { Reducer } from '../framework/reducers'
 
+const INIT_STATE = {
+  result: undefined
+}
+
 export class CurrentCDReducer extends Reducer {
-  deriveShallowState({ prevState, nextEvent }) {
+  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent }) {
 
     if (nextEvent.name === 'component_lifecycle_hook_invoked') {
 
@@ -17,18 +21,20 @@ export class CurrentCDReducer extends Reducer {
 
         if (nextEvent.payload.hook === 'ngDoCheck')
           return {
-            startEID: nextEvent.id,
-            startTime: nextEvent.creationAtPerformanceStamp
+            result: {
+              startEID: nextEvent.id,
+              startTime: nextEvent.creationAtPerformanceStamp
+            }
           }
 
         if (nextEvent.payload.hook === 'ngAfterViewChecked')
-          return undefined
+          return { result: undefined }
 
       }
 
     }
 
-    return prevState
+    return prevShallowState
 
   }
 }
