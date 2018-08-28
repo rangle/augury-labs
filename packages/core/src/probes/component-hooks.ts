@@ -12,8 +12,6 @@ export const HookNames = [
   'ngOnDestroy',
 ]
 
-const f: any[] = []
-
 export class ComponentHooksProbe extends Probe {
 
   // target
@@ -36,10 +34,6 @@ export class ComponentHooksProbe extends Probe {
     const components = getAllRecursively(ngModuleHelpers.getComponentsFromModule, this.ngModule)
 
     components.forEach(component => {
-
-
-      if (f.find(c => c === component)) debugger
-      f.push(component)
 
       const probeHookMethod = name => {
 
