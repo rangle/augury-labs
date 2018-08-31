@@ -26,8 +26,7 @@
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
-    "pretty:check": "prettier --list-different '**/*.{css,js,json,md,scss,ts}'",
-    "pretty:fix": "prettier --write '**/*.{css,js,json,md,scss,ts}'"
+    "precommit": "lint-staged"
   },
   "dependencies": {},
   "devDependencies": {

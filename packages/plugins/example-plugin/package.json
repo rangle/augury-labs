@@ -12,7 +12,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
-    "lint": "tslint --project ."
+    "lint": "tslint --project .",
+    "precommit": "lint-staged"
   },
   "dependencies": {
     "@augury/core": "^0.0.1"
