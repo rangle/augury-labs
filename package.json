@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "repository": {
-    "type" : "git",
+    "type": "git",
     "url": "https://github.com/rangle/augury-labs"
   },
   "workspaces": [
@@ -18,10 +18,14 @@
     "test": "lerna run test",
     "test:watch": "lerna run --parallel test:watch",
     "coverage": "lerna run coverage",
-    "lint": "lerna run lint"
+    "lint": "lerna run lint",
+    "precommit": "lerna run --concurrency 1 --stream precommit",
+    "pretty:check": "prettier --list-different '**/*.{css,js,json,md,scss,ts}'",
+    "pretty:fix": "prettier --write '**/*.{css,js,json,md,scss,ts}'"
   },
   "devDependencies": {
     "@augury/tools": "^0.0.1",
+    "husky": "^0.14.3",
     "lerna": "^3.0.5",
     "lerna-changelog": "^0.8.0"
   }
