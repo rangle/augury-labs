@@ -1,69 +1,89 @@
 import { AuguryEvent } from '../events'
 import { objToPairs, merge } from '../utils'
+import { DeepState, ShallowState, DependencyResults, DependencyStates } from './state'
 
 // @todo: these types
 export interface ShallowStateDerivationParams {
+
   nextEvent: AuguryEvent
-  nextDepState
-  prevEvent: AuguryEvent | null
-  prevState
-  prevDepState
+  nextDepResults: DependencyResults
+
+  prevEvent?: AuguryEvent
+  prevShallowState?: ShallowState,
+  prevDepResults?: DependencyResults
+
   // @todo: can we do this better?
   resetDependency: (depName: string) => void
+
 }
 
-const DEEP_INIT = {
+const DEEP_INIT: DeepState = {
   shallow: undefined,
   deps: {},
-  lastEvent: null,
+  lastEvent: undefined
 }
 
 // @todo: types!
 //        how to bring in the reducer state shape?
 export abstract class Reducer {
 
+  // @todo: result type
+  static getResultFromState(state: DeepState): any {
+    if (!state) return undefined
+    const shallow = state.shallow
+    if (!shallow) return undefined
+    return shallow.result
+  }
+
+  // @todo: rename all Dep to Dependencies
+  static getDepResults(depState: DependencyStates): DependencyResults {
+    return objToPairs(depState)
+      .map(({ k: depName, v: depState }) => ({
+        k: depName,
+        v: Reducer.getResultFromState(depState)
+      }))
+      .reduce((nextDepState, { k, v }) => merge(nextDepState, { [k]: v }), {})
+  }
+
   dependencies = {}
 
-  abstract deriveShallowState(params: ShallowStateDerivationParams) // @todo: return type
+  abstract deriveShallowState(params: ShallowStateDerivationParams): ShallowState
 
-  public deriveState(prevState = DEEP_INIT, event: AuguryEvent) {
-
+  public deriveState(prevState: DeepState = DEEP_INIT, event: AuguryEvent) {
     const nextDepState = this.deriveDepState(prevState.deps, event)
 
     // @todo: can we do this better?
-    function resetDependency(depName) { nextDepState[depName] = undefined }
+    function resetDependency(depName) {
+      nextDepState[depName] = undefined
+    }
 
     const nextShallowState = this.deriveShallowState({
       nextEvent: event,
-      nextDepState: this.getShallowDepState(nextDepState),
+      nextDepResults: Reducer.getDepResults(nextDepState),
       prevEvent: prevState.lastEvent,
-      prevState: prevState.shallow,
-      prevDepState: this.getShallowDepState(prevState.deps),
-      resetDependency// @todo: can we do this better?
+      prevShallowState: prevState.shallow,
+      prevDepResults: Reducer.getDepResults(prevState.deps),
+      resetDependency // @todo: can we do this better?
     })
 
     return { shallow: nextShallowState, deps: nextDepState, lastEvent: event }
   }
 
   protected assumption(name: string, assertion) {
-    if (!assertion) throw new Error(`${this.constructor.name} assumption broken`)
+    if (!assertion)
+      throw new Error(`${this.constructor.name} assumption broken: ${name}`)
   }
 
-  // @todo: move this out, so reactors can use this too
-  // @todo: if we used a Map(), we wouldnt have to use pair() and .reduce()
-  private deriveDepState(prevDepState = {}, agEvent: AuguryEvent) {
+  private deriveDepState(prevDepState: DependencyStates = {}, agEvent: AuguryEvent): DependencyStates {
     return objToPairs(this.dependencies)
       .map(({ k: name, v: reducer }) => ({
         name,
-        state: this.dependencies[name].deriveState(prevDepState[name], agEvent),
+        state: this.dependencies[name].deriveState(prevDepState[name], agEvent)
       }))
-      .reduce((nextDepState, { name, state }) => merge(nextDepState, { [name]: state }), {})
-  }
-
-  // @todo: either use a Map(), or generalize and put the pair().map().reduce() thing in utils
-  private getShallowDepState(depState) {
-    return objToPairs(depState)
-      .map(({ k: depName, v: ds }) => ({ k: depName, v: ds ? ds.shallow : undefined }))
-      .reduce((nextDepState, { k, v }) => merge(nextDepState, { [k]: v }), {})
+      .reduce(
+        (nextDepState, { name, state }) =>
+          merge(nextDepState, { [name]: state }),
+        {}
+      )
   }
 }
