@@ -1,7 +1,6 @@
 {
   "name": "@augury/example-plugin",
   "version": "0.0.1",
-  "private": true,
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "license": "MIT",

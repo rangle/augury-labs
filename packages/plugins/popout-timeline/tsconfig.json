@@ -1,0 +1,6 @@
+{
+  "extends": "../../tools/tsconfig.base.json",
+  "files": [
+    "./src/index.ts"
+  ]
+}
