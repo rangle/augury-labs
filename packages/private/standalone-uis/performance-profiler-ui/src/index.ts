@@ -41,6 +41,10 @@ const clearButton = document.createElement('button')
 clearButton.innerHTML = 'clear'
 document.body.appendChild(clearButton)
 
+const pauseButton = document.createElement('button')
+pauseButton.innerHTML = 'pause'
+document.body.appendChild(pauseButton)
+
 const topContainer = document.createElement('div')
 topContainer.style.whiteSpace = 'nowrap'
 topContainer.style.overflowX = 'scroll'
@@ -119,7 +123,7 @@ function newChunk() {
   container = createChunkContainer()
 }
 
-bridge.in.subscribe(msg => {
+const onMessage = msg => {
   if (msg.type === 'cycle') {
     const startNum = msg.lastElapsedCycle.startPerformanceStamp
     if (startNum - lastNum > DISTANCE_LIMIT) {
@@ -168,7 +172,9 @@ bridge.in.subscribe(msg => {
   }
 
   paint()
-})
+}
+
+let listener = bridge.in.subscribe(onMessage)
 
 function clear() {
   hoverDisplay.innerHTML = ''
@@ -180,6 +186,19 @@ function clear() {
 }
 
 clearButton.onclick = clear
+
+function pause() {
+  if (listener) {
+    listener.unsubscribe()
+    listener = undefined
+    pauseButton.innerHTML = 'restart'
+  } else {
+    listener = bridge.in.subscribe(onMessage)
+    pauseButton.innerHTML = 'pause'
+  }
+}
+
+pauseButton.onclick = pause
 
 function paint() {
   paintTimeline({
