@@ -15,61 +15,61 @@ declare const bridge
 const style = createStylesheet()
 
 style.insertRule(`
-  html { 
-    height: 100%; 
-    width: 100%; 
+  html {
+    height: 100%;
+    width: 100%;
   }
 `)
 
 style.insertRule(`
-  body { 
-    height: 100%; 
-    width: 100%; 
+  body {
+    height: 100%;
+    width: 100%;
     margin: 0;
   }
 `)
 
 // @todo: hack
 style.insertRule(`
-  foreignObject { 
+  foreignObject {
     overflow:hidden;
     cursor:pointer;
   }
 `)
 
-const top_container = document.createElement('div')
-top_container.style.whiteSpace = 'nowrap'
-top_container.style.overflowX = 'scroll'
-document.body.appendChild(top_container)
+const topContainer = document.createElement('div')
+topContainer.style.whiteSpace = 'nowrap'
+topContainer.style.overflowX = 'scroll'
+document.body.appendChild(topContainer)
 
-const hover_display = document.createElement('div')
-hover_display.style.position = 'absolute'
-hover_display.style.background = 'gray'
-hover_display.style.padding = '10px'
-hover_display.style.borderRadius = '10px'
-hover_display.style.transition = `opacity 200ms ease-in-out`
-hover_display.style.opacity = '0'
-document.body.appendChild(hover_display)
+const hoverDisplay = document.createElement('div')
+hoverDisplay.style.position = 'absolute'
+hoverDisplay.style.background = 'gray'
+hoverDisplay.style.padding = '10px'
+hoverDisplay.style.borderRadius = '10px'
+hoverDisplay.style.transition = `opacity 200ms ease-in-out`
+hoverDisplay.style.opacity = '0'
+document.body.appendChild(hoverDisplay)
 
-document.onmousemove = (event) => {
-  hover_display.style.left = (event.clientX + 10) + 'px'
-  hover_display.style.top = (event.clientY + 10) + 'px'
+document.onmousemove = event => {
+  hoverDisplay.style.left = event.clientX + 10 + 'px'
+  hoverDisplay.style.top = event.clientY + 10 + 'px'
 }
 
 let hoverTimeout
 function showHover() {
-  hover_display.style.opacity = '0.8'
+  hoverDisplay.style.opacity = '0.8'
   clearTimeout(hoverTimeout)
   hoverTimeout = setTimeout(() => {
-    hover_display.style.opacity = '0'
+    hoverDisplay.style.opacity = '0'
   }, 5000)
   document.onclick = () => {
-    hover_display.style.opacity = '0'
+    hoverDisplay.style.opacity = '0'
   }
 }
 
-const details_display = document.createElement('div')
-document.body.appendChild(details_display)
+const detailsDisplay = document.createElement('div')
+document.body.appendChild(detailsDisplay)
 
 const flame = document.createElement('div')
 flame.style.margin = '5%'
@@ -77,10 +77,10 @@ document.body.appendChild(flame)
 
 // @todo: useless, remove
 function createChunkContainer() {
-  const container = document.createElement('div')
-  container.style.display = 'block'
-  top_container.appendChild(container)
-  return container
+  const newContainer = document.createElement('div')
+  newContainer.style.display = 'block'
+  topContainer.appendChild(newContainer)
+  return newContainer
 }
 
 let taskTimeline: any[] = []
@@ -89,22 +89,21 @@ let cdTimeline: any[] = []
 let container = createChunkContainer()
 let isFirst = true
 let lastNum = 0
-
-  ; (window as any).cycles = cycleTimeline
-  ; (window as any).tasks = taskTimeline
-  ; (window as any).cdTimeline = cdTimeline
-  ; (window as any).c = () => {
-    taskTimeline.splice(0, taskTimeline.length)
-    cycleTimeline.splice(0, cycleTimeline.length)
-    cdTimeline.splice(0, cdTimeline.length)
-    paint()
-  }
-  ; (window as any).c = () => {
-    taskTimeline.splice(0, taskTimeline.length)
-    cycleTimeline.splice(0, cycleTimeline.length)
-    cdTimeline.splice(0, cdTimeline.length)
-    paint()
-  }
+;(window as any).cycles = cycleTimeline
+;(window as any).tasks = taskTimeline
+;(window as any).cdTimeline = cdTimeline
+;(window as any).c = () => {
+  taskTimeline.splice(0, taskTimeline.length)
+  cycleTimeline.splice(0, cycleTimeline.length)
+  cdTimeline.splice(0, cdTimeline.length)
+  paint()
+}
+;(window as any).c = () => {
+  taskTimeline.splice(0, taskTimeline.length)
+  cycleTimeline.splice(0, cycleTimeline.length)
+  cdTimeline.splice(0, cdTimeline.length)
+  paint()
+}
 
 // @todo: get rid of this stuff
 const DISTANCE_LIMIT = Infinity
@@ -117,70 +116,81 @@ function newChunk() {
 }
 
 bridge.in.subscribe(msg => {
-
   if (msg.type === 'cycle') {
     const startNum = msg.lastElapsedCycle.startPerformanceStamp
-    if (startNum - lastNum > DISTANCE_LIMIT) newChunk()
+    if (startNum - lastNum > DISTANCE_LIMIT) {
+      newChunk()
+    }
     lastNum = msg.lastElapsedCycle.finishPerformanceStamp
     cycleTimeline.push({
       original: msg,
       color: 'purple',
       starting_time: Math.floor(msg.lastElapsedCycle.startPerformanceStamp),
-      ending_time: Math.ceil(msg.lastElapsedCycle.finishPerformanceStamp)
+      ending_time: Math.ceil(msg.lastElapsedCycle.finishPerformanceStamp),
     })
   }
 
   if (msg.type === 'task') {
     const startNum = msg.lastElapsedTask.startPerformanceStamp
-    if (startNum - lastNum > DISTANCE_LIMIT) newChunk()
+    if (startNum - lastNum > DISTANCE_LIMIT) {
+      newChunk()
+    }
     lastNum = msg.lastElapsedTask.finishPerformanceStamp
     taskTimeline.push({
       original: msg,
-      color: msg.lastElapsedTask.zone === 'root'
-        ? 'blue'
-        : msg.lastElapsedTask.zone === 'ng'
-          ? 'green'
-          : 'red',
+      color:
+        msg.lastElapsedTask.zone === 'root'
+          ? 'blue'
+          : msg.lastElapsedTask.zone === 'ng'
+            ? 'green'
+            : 'red',
       starting_time: Math.floor(msg.lastElapsedTask.startPerformanceStamp),
-      ending_time: Math.ceil(msg.lastElapsedTask.finishPerformanceStamp)
+      ending_time: Math.ceil(msg.lastElapsedTask.finishPerformanceStamp),
     })
   }
 
   if (msg.type === 'cd') {
     const startNum = msg.lastElapsedCD.startPerformanceStamp
-    if (startNum - lastNum > DISTANCE_LIMIT) newChunk()
+    if (startNum - lastNum > DISTANCE_LIMIT) {
+      newChunk()
+    }
     lastNum = msg.lastElapsedCD.finishPerformanceStamp
     cdTimeline.push({
       original: msg,
       color: 'orange',
       starting_time: Math.floor(msg.lastElapsedCD.startPerformanceStamp),
-      ending_time: Math.ceil(msg.lastElapsedCD.finishPerformanceStamp)
+      ending_time: Math.ceil(msg.lastElapsedCD.finishPerformanceStamp),
     })
   }
 
   paint()
-
 })
 
 function paint() {
   paintTimeline({
     data: [
-      { label: "tasks", times: taskTimeline },
-      { label: "instability", times: cycleTimeline },
-      { label: "cd", times: cdTimeline },
-    ].map(row => isFirst ? row : { times: row.times }),
+      { label: 'tasks', times: taskTimeline },
+      { label: 'instability', times: cycleTimeline },
+      { label: 'cd', times: cdTimeline },
+    ].map(row => (isFirst ? row : { times: row.times })),
     container,
     onHover(segment, row) {
       const msg = segment.original
 
       if (msg.type === 'task') {
-        const { zone, startEID, task, startPerformanceStamp, finishPerformanceStamp } = msg.lastElapsedTask
-        hover_display.innerHTML = `
+        const {
+          zone,
+          startEID,
+          task,
+          startPerformanceStamp,
+          finishPerformanceStamp,
+        } = msg.lastElapsedTask
+        hoverDisplay.innerHTML = `
           <span style='font-size:20px;font-weight:bold;margin-bottom:5px'>
             zone task
           </span>
           <div>
-            auguryID: ${startEID}   
+            auguryID: ${startEID}
           </div>
           <div>
             zone: ${zone}
@@ -199,12 +209,12 @@ function paint() {
 
       if (msg.type === 'cycle') {
         const { startEID, startPerformanceStamp, finishPerformanceStamp } = msg.lastElapsedCycle
-        hover_display.innerHTML = `
+        hoverDisplay.innerHTML = `
           <span style='font-size:20px;font-weight:bold;margin-bottom:5px'>
             angular instability period
           </span>
           <div>
-            auguryID: ${startEID}   
+            auguryID: ${startEID}
           </div>
           <div>
             running time: ${round2(finishPerformanceStamp - startPerformanceStamp)}ms
@@ -213,13 +223,18 @@ function paint() {
       }
 
       if (msg.type === 'cd') {
-        const { startEID, startPerformanceStamp, finishPerformanceStamp, componentsChecked } = msg.lastElapsedCD
-        hover_display.innerHTML = `
+        const {
+          startEID,
+          startPerformanceStamp,
+          finishPerformanceStamp,
+          componentsChecked,
+        } = msg.lastElapsedCD
+        hoverDisplay.innerHTML = `
           <span style='font-size:20px;font-weight:bold;margin-bottom:5px'>
             change detection cycle
           </span>
           <div>
-            auguryID: ${startEID}   
+            auguryID: ${startEID}
           </div>
           <div>
             # of components checked: ${componentsChecked.length}
@@ -237,14 +252,20 @@ function paint() {
       const msg = segment.original
 
       if (msg.type === 'task') {
-        const { zone, startEID, task, startPerformanceStamp, finishPerformanceStamp } = msg.lastElapsedTask
+        const {
+          zone,
+          startEID,
+          task,
+          startPerformanceStamp,
+          finishPerformanceStamp,
+        } = msg.lastElapsedTask
         const flameGraph = document.createElement('h4')
-        details_display.innerHTML = `
+        detailsDisplay.innerHTML = `
           <span style='font-size:20px;font-weight:bold;margin-bottom:5px'>
             zone task
           </span>
           <div>
-            auguryID: ${startEID}   
+            auguryID: ${startEID}
           </div>
           <div>
             zone: ${zone}
@@ -259,18 +280,18 @@ function paint() {
             running time: ${round2(finishPerformanceStamp - startPerformanceStamp)}ms
           </div>
         `
-        details_display.appendChild(flameGraph)
+        detailsDisplay.appendChild(flameGraph)
         showFlame(msg.lastElapsedTask.flamegraph)
       }
 
       if (msg.type === 'cycle') {
         const { startEID, startPerformanceStamp, finishPerformanceStamp } = msg.lastElapsedCycle
-        details_display.innerHTML = `
+        detailsDisplay.innerHTML = `
           <span style='font-size:20px;font-weight:bold;margin-bottom:5px'>
             angular instability period
           </span>
           <div>
-            auguryID: ${startEID}   
+            auguryID: ${startEID}
           </div>
           <div>
             running time: ${round2(finishPerformanceStamp - startPerformanceStamp)}ms
@@ -280,13 +301,18 @@ function paint() {
       }
 
       if (msg.type === 'cd') {
-        const { startEID, startPerformanceStamp, finishPerformanceStamp, componentsChecked } = msg.lastElapsedCD
-        details_display.innerHTML = `
+        const {
+          startEID,
+          startPerformanceStamp,
+          finishPerformanceStamp,
+          componentsChecked,
+        } = msg.lastElapsedCD
+        detailsDisplay.innerHTML = `
           <span style='font-size:20px;font-weight:bold;margin-bottom:5px'>
             change detection cycle
           </span>
           <div>
-            auguryID: ${startEID}   
+            auguryID: ${startEID}
           </div>
           <div>
             # of components checked: ${componentsChecked.length}
@@ -299,7 +325,7 @@ function paint() {
       }
 
       return null
-    }
+    },
   })
 }
 
@@ -307,14 +333,14 @@ function paint() {
 // @todo: move to new file
 
 // Set the dimensions and margins of the diagram
-var margin = { top: 20, right: 90, bottom: 30, left: 90 },
-  width = window.innerWidth * 0.6,
-  height = 500 - margin.top - margin.bottom
+const margin = { top: 20, right: 90, bottom: 30, left: 90 }
+const width = window.innerWidth * 0.6
+const height = 500 - margin.top - margin.bottom
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
-var svg = d3
+const svg = d3
   .select('body')
   .append('svg')
   .attr('width', width + margin.right + margin.left)
@@ -322,17 +348,17 @@ var svg = d3
   .append('g')
   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
-var i = 0,
-  duration = 750,
-  root
+let i = 0
+const duration = 750
+let root
 
 // declares a tree layout and assigns the size
-var treemap = d3.tree().size([height, width])
+const treemap = d3.tree().size([height, width])
 
 function u(d) {
   // Assigns parent, children, height, depth
-  root = d3.hierarchy(d, function (d) {
-    return d.childNodes
+  root = d3.hierarchy(d, node => {
+    return node.childNodes
   })
   root.x0 = height / 2
   root.y0 = 0
@@ -352,29 +378,29 @@ function collapse(d) {
 
 function update(source) {
   // Assigns the x and y position for the nodes
-  var treeData = treemap(root)
+  const treeData = treemap(root)
 
   // Compute the new tree layout.
-  var nodes = treeData.descendants(),
-    links = treeData.descendants().slice(1)
+  const nodes = treeData.descendants()
+  const links = treeData.descendants().slice(1)
 
   // Normalize for fixed-depth.
-  nodes.forEach(function (d) {
+  nodes.forEach(d => {
     d.y = d.depth * 180
   })
 
   // ****************** Nodes section ***************************
   // Update the nodes...
-  var node = svg.selectAll('g.node').data(nodes, function (d) {
+  const node = svg.selectAll('g.node').data(nodes, d => {
     return d.id || (d.id = ++i)
   })
 
   // Enter any new modes at the parent's previous position.
-  var nodeEnter = node
+  const nodeEnter = node
     .enter()
     .append('g')
     .attr('class', 'node')
-    .attr('transform', function (d) {
+    .attr('transform', d => {
       return 'translate(' + source.y0 + ',' + source.x0 + ')'
     })
     .on('click', click)
@@ -384,7 +410,7 @@ function update(source) {
     .append('circle')
     .attr('class', 'node')
     .attr('r', 1e-6)
-    .style('fill', function (d) {
+    .style('fill', d => {
       return d._children ? 'lightsteelblue' : '#fff'
     })
 
@@ -392,25 +418,25 @@ function update(source) {
   nodeEnter
     .append('text')
     .attr('dy', '.35em')
-    .attr('x', function (d) {
+    .attr('x', d => {
       return d.children || d._children ? -13 : 13
     })
-    .attr('text-anchor', function (d) {
+    .attr('text-anchor', d => {
       return d.children || d._children ? 'end' : 'start'
     })
-    .text(function (d) {
+    .text(d => {
       return `${d.data.nativeNode.localName} (${d.data.componentType})`
     })
     .attr('style', 'overflow:hidden;')
 
   // UPDATE
-  var nodeUpdate = nodeEnter.merge(node)
+  const nodeUpdate = nodeEnter.merge(node)
 
   // Transition to the proper position for the node
   nodeUpdate
     .transition()
     .duration(duration)
-    .attr('transform', function (d) {
+    .attr('transform', d => {
       return 'translate(' + d.y + ',' + d.x + ')'
     })
 
@@ -418,17 +444,17 @@ function update(source) {
   nodeUpdate
     .select('circle.node')
     .attr('r', 10)
-    .style('fill', function (d) {
+    .style('fill', d => {
       return d._children ? 'lightsteelblue' : '#fff'
     })
     .attr('cursor', 'pointer')
 
   // Remove any exiting nodes
-  var nodeExit = node
+  const nodeExit = node
     .exit()
     .transition()
     .duration(duration)
-    .attr('transform', function (d) {
+    .attr('transform', d => {
       return 'translate(' + source.y + ',' + source.x + ')'
     })
     .remove()
@@ -441,44 +467,44 @@ function update(source) {
 
   // ****************** links section ***************************
   // Update the links...
-  var link = svg.selectAll('path.link').data(links, function (d) {
+  const link = svg.selectAll('path.link').data(links, d => {
     return d.id
   })
 
   // Enter any new links at the parent's previous position.
-  var linkEnter = link
+  const linkEnter = link
     .enter()
     .insert('path', 'g')
     .attr('class', 'link')
-    .attr('d', function (d) {
-      var o = { x: source.x0, y: source.y0 }
+    .attr('d', d => {
+      const o = { x: source.x0, y: source.y0 }
       return diagonal(o, o)
     })
 
   // UPDATE
-  var linkUpdate = linkEnter.merge(link)
+  const linkUpdate = linkEnter.merge(link)
 
   // Transition back to the parent element position
   linkUpdate
     .transition()
     .duration(duration)
-    .attr('d', function (d) {
+    .attr('d', d => {
       return diagonal(d, d.parent)
     })
 
   // Remove any exiting links
-  var linkExit = link
+  const linkExit = link
     .exit()
     .transition()
     .duration(duration)
-    .attr('d', function (d) {
-      var o = { x: source.x, y: source.y }
+    .attr('d', d => {
+      const o = { x: source.x, y: source.y }
       return diagonal(o, o)
     })
     .remove()
 
   // Store the old positions for transition.
-  nodes.forEach(function (d) {
+  nodes.forEach(d => {
     d.x0 = d.x
     d.y0 = d.y
   })
@@ -506,11 +532,9 @@ function update(source) {
   }
 }
 
-
 let lastInnerFlame
 
 function showFlame(flameGraph) {
-
   const innerFlame = document.createElement('div')
   flame.appendChild(innerFlame)
 
@@ -519,23 +543,25 @@ function showFlame(flameGraph) {
   const moduleColors = {}
 
   function getRealRandomColor() {
-    var letters = '0123456789ABCDEF'
-    var color = '#'
-    for (var i = 0; i < 6; i++) {
+    const letters = '0123456789ABCDEF'
+    let color = '#'
+    for (let k = 0; k < 6; k++) {
       color += letters[Math.floor(Math.random() * 16)]
     }
     return color
   }
 
-  var i = 0
+  let j = 0
   function getFakeRandomColor() {
-    const rc = randomColors[i]
-    i = (i + 1) % 50
+    const rc = randomColors[j]
+    j = (j + 1) % 50
     return rc
   }
 
   const getModuleColor = moduleName => {
-    if (!moduleColors[moduleName]) moduleColors[moduleName] = getFakeRandomColor()
+    if (!moduleColors[moduleName]) {
+      moduleColors[moduleName] = getFakeRandomColor()
+    }
     return moduleColors[moduleName]
   }
 
@@ -554,7 +580,7 @@ function showFlame(flameGraph) {
         .transitionDuration(750)
         .transitionEase(d3.easeCubic)
         .color(node => getModuleColor(node.data.moduleName)),
-  )
+    )
 
   lastInnerFlame = innerFlame
 }
