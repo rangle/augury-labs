@@ -1,8 +1,12 @@
 import * as d3 from 'd3'
 import timelines from './timeline-lib'
 
-export function paintTimeline({ data, container, onHover = (segment, row) => null, onClick = (segment, row) => null }) {
-
+export function paintTimeline({
+  data,
+  container,
+  onHover = (segment, row) => null,
+  onClick = (segment, row) => null,
+}) {
   const chart = timelines()
     .tickFormat({
       format: date => date.getTime(),
@@ -17,12 +21,10 @@ export function paintTimeline({ data, container, onHover = (segment, row) => nul
     .width(window.innerWidth * 0.9)
 
   container.innerHTML = ''
-
-    ; (window as any).chart = d3.select(container)
-      .append("svg")
-      .attr("style", "width:90%;margin-left:5%;margin-right:5%;")
-      .datum(data)
-      .call(chart)
-
+  ;(window as any).chart = d3
+    .select(container)
+    .append('svg')
+    .attr('style', 'width:90%;margin-left:5%;margin-right:5%;')
+    .datum(data)
+    .call(chart)
 }
-

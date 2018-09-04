@@ -28,7 +28,7 @@ const htmlIndex = `
   </html>
 `
 
-export class PopoutZoneMonitor extends Plugin {
+export class PerformanceProfiler extends Plugin {
   public cycles: any = {}
   public queuedTasks: any[] = []
 
@@ -52,7 +52,7 @@ export class PopoutZoneMonitor extends Plugin {
     const popout = openPopout('Augury Zone Monitor')
 
     popout.write(htmlIndex)
-    popout.injectScript(require('!!raw-loader!@augury/timeline-ui/dist/index.js'))
+    popout.injectScript(require('!!raw-loader!@augury/performance-profiler-ui/dist/index.js'))
 
     tasksChannel.events.subscribe(lastElapsedTask => {
       popout.bridge.in.emit({

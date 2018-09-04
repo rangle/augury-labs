@@ -1,6 +1,6 @@
 {
   "name": "@augury/core",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Provides the core infrastructure for augury",
   "author": "rangle.io",
   "license": "MIT",
@@ -30,7 +30,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@augury/tools": "^0.0.1",
+    "@augury/tools": "^0.2.0",
     "@types/jest": "^23.3.0"
   }
 }

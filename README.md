@@ -37,7 +37,7 @@ import { environment } from './environments/environment';
 
 import { NgZone } from '@angular/core';
 import { auguryBootstrap } from '@augury/core';
-import { PopoutZoneMonitor } from '@augury/popout-timeline';
+import { PerformanceProfiler } from '@augury/performance-profiler-plugin';
 
 if (environment.production) {
   enableProdMode();
@@ -47,7 +47,7 @@ auguryBootstrap({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [new PopoutZoneMonitor()]
+  plugins: [new PerformanceProfiler()]
 });
 ```
 
@@ -70,12 +70,13 @@ for the `"build"` object, and look inside that for the `"configurations" object)
             }
 ```
 
-The second place is as a serve configuration (also under `"architect"`, but inside the `"serve"`
+The second place is as a serve configuration, replacing `<your-project>` with the
+name of your project under `angular.json` (this object is also under `"architect"`, but inside the `"serve"`
 object, under `"configurations"`):
 
 ```json
             "augury": {
-              "browserTarget": "roomy-ui:build:augury"
+              "browserTarget": "<your-project>:build:augury"
             }
 ```
 
@@ -100,7 +101,7 @@ also provides common dev dependencies and configurations.
 
 ```sh
 # Install lerna globally
-npm install -g lerna
+yarn global add lerna
 
 # Install dependencies
 yarn install

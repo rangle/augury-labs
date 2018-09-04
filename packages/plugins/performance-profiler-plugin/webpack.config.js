@@ -1,6 +1,6 @@
-const path = require('path');
-const webpack = require('webpack');
-const ProgressPlugin = require('webpack/lib/ProgressPlugin');
+const path = require('path')
+const webpack = require('webpack')
+const ProgressPlugin = require('webpack/lib/ProgressPlugin')
 
 /*
  * Config
@@ -19,7 +19,7 @@ module.exports = {
 
   // Config for our build files
   output: {
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs',
     path: path.resolve('./dist'),
     filename: 'index.js',
     sourceMapFilename: 'index.js.map',
@@ -30,19 +30,15 @@ module.exports = {
     modules: ['./node_modules'],
   },
 
-
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
+        loader: 'ts-loader',
       },
       {
         test: /\.css$/,
-        use: [
-          'to-string-loader',
-          'css-loader',
-        ],
+        use: ['to-string-loader', 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.png$/,
@@ -55,8 +51,5 @@ module.exports = {
     ],
   },
 
-  plugins: [
-    new ProgressPlugin(),
-  ]
-
-};
+  plugins: [new ProgressPlugin()],
+}
