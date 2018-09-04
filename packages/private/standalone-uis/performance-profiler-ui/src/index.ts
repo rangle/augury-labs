@@ -37,6 +37,10 @@ style.insertRule(`
   }
 `)
 
+const clearButton = document.createElement('button')
+clearButton.innerHTML = 'clear'
+document.body.appendChild(clearButton)
+
 const topContainer = document.createElement('div')
 topContainer.style.whiteSpace = 'nowrap'
 topContainer.style.overflowX = 'scroll'
@@ -165,6 +169,17 @@ bridge.in.subscribe(msg => {
 
   paint()
 })
+
+function clear() {
+  hoverDisplay.innerHTML = ''
+  detailsDisplay.innerHTML = ''
+  taskTimeline = []
+  cycleTimeline = []
+  cdTimeline = []
+  paint()
+}
+
+clearButton.onclick = clear
 
 function paint() {
   paintTimeline({
