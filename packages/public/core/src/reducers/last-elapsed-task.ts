@@ -1,9 +1,7 @@
-import { merge } from '../framework/utils'
-import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
-import { CurrentRootZoneTaskReducer } from './current-root-zone-task'
 import { CurrentNgZoneTaskReducer } from './current-ng-zone-task'
+import { CurrentRootZoneTaskReducer } from './current-root-zone-task'
 
 const INIT_STATE = {
   result: undefined,
@@ -16,12 +14,17 @@ const INIT_STATE = {
 }
 
 export class LastElapsedTaskReducer extends Reducer {
-  dependencies = {
+  public dependencies = {
     currentRootTask: new CurrentRootZoneTaskReducer(),
     currentNgTask: new CurrentNgZoneTaskReducer(),
   }
 
-  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent, nextDepResults, prevDepResults }) {
+  public deriveShallowState({
+    prevShallowState = INIT_STATE,
+    nextEvent,
+    nextDepResults,
+    prevDepResults,
+  }) {
     // @todo: generalize this logic ?
     const { currentRootTask: prevRootTask, currentNgTask: prevNgTask } = prevDepResults
 
@@ -43,9 +46,11 @@ export class LastElapsedTaskReducer extends Reducer {
 
     // start new flamegraph every task
     // @todo: if methods invoked outside of task -> red flag! something is going undetected.
-    if (!prevRootTask && nextRootTask) updatedFlamegraph = []
+    if (!prevRootTask && nextRootTask) {
+      updatedFlamegraph = []
+    }
 
-    if (prevRootTask && !nextRootTask)
+    if (prevRootTask && !nextRootTask) {
       return {
         result: {
           zone: 'root',
@@ -59,8 +64,9 @@ export class LastElapsedTaskReducer extends Reducer {
           flamegraph: [],
         },
       }
+    }
 
-    if (prevNgTask && !nextNgTask)
+    if (prevNgTask && !nextNgTask) {
       return {
         result: {
           zone: 'ng',
@@ -74,6 +80,7 @@ export class LastElapsedTaskReducer extends Reducer {
           flamegraph: [],
         },
       }
+    }
 
     return {
       result: prevShallowState.result,
@@ -87,9 +94,13 @@ export class LastElapsedTaskReducer extends Reducer {
 // @todo: get everything below out of here
 const findHighestPending = pending => {
   const { children } = pending
-  if (!children.length) return null
+  if (!children.length) {
+    return null
+  }
   const lastChild = children[children.length - 1]
-  if (lastChild.reachedCompletion) return pending
+  if (lastChild.reachedCompletion) {
+    return pending
+  }
   return findHighestPending(lastChild) || lastChild
 }
 
@@ -97,7 +108,7 @@ function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
   // todo: mutating, shouldnt be
   // todo: clean up...
   if (e.name === 'method_invoked') {
-    if (!prevFlameGraph.length || prevFlameGraph[prevFlameGraph.length - 1].reachedCompletion)
+    if (!prevFlameGraph.length || prevFlameGraph[prevFlameGraph.length - 1].reachedCompletion) {
       prevFlameGraph.push({
         event: e,
         startPerfstamp: e.payload.perfstamp,
@@ -108,9 +119,11 @@ function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
         reachedCompletion: false,
         children: [],
       })
-    else {
+    } else {
       let highestPending = findHighestPending(prevFlameGraph[prevFlameGraph.length - 1])
-      if (!highestPending) highestPending = prevFlameGraph[prevFlameGraph.length - 1]
+      if (!highestPending) {
+        highestPending = prevFlameGraph[prevFlameGraph.length - 1]
+      }
       highestPending.children.push({
         event: e,
         value: highestPending.value / 2,
@@ -126,11 +139,13 @@ function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
   }
 
   if (e.name === 'method_completed') {
-    if (!prevFlameGraph.length || prevFlameGraph[prevFlameGraph.length - 1].reachedCompletion)
+    if (!prevFlameGraph.length || prevFlameGraph[prevFlameGraph.length - 1].reachedCompletion) {
       console.log('orphan:', e)
-    else {
+    } else {
       let highestPending = findHighestPending(prevFlameGraph[prevFlameGraph.length - 1])
-      if (!highestPending) highestPending = prevFlameGraph[prevFlameGraph.length - 1]
+      if (!highestPending) {
+        highestPending = prevFlameGraph[prevFlameGraph.length - 1]
+      }
       highestPending.reachedCompletion = true
       highestPending.finishPerfstamp = e.payload.perfstamp
       const perfDiff = highestPending.finishPerfstamp - highestPending.startPerfstamp

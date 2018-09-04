@@ -1,6 +1,6 @@
 import { CommandRegistry } from '../framework/commands'
 
-import { subscribeToLastElapsedCycle } from './subscribe-to-last-elapsed-cycle'
 import { requestCustomChannel } from './request-custom-channel'
+import { subscribeToLastElapsedCycle } from './subscribe-to-last-elapsed-cycle'
 
 export const commandRegistry: CommandRegistry = [subscribeToLastElapsedCycle, requestCustomChannel]

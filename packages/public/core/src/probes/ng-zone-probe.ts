@@ -14,8 +14,10 @@ export class NgZoneProbe extends Probe {
   // target
   private ngZone
 
-  beforeNgBootstrap({ ngZone }) {
-    if (ngZone._augury_instrumented_) throw new Error('ngZone is already instrumented.')
+  public beforeNgBootstrap({ ngZone }) {
+    if (ngZone._augury_instrumented_) {
+      throw new Error('ngZone is already instrumented.')
+    }
 
     // @todo: probe should emit error then shut down gracefully.
     //       we should probably have a probe-standard error state query

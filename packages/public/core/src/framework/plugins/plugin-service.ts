@@ -1,5 +1,5 @@
+import { CallableAPIConstructor, CommandService } from '../commands'
 import { EventSource } from '../events'
-import { CommandService, CallableAPIConstructor } from '../commands'
 import { Plugin } from './plugin'
 
 // @todo: add plugin hooks
@@ -12,9 +12,12 @@ export class PluginService {
     this.callableAPI = this.commands.pluginAPIConstructor()
   }
 
-  add(plugins: Plugin | Plugin[]) {
-    if (Array.isArray(plugins)) plugins.forEach(plugin => this.addSingle(plugin))
-    else this.addSingle(plugins)
+  public add(plugins: Plugin | Plugin[]) {
+    if (Array.isArray(plugins)) {
+      plugins.forEach(plugin => this.addSingle(plugin))
+    } else {
+      this.addSingle(plugins)
+    }
   }
 
   private addSingle(plugin: Plugin) {

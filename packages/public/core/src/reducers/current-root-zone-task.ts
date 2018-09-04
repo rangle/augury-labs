@@ -1,4 +1,3 @@
-import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
 const INIT_STATE = {
@@ -7,7 +6,7 @@ const INIT_STATE = {
 
 // @todo: merge rootzone task and ngzone task reducers (pass zone name in constructor args)
 export class CurrentRootZoneTaskReducer extends Reducer {
-  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent }) {
+  public deriveShallowState({ prevShallowState = INIT_STATE, nextEvent }) {
     if (nextEvent.name === 'root_task_executing') {
       this.assumption(
         'a `task` cannot begin until the previous one is complete',
@@ -23,7 +22,9 @@ export class CurrentRootZoneTaskReducer extends Reducer {
       }
     }
 
-    if (nextEvent.name === 'root_task_completed') return { result: undefined }
+    if (nextEvent.name === 'root_task_completed') {
+      return { result: undefined }
+    }
 
     return prevShallowState
   }

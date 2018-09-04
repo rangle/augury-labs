@@ -1,6 +1,6 @@
 import { AuguryEvent } from '../events'
-import { SyncEventEmitter } from '../utils'
 import { Reducer } from '../reducers'
+import { SyncEventEmitter } from '../utils'
 
 export class Scanner {
   // @todo: types, how do we get the reducer types in here?
@@ -11,23 +11,25 @@ export class Scanner {
 
   constructor(private reducer: Reducer) {}
 
-  scan(emitter: SyncEventEmitter<AuguryEvent>) {
+  public scan(emitter: SyncEventEmitter<AuguryEvent>) {
     this.subscription = emitter.subscribe(ae => {
       const nextReducerState = this.reducer.deriveState(this.lastReducerState, ae)
       const nextResult = Reducer.getResultFromState(nextReducerState)
       const prevResult = Reducer.getResultFromState(this.lastReducerState)
 
-      if (nextResult !== prevResult) this.emitter.emit(nextResult)
+      if (nextResult !== prevResult) {
+        this.emitter.emit(nextResult)
+      }
 
       this.lastReducerState = nextReducerState
     })
   }
 
-  stop() {
+  public stop() {
     this.subscription.unsubscribe()
   }
 
-  reset() {
+  public reset() {
     this.stop()
     this.lastReducerState = undefined
   }

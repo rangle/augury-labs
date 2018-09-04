@@ -3,11 +3,17 @@ declare const Reflect
 // TODO: only grabbing first __annotation__, assuming that's the (only) ngmodule one
 // note: module.__annotations__ seems to generally apply to user-defined modules
 export const getAnnotationsFromModule = module => {
-  if (Reflect && Reflect.getMetadata && Reflect.getMetadata('annotations', module))
+  if (Reflect && Reflect.getMetadata && Reflect.getMetadata('annotations', module)) {
     return Reflect.getMetadata('annotations', module)[0]
-  if (module.__annotations__) return module.__annotations__[0]
-  if (module.decorators) return module.decorators[0].args[0]
-  else return {}
+  }
+  if (module.__annotations__) {
+    return module.__annotations__[0]
+  }
+  if (module.decorators) {
+    return module.decorators[0].args[0]
+  } else {
+    return {}
+  }
 }
 
 // TODO: ignoring all modules not defined with an annotated class

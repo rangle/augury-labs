@@ -22,7 +22,9 @@ export interface NonExistingOffsets extends PossibleOffsets {
 }
 
 export function addUpNodeAndChildrenOffsets(domNode: Node): PossibleOffsets {
-  if (!(domNode instanceof HTMLElement)) return { hasOffsets: false }
+  if (!(domNode instanceof HTMLElement)) {
+    return { hasOffsets: false }
+  }
 
   const domElement = domNode as HTMLElement
 
@@ -30,11 +32,12 @@ export function addUpNodeAndChildrenOffsets(domNode: Node): PossibleOffsets {
 
   const children = Array.from(domElement.children)
 
-  if (!children.length)
+  if (!children.length) {
     return {
       hasOffsets: true,
       offsets,
     }
+  }
 
   function containOffsets(
     currentOffsetAndMargin: number,
@@ -44,8 +47,8 @@ export function addUpNodeAndChildrenOffsets(domNode: Node): PossibleOffsets {
     return Math.max(currentOffsetAndMargin, childOffset + (childmargin || 0))
   }
 
-  let child
-  while ((child = children.pop())) {
+  let child = children.pop()
+  while (child) {
     const possibleChildOffsets = addUpNodeAndChildrenOffsets(child)
 
     if (possibleChildOffsets.hasOffsets) {
@@ -53,6 +56,8 @@ export function addUpNodeAndChildrenOffsets(domNode: Node): PossibleOffsets {
       offsets.height = containOffsets(offsets.height, co.height, co.marginHeight)
       offsets.width = containOffsets(offsets.width, co.width, co.marginWidth)
     }
+
+    child = children.pop()
   }
 
   return { hasOffsets: true, offsets }
@@ -74,9 +79,11 @@ export function getElementOffsets(domElement: HTMLElement): Offsets {
     marginHeight: parse(computedStyle.marginTop) + parse(computedStyle.marginBottom),
   }
 
-  while ((domElement = domElement.offsetParent as HTMLElement)) {
+  domElement = domElement.offsetParent as HTMLElement
+  while (domElement) {
     offsets.left += domElement.offsetLeft
     offsets.top += domElement.offsetTop
+    domElement = domElement.offsetParent as HTMLElement
   }
 
   return offsets

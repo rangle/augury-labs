@@ -1,10 +1,11 @@
-import { merge } from '../utils'
-import { AuguryEvent, createEvent } from '../events'
-import { Dispatch, SimpleDispatch, DispatcherEvents } from '../dispatcher'
-import { ProbeService } from '../probes'
 import { ChannelService } from '../channels'
-import { ReactionResults } from './reaction-results'
+import { Dispatch, DispatcherEvents, SimpleDispatch } from '../dispatcher'
+import { AuguryEvent, createEvent } from '../events'
+import { ProbeService } from '../probes'
 import { ReactionRegistry } from './reaction-registry'
+import { ReactionResults } from './reaction-results'
+
+import { merge } from '../utils'
 
 export class ReactionService {
   constructor(
@@ -13,7 +14,7 @@ export class ReactionService {
     private registry: ReactionRegistry,
   ) {}
 
-  reactTo(
+  public reactTo(
     event: AuguryEvent,
     dispatcherEvents: DispatcherEvents,
     dispatch: Dispatch,

@@ -1,4 +1,4 @@
-import { SimpleEventEmitter, Handler, Subscription } from './simple-event-emitter'
+import { Handler, SimpleEventEmitter, Subscription } from './simple-event-emitter'
 
 interface Subscriber<EventType> {
   handler: Handler<EventType>
@@ -7,14 +7,14 @@ interface Subscriber<EventType> {
 export class SyncEventEmitter<EventType> implements SimpleEventEmitter<EventType> {
   private subscribers = new Set<Subscriber<EventType>>()
 
-  subscribe(handler: Handler<EventType>): Subscription {
+  public subscribe(handler: Handler<EventType>): Subscription {
     const subscriber: Subscriber<EventType> = { handler }
     const unsubscribe = () => this.subscribers.delete(subscriber)
     this.subscribers.add(subscriber)
     return { unsubscribe }
   }
 
-  emit(value: EventType) {
+  public emit(value: EventType) {
     this.subscribers.forEach(subscriber => subscriber.handler(value))
   }
 }

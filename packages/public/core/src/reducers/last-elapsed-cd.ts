@@ -1,5 +1,3 @@
-import { merge } from '../framework/utils'
-import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
 import { CurrentCDReducer } from './current-cd'
@@ -12,11 +10,16 @@ const INIT_STATE = {
 }
 
 export class LastElapsedCDReducer extends Reducer {
-  dependencies = {
+  public dependencies = {
     currentCD: new CurrentCDReducer(),
   }
 
-  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent, nextDepResults, prevDepResults }) {
+  public deriveShallowState({
+    prevShallowState = INIT_STATE,
+    nextEvent,
+    nextDepResults,
+    prevDepResults,
+  }) {
     // @todo: generalize this logic ?
     const { currentCD: prevCD } = prevDepResults
 
@@ -32,7 +35,7 @@ export class LastElapsedCDReducer extends Reducer {
       updatedComponentsChecked.push(nextEvent.payload.componentInstance)
     }
 
-    if (prevCD && !nextCD)
+    if (prevCD && !nextCD) {
       return {
         result: {
           startEID: prevCD.startEID,
@@ -44,6 +47,7 @@ export class LastElapsedCDReducer extends Reducer {
           componentsChecked: [],
         },
       }
+    }
 
     return {
       result: prevShallowState.result,

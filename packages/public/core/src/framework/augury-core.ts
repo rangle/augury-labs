@@ -1,10 +1,10 @@
-import { EventDispatcher } from './dispatcher'
-import { ProbeService, ProbeRegistry } from './probes'
-import { EnhancerService, EnhancerRegistry } from './enhancers'
-import { ReactionService, ReactionRegistry } from './reactions'
-import { CommandService, CommandRegistry, Command } from './commands'
 import { ChannelService } from './channels'
-import { PluginService, Plugin } from './plugins'
+import { CommandRegistry, CommandService } from './commands'
+import { EventDispatcher } from './dispatcher'
+import { EnhancerRegistry, EnhancerService } from './enhancers'
+import { Plugin, PluginService } from './plugins'
+import { ProbeRegistry, ProbeService } from './probes'
+import { ReactionRegistry, ReactionService } from './reactions'
 
 export interface BootstrapParams {
   platform: any
@@ -40,7 +40,7 @@ export class AuguryCore {
     this.dispatcher.subscribeTo(this.probes.probeEvents)
   }
 
-  bootstrap({ platform, ngModule, NgZone, plugins }: BootstrapParams): Promise<any> {
+  public bootstrap({ platform, ngModule, NgZone, plugins }: BootstrapParams): Promise<any> {
     this.plugins.add(plugins)
 
     const ngZone = new NgZone({ enableLongStackTrace: true })

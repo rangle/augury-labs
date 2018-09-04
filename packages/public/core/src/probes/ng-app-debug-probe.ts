@@ -30,7 +30,7 @@ export class NgDebugProbe extends Probe {
     return ng.probe(getAllAngularRootElements()[0]).componentInstance
   }
 
-  afterNgBootstrap() {
+  public afterNgBootstrap() {
     this.debugRoots = getAllAngularRootElements().map(ng.probe)
   }
 }

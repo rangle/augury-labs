@@ -5,20 +5,22 @@ import { CallableAPI } from '../commands'
 //        otherwise we could end up with 2 versions of the core in the final app bundle
 
 export abstract class Plugin {
-  api?: CallableAPI
+  public api?: CallableAPI
 
-  name() {
+  public name() {
     return this.constructor.name
   }
 
-  init(api: CallableAPI): void {
+  public init(api: CallableAPI): void {
     this.api = api
-    if (this.onInit) this.onInit()
+    if (this.onInit) {
+      this.onInit()
+    }
   }
 
   // hooks
-  onInit?(): void
-  onPluginAdded?(): void // @todo: not implemented
-  onAuguryInit?(): void // @todo: not implemented
-  onAppInit?(): void // @todo: not implemented
+  public onInit?(): void
+  public onPluginAdded?(): void // @todo: not implemented
+  public onAuguryInit?(): void // @todo: not implemented
+  public onAppInit?(): void // @todo: not implemented
 }

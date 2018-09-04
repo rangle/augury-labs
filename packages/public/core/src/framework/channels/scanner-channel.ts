@@ -1,19 +1,20 @@
-import { SyncEventEmitter } from '../utils'
-import { Scanner } from '../scanner'
 import { Channel } from './channel'
 
+import { Scanner } from '../scanner'
+import { SyncEventEmitter } from '../utils'
+
 export class ScannerChannel extends Channel {
-  type = 'scanner'
+  public type = 'scanner'
 
   constructor(private scanner: Scanner) {
     super()
   }
 
-  shutdown() {
+  public shutdown() {
     this.scanner.stop()
   }
 
-  events() {
+  public events(): SyncEventEmitter<any> {
     return this.scanner.emitter
   }
 }

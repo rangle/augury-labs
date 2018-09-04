@@ -7,11 +7,14 @@ export const createChannelFromReducer: Reaction = {
     if (event.name === 'request-custom-channel') {
       const { reducer, startFromEID, untilEID } = event.payload
 
-      if (!reducer) return { success: false, errors: ['reducer not given'] }
+      if (!reducer) {
+        return { success: false, errors: ['reducer not given'] }
+      }
 
       // @todo: currently not handling "start and until" because we dont have a history
-      if (startFromEID || untilEID)
+      if (startFromEID || untilEID) {
         return { success: false, errors: ['historical data not yet supported'] }
+      }
 
       const scanner = new Scanner(reducer)
 

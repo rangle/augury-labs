@@ -1,8 +1,7 @@
-import { merge } from '../utils'
-import { AuguryEvent, ProcessedAuguryEvent } from '../events'
-import { SyncEventEmitter, SimpleEventEmitter, SimpleQueue } from '../utils'
 import { EnhancerService } from '../enhancers'
+import { AuguryEvent, ProcessedAuguryEvent } from '../events'
 import { ReactionService } from '../reactions'
+import { merge, SimpleEventEmitter, SimpleQueue, SyncEventEmitter } from '../utils'
 import { DispatcherEvents } from './dispatcher-event'
 
 export class EventDispatcher {
@@ -13,13 +12,17 @@ export class EventDispatcher {
 
   constructor(private enhancers: EnhancerService, private reactions: ReactionService) {}
 
-  dispatch(event: AuguryEvent) {
+  public dispatch(event: AuguryEvent) {
     this.queue.enqueue(event)
-    if (!this.releasing) this.releaseAll()
+    if (!this.releasing) {
+      this.releaseAll()
+    }
   }
 
-  dispatchImmediatelyAndReturn(event: AuguryEvent) {
-    if (this.releasing) throw new Error('cannot dispatch immediately, already releasing')
+  public dispatchImmediatelyAndReturn(event: AuguryEvent) {
+    if (this.releasing) {
+      throw new Error('cannot dispatch immediately, already releasing')
+    }
 
     const processedEvent = this.processEvent(event)
 
@@ -28,7 +31,7 @@ export class EventDispatcher {
     return processedEvent
   }
 
-  subscribeTo(emitter: SimpleEventEmitter<AuguryEvent>) {
+  public subscribeTo(emitter: SimpleEventEmitter<AuguryEvent>) {
     emitter.subscribe(event => this.dispatch(event))
   }
 
@@ -47,6 +50,8 @@ export class EventDispatcher {
   }
 
   private releaseAll() {
-    while (this.queue.hasItems()) this.processEvent(this.queue.dequeue()!)
+    while (this.queue.hasItems()) {
+      this.processEvent(this.queue.dequeue()!)
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { SimpleEventEmitter } from '../utils'
 import { AuguryEvent } from '../events/augury-event'
+import { SyncEventEmitter } from '../utils'
 
-export type DispatcherEvents = SimpleEventEmitter<AuguryEvent>
+export type DispatcherEvents = SyncEventEmitter<AuguryEvent>

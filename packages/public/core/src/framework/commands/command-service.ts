@@ -1,19 +1,22 @@
-import { merge, kebabToCamel } from '../utils'
-import { AuguryEvent, createEvent } from '../events'
-import { EventDispatcher } from '../dispatcher'
+import { CallableAPIConstructor } from './callable-api'
 import { Command } from './command'
+import { CommandRegistry } from './command-registry'
 import { CommandRequest } from './command-request'
 import { CommandResult } from './command-result'
-import { CommandRegistry } from './command-registry'
-import { CallableAPIConstructor } from './callable-api'
+
+import { EventDispatcher } from '../dispatcher'
+import { createEvent } from '../events'
+import { kebabToCamel, merge } from '../utils'
 
 export class CommandService {
   constructor(private dispatcher: EventDispatcher, private registry: CommandRegistry) {}
 
-  run(request: CommandRequest<any>): CommandResult {
-    const command = this.registry.find(command => command.name === request.name)
+  public run(request: CommandRequest<any>): CommandResult {
+    const command = this.registry.find(foundCommand => foundCommand.name === request.name)
 
-    if (!command) return { success: false, errors: ['action not found'] }
+    if (!command) {
+      return { success: false, errors: ['action not found'] }
+    }
 
     const commandEvent = createEvent(request.source, command.name, request.args)
 
@@ -22,7 +25,7 @@ export class CommandService {
     return command.parseReactions(reactionResults)
   }
 
-  pluginAPIConstructor() {
+  public pluginAPIConstructor() {
     const pluginCommands = this.registry.filter(command => command.availableToPlugins)
     return this.callableAPIConstructorFrom(pluginCommands)
   }

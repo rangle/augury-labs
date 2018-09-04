@@ -5,7 +5,7 @@ import { Probe } from './probe'
 import { ProbeRegistry } from './probe-registry'
 
 export class ProbeService {
-  probeEvents = new SyncEventEmitter<AuguryEvent>()
+  public probeEvents = new SyncEventEmitter<AuguryEvent>()
 
   private probes: Probe[]
 
@@ -16,17 +16,17 @@ export class ProbeService {
   // @todo: typing.. Argument of type 'typeof NgDebugProbe' is not assignable to parameter of type 'typeof Probe'.
   //        had to make it type "any"
   // @todo: Return the probe instance type that is passed in as a class
-  get(ProbeClass: any): any {
+  public get(ProbeClass: any): any {
     return this.probes.find(probe => probe.constructor === ProbeClass)
   }
 
-  beforeNgBootstrapHook(preBootstrapTargets: any) {
+  public beforeNgBootstrapHook(preBootstrapTargets: any) {
     this.probes.forEach(
       probe => probe.beforeNgBootstrap && probe.beforeNgBootstrap(preBootstrapTargets),
     )
   }
 
-  afterNgBootstrapHook(ngModuleRef: any) {
+  public afterNgBootstrapHook(ngModuleRef: any) {
     this.probes.forEach(probe => probe.afterNgBootstrap && probe.afterNgBootstrap(ngModuleRef))
   }
 

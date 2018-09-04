@@ -1,25 +1,29 @@
-import { AuguryEvent } from '../framework/events'
 import { Reducer } from '../framework/reducers'
 
-import { CurrentCycleReducer } from './current-cycle'
 import { CurrentCDReducer } from './current-cd'
+import { CurrentCycleReducer } from './current-cycle'
 
 const INIT_STATE = {
   result: undefined,
 }
 
 export class LastElapsedCycleReducer extends Reducer {
-  dependencies = {
+  public dependencies = {
     currentCycle: new CurrentCycleReducer(),
     currentCD: new CurrentCDReducer(),
   }
 
-  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent, nextDepResults, prevDepResults }) {
+  public deriveShallowState({
+    prevShallowState = INIT_STATE,
+    nextEvent,
+    nextDepResults,
+    prevDepResults,
+  }) {
     const { currentCycle: nextCycle, currentCD: nextCD } = nextDepResults
 
     const { currentCycle: prevCycle, currentCD: prevCD } = prevDepResults
 
-    if (prevCycle && !nextCycle)
+    if (prevCycle && !nextCycle) {
       return {
         result: {
           // @todo: this shouldnt be here.
@@ -34,6 +38,7 @@ export class LastElapsedCycleReducer extends Reducer {
           job: prevCycle.job,
         },
       }
+    }
 
     return prevShallowState
   }

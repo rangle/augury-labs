@@ -16,7 +16,7 @@ export class ComponentHooksProbe extends Probe {
   // target
   private ngModule
 
-  beforeNgBootstrap({ ngModule }) {
+  public beforeNgBootstrap({ ngModule }) {
     this.ngModule = ngModule
     const probe = this
 
@@ -44,10 +44,14 @@ export class ComponentHooksProbe extends Probe {
             args,
           })
 
-          if (original) original.apply(this, args)
+          if (original) {
+            original.apply(this, args)
+          }
         }
 
-        if (!original) component.prototype[name].__added_by_augury__ = true
+        if (!original) {
+          component.prototype[name].__added_by_augury__ = true
+        }
       }
 
       HookNames.forEach(probeHookMethod)

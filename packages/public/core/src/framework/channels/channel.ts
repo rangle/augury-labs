@@ -2,9 +2,9 @@ import { SimpleEventEmitter } from '../utils'
 import { ChannelDelegate } from './channel-delegate'
 
 export abstract class Channel {
-  abstract type: string
-  abstract shutdown(): void
-  abstract events(): SimpleEventEmitter<any>
+  public abstract type: string
+  public abstract shutdown(): void
+  public abstract events(): SimpleEventEmitter<any>
 
   public createDelegate(didShutdown: (channel: this) => void): ChannelDelegate {
     return {

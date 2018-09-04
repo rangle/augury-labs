@@ -1,15 +1,3 @@
 {
-  "extends": "@augury/tools/tslint.config",
-  "rules": {
-    "interface-name": false,
-    "member-access": false,
-    "object-literal-sort-keys": false,
-    "ordered-imports": false,
-    "max-classes-per-file": false,
-    "no-shadowed-variable": false,
-    "no-console": false,
-    "no-conditional-assignment": false,
-    "array-type": false,
-    "curly": false
-  }
+  "extends": "@augury/tools/tslint.config"
 }

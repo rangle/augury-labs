@@ -15,7 +15,7 @@ export class ModuleMethodsProbe extends Probe {
   // target
   private ngModule
 
-  beforeNgBootstrap({ ngModule }) {
+  public beforeNgBootstrap({ ngModule }) {
     this.ngModule = ngModule
 
     function getAllRecursively(getAllFromModule: (module) => any[], module: any) {
@@ -68,23 +68,37 @@ export class ModuleMethodsProbe extends Probe {
     }
 
     function shouldWrapMethod(Class: any, propertyName: string): boolean {
-      if (propertyName === 'constructor') return false
+      if (propertyName === 'constructor') {
+        return false
+      }
 
       // TODO: some prototype members use getters/setters
       const propDesc = Object.getOwnPropertyDescriptor(Class.prototype, propertyName)
-      if (propDesc && propDesc.get) return false
+      if (propDesc && propDesc.get) {
+        return false
+      }
 
       const property = Class.prototype[propertyName]
-      if (typeof property !== 'function') return false
-      if (property.__added_by_augury__) return false
-      if (property.__augury_wrapped__) return false
-      if (typeof property !== 'function') return false
+      if (typeof property !== 'function') {
+        return false
+      }
+      if (property.__added_by_augury__) {
+        return false
+      }
+      if (property.__augury_wrapped__) {
+        return false
+      }
+      if (typeof property !== 'function') {
+        return false
+      }
       return true
     }
 
     function wrapClassMethods(Class: () => any, classType: 'service' | 'component') {
       Object.getOwnPropertyNames(Class.prototype).forEach(propertyName => {
-        if (shouldWrapMethod(Class, propertyName)) wrapMethod(Class, propertyName, classType)
+        if (shouldWrapMethod(Class, propertyName)) {
+          wrapMethod(Class, propertyName, classType)
+        }
       })
     }
 

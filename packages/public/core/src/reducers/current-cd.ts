@@ -5,7 +5,7 @@ const INIT_STATE = {
 }
 
 export class CurrentCDReducer extends Reducer {
-  deriveShallowState({ prevShallowState = INIT_STATE, nextEvent }) {
+  public deriveShallowState({ prevShallowState = INIT_STATE, nextEvent }) {
     if (nextEvent.name === 'component_lifecycle_hook_invoked') {
       this.assumption(
         'lifecycle events contain root component',
@@ -16,15 +16,18 @@ export class CurrentCDReducer extends Reducer {
       const eventComponent = nextEvent.payload.componentInstance
 
       if (eventComponent === rootComponent) {
-        if (nextEvent.payload.hook === 'ngDoCheck')
+        if (nextEvent.payload.hook === 'ngDoCheck') {
           return {
             result: {
               startEID: nextEvent.id,
               startTime: nextEvent.creationAtPerformanceStamp,
             },
           }
+        }
 
-        if (nextEvent.payload.hook === 'ngAfterViewChecked') return { result: undefined }
+        if (nextEvent.payload.hook === 'ngAfterViewChecked') {
+          return { result: undefined }
+        }
       }
     }
 

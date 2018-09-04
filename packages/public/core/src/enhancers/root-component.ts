@@ -8,8 +8,9 @@ export const addRootComponent: Enhancer = (e: AuguryEvent, probes: ProbeService)
   const ngDebugProbe = probes.get(NgDebugProbe)
 
   // @todo: event names registry / enum
-  if (ngDebugProbe && e.name === COMPONENT_HOOK_EVENT)
+  if (ngDebugProbe && e.name === COMPONENT_HOOK_EVENT) {
     e.payload.rootComponentInstance = ngDebugProbe.getRootComponent() // @todo: using instance
+  }
 
   return e
 }

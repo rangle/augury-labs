@@ -1,4 +1,4 @@
-import { AuguryEvent, EventSource, EventName, EventPayload } from './augury-event'
+import { AuguryEvent, EventName, EventPayload, EventSource } from './augury-event'
 
 let nextId = 0
 
