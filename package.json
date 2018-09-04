@@ -10,7 +10,7 @@
     "packages/**/*"
   ],
   "scripts": {
-    "build": "lerna run build",
+    "build": "lerna bootstrap; lerna run build",
     "build:watch": "lerna run --parallel build:watch",
     "clean": "lerna run clean",
     "changelog": "lerna-changelog",
