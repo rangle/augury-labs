@@ -6,7 +6,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "webpack",
-    "build:watch": "webpack --watch"
+    "build:watch": "webpack --watch",
+    "clean": "rimraf ./dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "lint": "tslint --project .",
+    "precommit": "lint-staged"
   },
   "devDependencies": {
     "css-loader": "^1.0.0",
