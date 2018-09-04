@@ -1,3 +1,3 @@
-# example-plugin
+# Example Plugin
 
-This is just a example plugin.
+This is just a example plugin that does not do anything.
