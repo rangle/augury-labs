@@ -1,17 +1,17 @@
-import { Plugin, Reducer, LastElapsedCDReducer, LastElapsedTaskReducer, CurrentCycleReducer, CurrentCDReducer } from '@augury/core'
+import { LastElapsedCDReducer, LastElapsedTaskReducer, Plugin } from '@augury/core'
 
 // @todo: this should be shared across popout plugins
+import { LastElapsedCycleReducer } from '@augury/core'
 import { openPopout } from './popout'
-import { LastElapsedCycleReducer } from '@augury/core';
 
-/** 
+/**
  * needs webpack.
  */
 declare const require
 
 // ui app code
 // @todo: refactor, obviously
-const html_index = `
+const htmlIndex = `
   <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -28,55 +28,51 @@ const html_index = `
   </html>
 `
 
-
 export class PopoutZoneMonitor extends Plugin {
+  public cycles: any = {}
+  public queuedTasks: any[] = []
 
-  cycles: any = {}
-  queuedTasks: any[] = []
-
-  name() {
-    return 'PopoutZoneMonitor';
+  public name() {
+    return 'PopoutZoneMonitor'
   }
 
-  onInit() {
-
+  public onInit() {
     const { channel: tasksChannel } = this.api!.createChannel({
-      reducer: new LastElapsedTaskReducer()
+      reducer: new LastElapsedTaskReducer(),
     })
 
     const { channel: cyclesChannel } = this.api!.createChannel({
-      reducer: new LastElapsedCycleReducer()
+      reducer: new LastElapsedCycleReducer(),
     })
 
     const { channel: cdChannel } = this.api!.createChannel({
-      reducer: new LastElapsedCDReducer()
+      reducer: new LastElapsedCDReducer(),
     })
 
     const popout = openPopout('Augury Zone Monitor')
 
-    popout.write(html_index)
+    popout.write(htmlIndex)
     popout.injectScript(require('!!raw-loader!@augury/timeline-ui/dist/index.js'))
 
     tasksChannel.events.subscribe(lastElapsedTask => {
       popout.bridge.in.emit({
         type: 'task',
-        lastElapsedTask
+        lastElapsedTask,
       })
     })
 
     cdChannel.events.subscribe(lastElapsedCD => {
       popout.bridge.in.emit({
         type: 'cd',
-        lastElapsedCD
+        lastElapsedCD,
       })
     })
 
     cyclesChannel.events.subscribe(lastElapsedCycle => {
       popout.bridge.in.emit({
         type: 'cycle',
-        lastElapsedCycle
+        lastElapsedCycle,
       })
     })
-
   }
 }
