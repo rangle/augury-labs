@@ -1,1 +1,0 @@
-{"version":3,"file":"subscribe-to-last-elapsed-cycle.js","sourceRoot":"","sources":["subscribe-to-last-elapsed-cycle.ts"],"names":[],"mappings":";;AAEa,QAAA,2BAA2B,GAIlC;IACF,IAAI,EAAE,iCAAiC;IACvC,kBAAkB,EAAE,IAAI;IACxB,cAAc,CAAC,eAAe;QAE5B,MAAM,EAAE,OAAO,EAAE,GAAG,eAAe,CAAC,mCAAmC,CAAC,CAAA;QAExE,OAAO,EAAE,OAAO,EAAE,IAAI,EAAE,OAAO,EAAE,CAAA;IAEnC,CAAC;CACF,CAAA"}
