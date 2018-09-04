@@ -28,7 +28,7 @@ const htmlIndex = `
   </html>
 `
 
-export class PerformanceProfiler extends Plugin {
+export class PerformanceProfilerPlugin extends Plugin {
   public cycles: any = {}
   public queuedTasks: any[] = []
 

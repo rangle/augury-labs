@@ -37,7 +37,7 @@ import { environment } from './environments/environment';
 
 import { NgZone } from '@angular/core';
 import { auguryBootstrap } from '@augury/core';
-import { PerformanceProfiler } from '@augury/performance-profiler-plugin';
+import { PerformanceProfilerPlugin } from '@augury/performance-profiler-plugin';
 
 if (environment.production) {
   enableProdMode();
@@ -47,7 +47,7 @@ auguryBootstrap({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [new PerformanceProfiler()]
+  plugins: [new PerformanceProfilerPlugin()]
 });
 ```
 
