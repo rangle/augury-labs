@@ -19,7 +19,7 @@ auguryBootstrap({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [new PopoutZoneMonitor()]
+  plugins: [new PerformanceProfilerPlugin()]
 });
 ```
 
@@ -153,7 +153,7 @@ be used.
 
 Lerna helps managing versions across packages along with publishing them. Changelogs can be generated using `yarn changelog` (using `lerna-changelog`).
 
-TODO - Document version bump, changelong, & publishing procedure
+TODO - Document version bump, changelog, & publishing procedure
 
 ## Contributing
 
