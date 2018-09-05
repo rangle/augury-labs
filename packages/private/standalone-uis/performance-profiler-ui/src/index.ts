@@ -91,6 +91,7 @@ function createChunkContainer() {
   return newContainer
 }
 
+let viewingDetails = false
 let taskTimeline: any[] = []
 let cycleTimeline: any[] = []
 let cdTimeline: any[] = []
@@ -178,6 +179,7 @@ let listener = bridge.in.subscribe(onMessage)
 
 function clear() {
   hoverDisplay.innerHTML = ''
+  viewingDetails = false
   detailsDisplay.innerHTML = ''
   taskTimeline = []
   cycleTimeline = []
@@ -283,6 +285,7 @@ function paint() {
       return null
     },
     onClick(segment, row) {
+      viewingDetails = true
       const msg = segment.original
 
       if (msg.type === 'task') {
@@ -361,6 +364,21 @@ function paint() {
       return null
     },
   })
+
+  if (!viewingDetails) {
+    detailsDisplay.innerHTML = `
+      average change detection runtime: 
+      ${
+        cdTimeline.length
+          ? cdTimeline.reduce((sum, cdRun) => {
+              const cd = cdRun.original.lastElapsedCD
+              return sum + (cd.finishPerformanceStamp - cd.startPerformanceStamp)
+            }, 0) / cdTimeline.length
+          : '-'
+      }
+    `
+    killFlame()
+  }
 }
 
 // flamegraph stuff ----
