@@ -7,7 +7,7 @@
     "url": "https://github.com/rangle/augury-labs"
   },
   "workspaces": [
-    "packages/**/*"
+    "packages/**"
   ],
   "scripts": {
     "build": "lerna run build",
