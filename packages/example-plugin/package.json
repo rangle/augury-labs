@@ -1,5 +1,6 @@
 {
   "name": "@augury/example-plugin",
+  "private": true,
   "version": "0.2.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
