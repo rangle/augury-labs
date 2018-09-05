@@ -1,0 +1,7 @@
+{
+  "extends": "../../../../node_modules/@augury/tools/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "."
+  },
+  "files": ["./src/index.ts"]
+}
