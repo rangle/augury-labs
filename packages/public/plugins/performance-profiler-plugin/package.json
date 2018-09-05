@@ -12,7 +12,8 @@
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "link": "yarn link"
   },
   "devDependencies": {
     "@augury/tools": "^0.2.0",
