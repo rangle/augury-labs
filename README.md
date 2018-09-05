@@ -157,7 +157,8 @@ TODO - Document version bump, changelog, & publishing procedure
 
 ## Contributing
 
-We'd love to have your helping hand on augury-labs! See [CONTRIBUTING.md](./github/contributing.md) for more information on what we're looking for and how to get started.
+We'd love to have your helping hand on augury-labs! We will have full documentation for contributors shortly,
+but in the meantime talk to us if you would like to help.
 
 ## License
 
