@@ -19,7 +19,7 @@ auguryBootstrap({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [new PopoutZoneMonitor()]
+  plugins: [new PerformanceProfilerPlugin()]
 });
 ```
 
@@ -86,11 +86,15 @@ so you can do it more easily.
 
 ## Concepts
 
-TODO - Describe the high level concepts of the infrastructure
+Augury Labs has a new architecture different from the architecture
+of the [Augury DevTools](https://github.com/rangle/augury), with
+a modular, UI-agnostic design based on an event-driven core. We will
+be publishing more in-depth documentation about this new architecture.
 
 ## Building Plugins
 
-TODO
+We will be providing more documentation and guidance on how to build plugins to
+Augury Labs. For now, please check the plugins provided in the repository.
 
 ## Local Development
 
@@ -151,13 +155,13 @@ be used.
 
 ### Publishing Packages
 
-Lerna helps managing versions across packages along with publishing them. Changelogs can be generated using `yarn changelog` (using `lerna-changelog`).
-
-TODO - Document version bump, changelong, & publishing procedure
+Lerna helps managing versions across packages along with publishing them. We will provide
+documentation specific to the Augury Labs project to contributing developers soon.
 
 ## Contributing
 
-We'd love to have your helping hand on augury-labs! See [CONTRIBUTING.md](./github/contributing.md) for more information on what we're looking for and how to get started.
+We'd love to have your helping hand on augury-labs! We will have full documentation for contributors shortly,
+but in the meantime talk to us if you would like to help.
 
 ## License
 
