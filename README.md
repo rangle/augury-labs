@@ -94,7 +94,7 @@ TODO
 
 ## Local Development
 
-This project is a monorepo and uses [Lerna](https://github.com/lerna/lerna) & [Yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) to manage multiple packages. The [tools package](./packages/private/tools)
+This project is a monorepo and uses [Lerna](https://github.com/lerna/lerna) & [Yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) to manage multiple packages. The [tools package](./packages/tools)
 also provides common dev dependencies and configurations.
 
 ### Local Setup
