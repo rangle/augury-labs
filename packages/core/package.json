@@ -1,6 +1,6 @@
 {
   "name": "@augury/core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Provides the core infrastructure for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",

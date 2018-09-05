@@ -1,6 +1,6 @@
 {
   "name": "@augury/performance-profiler-plugin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Performance profiler plugin for Augury Labs",
   "author": "rangle.io",
   "homepage": "https://github.com/rangle/augury-labs#readme",
@@ -43,7 +43,7 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
-    "@augury/core": "^0.2.0",
-    "@augury/performance-profiler-ui": "^0.2.0"
+    "@augury/core": "^0.2.1",
+    "@augury/performance-profiler-ui": "^0.2.1"
   }
 }
