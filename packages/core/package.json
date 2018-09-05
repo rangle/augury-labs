@@ -29,7 +29,6 @@
     "precommit": "lint-staged",
     "link": "yarn link"
   },
-  "dependencies": {},
   "devDependencies": {
     "@augury/tools": "^0.2.0",
     "@types/jest": "^23.3.0"
