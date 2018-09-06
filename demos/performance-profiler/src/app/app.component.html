@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-md-3">
+    <ul class="nav nav-pills nav-stacked">
+      <li [ngClass]="{active: path==''}">
+        <a [routerLink]="['/']">Home</a>
+      </li>
+      <li [ngClass]="{active: path=='ag-demo-run-outside-angular'}">
+        <a [routerLink]="['/ag-demo-run-outside-angular']">DEMO: run outside angular</a>
+      </li>
+      <li [ngClass]="{active: path=='ag-demo-trackby'}">
+        <a [routerLink]="['/ag-demo-trackby']">DEMO: trackby</a>
+      </li>
+      <li [ngClass]="{active: path=='ag-demo-onpush'}">
+        <a [routerLink]="['/ag-demo-onpush']">DEMO: onpush</a>
+      </li>
+      <li [ngClass]="{active: path=='ag-demo-slow-template'}">
+        <a [routerLink]="['/ag-demo-slow-template']">DEMO: hover</a>
+      </li>
+      <!--
+    <li [ngClass]="{active: path=='welcome'}">
+      <a [routerLink]="['/lazy-load/lazy']">Lazy Loaded Module</a>
+    </li>
+    <li [ngClass]="{active: path=='control-form'}">
+      <a [routerLink]="['/control-form']">ControlForm</a>
+    </li>
+    <li [ngClass]="{active: path=='my-form'}">
+      <a [routerLink]="['/my-form']">Form Component</a>
+    </li>
+    <li [ngClass]="{active: path=='form2'}">
+      <a [routerLink]="['/form2']">NgModel Form</a>
+    </li>
+    <li [ngClass]="{active: path=='input-output'}">
+      <a [routerLink]="['/input-output']">InputOutput</a>
+    </li>
+    <li [ngClass]="{active: path=='todo-app'}">
+      <a [routerLink]="['/todo-app']">TodoApp</a>
+    </li>
+    <li [ngClass]="{active: path=='di-tree'}">
+      <a [routerLink]="['/di-tree']">DITree</a>
+    </li>
+    <li [ngClass]="{active: path=='angular-directives'}">
+      <a [routerLink]="['/angular-directives']">AngularDirectives</a>
+    </li>
+    <li [ngClass]="{active: path=='change-detection'}">
+      <a [routerLink]="['/change-detection']">ChangeDetection</a>
+    </li>
+    <li [ngClass]="{active: path=='stress-tester'}">
+      <a [routerLink]="['./stress-tester']">StressTester</a>
+    </li>
+    <li [ngClass]="{active: path=='metadata-test'}">
+      <a [routerLink]="['./metadata-test']">MetadataTest</a>
+    </li>
+    <li [ngClass]="{active: path=='leaky-faucet'}">
+      <a [routerLink]="['./leaky-faucet']">Leaky Faucet</a>
+    </li> -->
+    </ul>
+  </div>
+  <div class="col-md-9">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{path || 'home'}}</h3>
+      </div>
+      <div class="panel-body">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div>
+  <div>
+    use runOutsideAngular()
+    <input type='checkbox' [(ngModel)]="outsideAngular">
+  </div>
+  <div>
+    <button [disabled]="buttonDisabled" [style.background-color]="buttonDisabled? 'lightgray' : 'lightblue'" (click)="run()">
+    do async count </button>
+  </div>
+  <div>
+    <button> this button has no bindings </button>
+    <button (click)="noop()"> this button is bound to an empty function </button>
+  </div>
+  <div>
+    <h2>{{ currentNum }}</h2>
+  </div>
+</div>
+-----
+<h2 class="type">implements
+  <a href="https://angular.io/api/core/NgZone#runOutsideAngular">
+    <strong>NgZone.runOutsideAngular</strong>
+  </a> with
+  <strong>setTimeout</strong>
+</h2>
+<form #runOutsideAngularForm="ngForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="numberChildren">Load
+      <input id="numberChildren" type="number" [(ngModel)]=numberChildren name="numberChildren" max="200"> rows of data
+    </label>
+    <button type="submit" class="btn btn-success">Now</button>
+    <button type="button" class="btn btn-warning" (click)="clearChildren()">clear</button>
+  </div>
+  <div>
+    <p>
+      <input id="status" [(ngModel)]="status" name="status">
+      <strong>Status: </strong>{{ status }}</p>
+  </div>
+  <div id="populateChildren">
+  </div>
+</form>
