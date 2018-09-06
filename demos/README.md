@@ -13,13 +13,13 @@
 
 ### These demos are not part of the Augury Labs yarn workspace. 
   
-This is because, while all Augury Labs packages needs to interoperate and share compatible dependencies, demos
+This is because, while all Augury Labs packages needs to interoperate and share dependencies, demos
 have particular individual needs that may clash with each other and cause various complications. 
 Some Examples: 
   * Demos might want to showcase Augury's compatibility with particular versions of Angular. 
   * Projects built using the standard @angular/cli do not play nice with lerna/yarn workspaces.
   
-As such, they need to have their dependencies installed separately. Dependencies are kept in the demo's own node_modules folder.
+As such, they have their dependencies installed separately. Dependencies are kept in the demo's own node_modules folder.
 
 ### Demos do not declare @augury/* packages in their package.json
 
