@@ -9,7 +9,7 @@ export const getAnnotationsFromModule = module => {
   if (module.__annotations__) {
     return module.__annotations__[0]
   }
-  if (module.decorators) {
+  if (module.decorators && module.decorators[0].args) {
     return module.decorators[0].args[0]
   } else {
     return {}
