@@ -54,7 +54,14 @@ auguryBootstrap({
 Notice how the call to `auguryBootstrap` completely replaces the instatiation of
 `platformBrowserDynamic` and subsequent `bootstrapModule` method call.
 
-In order to use this alternative main file instead of the usual one you need to add
+Because the bootstrap code in this `main.augury.ts` file is different from Angular's
+bootstrap code you need to tell the Angular CLI builder where is the main module of
+your application, adding a `"entryModule": "./app/app.module#AppModule"` to
+the `"angularCompilerOptions"` object of your application's `tsconfig.json` file.
+Replace the path and name of the module if you changed it from the defaults.
+
+Finally, in order to use this alternative main file instead of the usual one when
+serving your app with the development server, you need to add
 a new `augury` configuration to the `angular.json` file. Do it in two places, first as
 a build configuration (look for your project under `"projects"`, then look under `"architect"`
 for the `"build"` object, and look inside that for the `"configurations" object):
