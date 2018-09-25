@@ -1,0 +1,9 @@
+<h2> instability period
+  <button (click)="consoleLog(segment)">console out</button>
+</h2>
+<div>
+  <b> runtime (ms):</b> {{round(segment.finishPerformanceStamp - segment.startPerformanceStamp)}}
+</div>
+<div>
+  <b> start time (ms since page request):</b> {{round(segment.startPerformanceStamp)}}
+</div>

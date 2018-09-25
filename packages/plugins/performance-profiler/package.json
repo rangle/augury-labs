@@ -1,0 +1,49 @@
+{
+  "name": "@augury/performance-profiler-plugin",
+  "version": "0.2.3",
+  "description": "Performance profiler plugin for Augury Labs",
+  "author": "rangle.io",
+  "homepage": "https://github.com/rangle/augury-labs#readme",
+  "keywords": [
+    "angular",
+    "augury",
+    "profiler"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "bugs": {
+    "url": "https://github.com/rangle/augury-labs/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "build:watch": "webpack --watch",
+    "clean": "rimraf ./dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "lint": "tslint --project .",
+    "precommit": "lint-staged",
+    "link": "yarn link"
+  },
+  "devDependencies": {
+    "@augury/execution-timeline-ui": "^0.0.1",
+    "@augury/tools": "^0.2.0",
+    "css-loader": "^1.0.0",
+    "postcss-loader": "^3.0.0",
+    "raw-loader": "^0.5.1",
+    "to-string-loader": "^1.1.5",
+    "ts-loader": "^4.4.2",
+    "typescript": "^3.0.1",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "@augury/core": "^0.2.3"
+  }
+}
