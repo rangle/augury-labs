@@ -1,10 +1,10 @@
 import { Reaction } from '../framework/reactions'
 import { Scanner } from '../framework/scanner'
 
-export const createChannelFromReducer: Reaction = {
-  name: 'create-custom-channel-from-reducer',
+export const createLiveChannel: Reaction = {
+  name: 'create-live-channel',
   react({ event, channels, dispatcherEvents }) {
-    if (event.name === 'request-custom-channel') {
+    if (event.name === 'request-live-channel') {
       const { reducer, startFromEID, untilEID } = event.payload
 
       if (!reducer) {

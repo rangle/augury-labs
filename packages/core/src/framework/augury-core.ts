@@ -2,6 +2,7 @@ import { ChannelService } from './channels'
 import { CommandRegistry, CommandService } from './commands'
 import { EventDispatcher } from './dispatcher'
 import { EnhancerRegistry, EnhancerService } from './enhancers'
+import { HistoryService } from './history'
 import { Plugin, PluginService } from './plugins'
 import { ProbeRegistry, ProbeService } from './probes'
 import { ReactionRegistry, ReactionService } from './reactions'
@@ -22,6 +23,7 @@ export class AuguryCore {
   private reactions: ReactionService
   private commands: CommandService
   private plugins: PluginService
+  private history: HistoryService
 
   constructor(
     probeRegistry: ProbeRegistry,
@@ -32,8 +34,9 @@ export class AuguryCore {
     this.probes = new ProbeService(probeRegistry)
     this.enhancers = new EnhancerService(this.probes, enhancerRegistry)
     this.channels = new ChannelService()
-    this.reactions = new ReactionService(this.probes, this.channels, reactionRegistry)
-    this.dispatcher = new EventDispatcher(this.enhancers, this.reactions)
+    this.history = new HistoryService()
+    this.reactions = new ReactionService(this.probes, this.channels, reactionRegistry, this.history)
+    this.dispatcher = new EventDispatcher(this.enhancers, this.reactions, this.history)
     this.commands = new CommandService(this.dispatcher, commandRegistry)
     this.plugins = new PluginService(this.commands)
 

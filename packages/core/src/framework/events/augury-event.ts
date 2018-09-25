@@ -24,3 +24,8 @@ export interface AuguryEvent {
 export interface ProcessedAuguryEvent extends AuguryEvent {
   reactionResults: ReactionResults
 }
+
+export interface ElapsedAuguryEvent extends ProcessedAuguryEvent {
+  auguryHandlingCompletionPerformanceStamp: number
+  auguryDrag: number
+}

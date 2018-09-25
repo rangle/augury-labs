@@ -25,6 +25,10 @@ export class Scanner {
     })
   }
 
+  public last() {
+    return Reducer.getResultFromState(this.lastReducerState)
+  }
+
   public stop() {
     this.subscription.unsubscribe()
   }
