@@ -1,9 +1,14 @@
-<h2> instability period
-  <button (click)="consoleLog(segment)">console out</button>
-</h2>
-<div>
-  <b> runtime (ms):</b> {{round(segment.finishPerformanceStamp - segment.startPerformanceStamp)}}
+<div style="display:inline-block;width:50%;height:100%;vertical-align:top;">
+  <h2> instability period
+    <button (click)="consoleLog(segment)">console out</button>
+  </h2>
+  <div>
+    <b> runtime (ms):</b> {{round(segment.finishPerformanceStamp - segment.startPerformanceStamp)}}
+  </div>
+  <div>
+    <b> start time (ms since page request):</b> {{round(segment.startPerformanceStamp)}}
+  </div>
 </div>
-<div>
-  <b> start time (ms since page request):</b> {{round(segment.startPerformanceStamp)}}
+<div style="display:inline-block;width:50%;height:100%;" (window:resize)="onResizeSVG()">
+  <svg #componentTreeSvg style="width:100%;height:100%;"></svg>
 </div>

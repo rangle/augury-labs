@@ -1,8 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core'
 
 import { ExtendableSegment } from './timeline'
-
-declare const bridge: any
+import { BridgeService } from './bridge.service';
 
 @Component({
   selector: 'app-root',
@@ -14,15 +13,15 @@ export class AppComponent {
   selectedSegment = null
 
   constructor(
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private bridge: BridgeService
   ) {
     // @todo: put bridge in service that runs inside ngzone
     //        add to @augury/ui-tools
-    bridge.in.subscribe(
+    this.bridge.subscribe(
       message => {
         if (this.isTimelineSegmentMessage(message))
           this.addTimelineSegment(this.toTimelineSegment(message))
-        this.changeDetectorRef.detectChanges()
       }
     )
   }

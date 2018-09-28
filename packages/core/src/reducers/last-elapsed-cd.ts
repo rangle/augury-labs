@@ -7,10 +7,10 @@ const initState = () => ({
   auxiliary: {
     componentsChecked: [],
     c: new Map(),
-    a: <{ component; event; children }[]>[],
+    a: [] as Array<{ component; event; children }>,
     ci: 0,
-    x: <any[]>[],
-    t: <any>null,
+    x: [] as any[],
+    t: null as any,
   },
 })
 
@@ -101,6 +101,7 @@ export class LastElapsedCDReducer extends Reducer {
       return {
         result: {
           startEID: prevCD.startEID,
+          endEID: nextEvent.id,
           startPerformanceStamp: prevCD.startTime,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
           componentsChecked: updatedComponentsChecked,

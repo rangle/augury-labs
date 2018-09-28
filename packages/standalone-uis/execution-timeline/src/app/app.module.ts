@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 
+import { BridgeService } from './bridge.service'
 import { AppComponent } from './app.component'
 import { ExecutionTimelineComponent } from './timeline'
 import { TaskDetailsComponent } from './task-details'
@@ -16,7 +17,7 @@ import { ChangeDetectionDetailsComponent } from './cd-details'
     ChangeDetectionDetailsComponent
   ],
   imports: [BrowserModule],
-  providers: [],
+  providers: [BridgeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

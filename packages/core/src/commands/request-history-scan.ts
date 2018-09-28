@@ -9,8 +9,8 @@ export const requestHistoryScan: Command<
   methodName: 'scanHistory',
   availableToPlugins: true,
   parseReactions(reactionResults) {
-    const { success = false, result = undefined } = reactionResults['scan-history'] || {}
+    const { success = false, result, errors } = reactionResults['scan-history'] || ({} as any)
 
-    return { success, result }
+    return { success, result, errors }
   },
 }

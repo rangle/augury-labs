@@ -13,7 +13,7 @@ export const scanHistory: Reaction = {
 
       const scanner = new Scanner(reducer)
 
-      // @todo: SimpleEventEmitter should only require "subscribe()"
+      // @todo: SimpleEventEmitter.scan() should only require "subscribe()"
       //        so we dont need <any> here
       scanner.scan(history.emitter() as any)
 

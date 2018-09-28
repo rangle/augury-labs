@@ -5,7 +5,7 @@ import { SyncEventEmitter } from '@augury/core'
 //        i think it'll try to use the same one, causing a bridge conflict
 
 export function openPopout(name: string) {
-  let popoutWindow: any = open('', name, 'height=400,width=800,titlebar=yes,location=no')
+  let popoutWindow: any = open('', name, 'height=800,width=800,titlebar=yes,location=no')
 
   if (!popoutWindow) {
     throw new Error('please allow popups')
