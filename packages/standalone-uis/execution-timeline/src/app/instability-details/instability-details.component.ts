@@ -65,4 +65,16 @@ export class InstabilityDetailsComponent {
   onResizeSVG() {
     this.componentTreeUI.repaint()
   }
+
+  runtime() {
+    return round2(
+      this.segment.finishPerformanceStamp
+      - this.segment.startPerformanceStamp
+      - this.segment.drag
+    )
+  }
+
+  drag() {
+    return round2(this.segment.drag)
+  }
 }

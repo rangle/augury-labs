@@ -1,5 +1,6 @@
 import { Reducer } from '../framework/reducers'
 
+import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag'
 import { CurrentCDReducer } from './current-cd'
 import { CurrentCycleReducer } from './current-cycle'
 
@@ -11,6 +12,7 @@ export class LastElapsedCycleReducer extends Reducer {
   public dependencies = {
     currentCycle: new CurrentCycleReducer(),
     currentCD: new CurrentCDReducer(),
+    accumulatedAuguryDrag: new AccumulatedAuguryDragReducer(),
   }
 
   public deriveShallowState({
@@ -18,10 +20,18 @@ export class LastElapsedCycleReducer extends Reducer {
     nextEvent,
     nextDepResults,
     prevDepResults,
+    resetDependency,
   }) {
-    const { currentCycle: nextCycle, currentCD: nextCD } = nextDepResults
-
+    const {
+      currentCycle: nextCycle,
+      currentCD: nextCD,
+      accumulatedAuguryDrag: drag,
+    } = nextDepResults
     const { currentCycle: prevCycle, currentCD: prevCD } = prevDepResults
+
+    if (!prevCycle && nextCycle) {
+      resetDependency('accumulatedAuguryDrag')
+    }
 
     if (prevCycle && !nextCycle) {
       return {
@@ -36,6 +46,7 @@ export class LastElapsedCycleReducer extends Reducer {
           finishEID: nextEvent.id,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp, // @todo: not considering / measuring our own impact here.
           job: prevCycle.job,
+          drag,
         },
       }
     }

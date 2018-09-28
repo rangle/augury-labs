@@ -12,10 +12,23 @@ export class HistoryService {
     this.elapsedEvents = []
   }
 
-  // @todo: start / end args
+  // @todo: ensure startEID and endEID are valid
+  public getTotalAuguryDrag(startEID, endEID) {
+    return this.elapsedEvents.reduce(
+      (totalDrag, elapsedEvent) =>
+        startEID <= elapsedEvent.id && endEID >= elapsedEvent.id
+          ? totalDrag + elapsedEvent.auguryDrag
+          : totalDrag,
+      0,
+    )
+  }
+
+  public getLastElapsedEvent() {
+    return this.elapsedEvents[this.elapsedEvents.length - 1]
+  }
+
+  // @todo: startEID / endEID args
   public emitter() {
-    const emitter = new LoadedEventEmitter()
-    this.elapsedEvents.forEach(e => emitter.add(e))
-    return emitter
+    return new LoadedEventEmitter(this.elapsedEvents)
   }
 }

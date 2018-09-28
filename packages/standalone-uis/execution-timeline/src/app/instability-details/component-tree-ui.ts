@@ -26,6 +26,7 @@ export class ComponentTreeUI {
 
   private paint() {
     if (!this.data) throw new Error('no data provided')
+    const _this = this
 
     const margin = { top: 20, right: 20, bottom: 30, left: 20 },
       width = this.containerEl.clientWidth - margin.left - margin.right,
@@ -57,7 +58,7 @@ export class ComponentTreeUI {
       const nodes = treeData.descendants(),
         links = treeData.descendants().slice(1)
 
-      nodes.forEach((d: any) => d.y = d.depth * 100)
+      nodes.forEach((d: any) => d.y = d.depth * 30)
 
       const node = g.selectAll('g.node')
         .data(nodes, (d: any) => d.id || (d.id = ++i))

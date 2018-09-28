@@ -62,4 +62,16 @@ export class ChangeDetectionDetailsComponent {
   onResizeSVG() {
     this.sunburstUI.repaint()
   }
+
+  runtime() {
+    return round2(
+      this.segment.finishPerformanceStamp
+      - this.segment.startPerformanceStamp
+      - this.segment.drag
+    )
+  }
+
+  drag() {
+    return round2(this.segment.drag)
+  }
 }

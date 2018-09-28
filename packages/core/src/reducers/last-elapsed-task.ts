@@ -1,5 +1,6 @@
 import { Reducer } from '../framework/reducers'
 
+import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag'
 import { CurrentNgZoneTaskReducer } from './current-ng-zone-task'
 import { CurrentRootZoneTaskReducer } from './current-root-zone-task'
 
@@ -17,6 +18,7 @@ export class LastElapsedTaskReducer extends Reducer {
   public dependencies = {
     currentRootTask: new CurrentRootZoneTaskReducer(),
     currentNgTask: new CurrentNgZoneTaskReducer(),
+    accumulatedAuguryDrag: new AccumulatedAuguryDragReducer(),
   }
 
   public deriveShallowState({
@@ -24,6 +26,7 @@ export class LastElapsedTaskReducer extends Reducer {
     nextEvent,
     nextDepResults,
     prevDepResults,
+    resetDependency,
   }) {
     // @todo: generalize this logic ?
     const { currentRootTask: prevRootTask, currentNgTask: prevNgTask } = prevDepResults
@@ -31,6 +34,7 @@ export class LastElapsedTaskReducer extends Reducer {
     const {
       currentRootTask: { task: nextRootTask, startTime: nextRootStartTime } = {} as any,
       currentNgTask: { task: nextNgTask, startTime: nextNgStartTime } = {} as any,
+      accumulatedAuguryDrag: drag,
     } = nextDepResults
 
     const rootTaskIsOngoing = () => prevRootTask && nextRootTask
@@ -50,6 +54,10 @@ export class LastElapsedTaskReducer extends Reducer {
       updatedFlamegraph = []
     }
 
+    if ((!prevRootTask && nextRootTask) || (!prevNgTask && nextNgTask)) {
+      resetDependency('accumulatedAuguryDrag')
+    }
+
     if (prevRootTask && !nextRootTask) {
       return {
         result: {
@@ -59,6 +67,7 @@ export class LastElapsedTaskReducer extends Reducer {
           startPerformanceStamp: prevRootTask.startPerfStamp,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
           flamegraph: updatedFlamegraph,
+          drag,
         },
         auxiliary: {
           flamegraph: [],
@@ -75,6 +84,7 @@ export class LastElapsedTaskReducer extends Reducer {
           startPerformanceStamp: prevNgTask.startPerfStamp,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
           flamegraph: updatedFlamegraph,
+          drag,
         },
         auxiliary: {
           flamegraph: [],

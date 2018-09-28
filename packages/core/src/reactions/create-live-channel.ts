@@ -3,7 +3,7 @@ import { Scanner } from '../framework/scanner'
 
 export const createLiveChannel: Reaction = {
   name: 'create-live-channel',
-  react({ event, channels, dispatcherEvents }) {
+  react({ event, channels, dispatcherEvents, history }) {
     if (event.name === 'request-live-channel') {
       const { reducer, startFromEID, untilEID } = event.payload
 
@@ -16,7 +16,7 @@ export const createLiveChannel: Reaction = {
         return { success: false, errors: ['historical data not yet supported'] }
       }
 
-      const scanner = new Scanner(reducer)
+      const scanner = new Scanner(reducer, history)
 
       scanner.scan(dispatcherEvents)
 

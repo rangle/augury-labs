@@ -17,6 +17,18 @@ export class TaskDetailsComponent {
     if (zoneCode === 'ng') return 'ngZone'
   }
 
+  runtime() {
+    return round2(
+      this.segment.finishPerformanceStamp
+      - this.segment.startPerformanceStamp
+      - this.segment.drag
+    )
+  }
+
+  drag() {
+    return round2(this.segment.drag)
+  }
+
   // template utils
   round = round2
   consoleLog = console.log
