@@ -27,7 +27,6 @@ export class AppComponent {
   }
 
   addTimelineSegment(segment) {
-    console.log(segment)
     this.timelineSegments = this.timelineSegments.concat([segment])
   }
 

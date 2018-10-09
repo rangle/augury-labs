@@ -7,6 +7,7 @@ import { round2 } from '../misc-utils'
 function createHierarchyDataFromNodeArray(nodes = <any[]>[]) {
   return nodes.map(node => ({
     name: node.componentInstance.constructor.name,
+    change: node.change,
     children: createHierarchyDataFromNodeArray(node.childNodes)
   }))
 }
@@ -54,10 +55,12 @@ export class InstabilityDetailsComponent {
     this.componentTreeUI = new ComponentTreeUI(this.componentTreeSvg.nativeElement)
     // @todo: unsubscribe on unmounts
     this.bridge.subscribe(message => {
-      if (message.type === 'get_full_cd:response')
+      if (message.type === 'get_full_cd:response') {
+        console.log(message.data.mergedComponentTree)
         this.componentTreeUI.updateData(
-          createHierarchyDataFromTree(message.data.nextComponentTree) // @todo: mark new/removed nodes
+          createHierarchyDataFromTree(message.data.mergedComponentTree) // @todo: mark new/removed nodes
         )
+      }
     })
     this.didInit = true
   }

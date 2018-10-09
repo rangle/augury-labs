@@ -57,25 +57,71 @@ export class PerformanceProfilerPlugin extends Plugin {
 
     ;(window as any).r = rawTreeToComponentInstanceTree
 
-    function recursivelyMergeChildNodes(childNodes1, childNodes2) {
-      const instancesInNodes1 = new Set(childNodes1.map(node => node.componentInstance))
-      const instancesInNodes2 = new Set(childNodes2.map(node => node.componentInstance))
-      const commonNodes = childNodes1.filter(childNode =>
-        instancesInNodes2.has(childNode.componentInstance),
-      )
-      const nonCommonNodes = childNodes1
-        .concat(childNodes2)
-        .filter(node => !commonNodes.find(n => n.componentInstance === node.componentInstance))
-      return commonNodes
-        .map(node =>
-          Object.assign({}, node, {
-            childNodes: recursivelyMergeChildNodes(
-              node.childNodes.concat([]),
-              childNodes2.find(n => n.componentInstance === node.componentInstance).childNodes,
-            ),
-          }),
+    // misc utils
+    function merge(...objs) {
+      return Object.assign({}, ...objs)
+    }
+
+    // set utils
+    function intersection(a, b) {
+      return new Set([...a].filter(x => b.has(x)))
+    }
+
+    function union(a, b) {
+      return new Set([...a, ...b])
+    }
+
+    function minus(a, b) {
+      return new Set([...a].filter(x => !b.has(x)))
+    }
+
+    function recursivelyMergeChildNodes(beforeChildNodes, afterChildNodes, inheritedChange?) {
+      const instancesBefore = new Map(beforeChildNodes.map(node => [node.componentInstance, node]))
+      const instancesAfter = new Map(afterChildNodes.map(node => [node.componentInstance, node]))
+
+      const commonInstances = new Map(<any>(
+        [...intersection(new Set(instancesBefore.keys()), new Set(instancesAfter.keys()))].map(
+          ins => [ins, { before: instancesBefore.get(ins), after: instancesAfter.get(ins) }],
         )
-        .concat(nonCommonNodes)
+      ))
+
+      const addedInstances = new Map(<any>(
+        [...minus(new Set(instancesAfter.keys()), new Set(instancesBefore.keys()))].map(ins => [
+          ins,
+          instancesAfter.get(ins),
+        ])
+      ))
+
+      const removedInstances = new Map(<any>(
+        [...minus(new Set(instancesBefore.keys()), new Set(instancesAfter.keys()))].map(ins => [
+          ins,
+          instancesBefore.get(ins),
+        ])
+      ))
+
+      const commonNodes = (<any>[...commonInstances.entries()]).map(
+        ([instance, { before, after }]) =>
+          merge(after, {
+            change: inheritedChange || 'none',
+            childNodes: recursivelyMergeChildNodes(before.childNodes, after.childNodes),
+          }),
+      )
+
+      const addedNodes = (<any>[...addedInstances.entries()]).map(([instance, node]) =>
+        merge(node, {
+          change: 'added',
+          childNodes: recursivelyMergeChildNodes([], node.childNodes, 'added'),
+        }),
+      )
+
+      const removedNodes = (<any>[...removedInstances.entries()]).map(([instance, node]) =>
+        merge(node, {
+          change: 'removed',
+          childNodes: recursivelyMergeChildNodes(node.childNodes, [], 'removed'),
+        }),
+      )
+
+      return commonNodes.concat(addedNodes).concat(removedNodes)
     }
 
     function mergeComponentTrees(tree1 = [] as any[], tree2 = [] as any[]) {
@@ -167,7 +213,6 @@ export class PerformanceProfilerPlugin extends Plugin {
     )
 
     popout.bridge.out.subscribe(message => {
-      console.log(message)
       if (message.type === 'get_full_cd') {
         const returnVal = this.api!.scanHistory({
           reducer: new SingleCDRunFull(message.cdStartEID, message.cdEndEID),
@@ -180,6 +225,7 @@ export class PerformanceProfilerPlugin extends Plugin {
         const lifecycleHooksByInstance = groupLifecycleHooksByInstance(
           rawCdRunData.lifecycleHooksTriggered,
         )
+
         const mergedComponentTree = mergeComponentTrees(lastComponentTree, nextComponentTree)
         const checkTimePerInstance = deriveCheckTimePerInstance(
           lifecycleHooksByInstance,

@@ -15,7 +15,7 @@ export class ComponentTreeUI {
 
   updateData(data: any) {
     this.data = data
-
+    console.log(data)
     this.repaint()
   }
 
@@ -71,13 +71,37 @@ export class ComponentTreeUI {
         .attr('transform', (d: any) => 'translate(' + source.x0 + ',' + source.y0 + ')')
         .on('click', click)
 
+      function componentWasAdded(nodeData) {
+        return nodeData.data.change === 'added'
+      }
+
+      function componentWasRemoved(nodeData) {
+        return nodeData.data.change === 'removed'
+      }
+
+      function someChildWasAdded(componentData) {
+        const componentChildren = componentData._children || componentData.children || []
+        if (componentChildren.some(child => componentWasAdded(child))) return true
+        if (componentChildren.some(child => someChildWasAdded(child))) return true
+      }
+
+
+      function circleColor(componentData) {
+        if (componentWasAdded(componentData)) return 'green'
+        if (componentWasRemoved(componentData)) return 'red'
+
+        const childrenAreCollapsed = componentData._children
+        if (childrenAreCollapsed) {
+          if (someChildWasAdded(componentData)) return 'lightgreen'
+          else return 'lightsteelblue'
+        } else return '#fff'
+      }
+
       nodeEnter.append('circle')
-        .style('fill', '#fff')
         .style('stroke', 'steelblue')
         .style('stroke-width', '1.5px')
         .attr('class', 'node')
         .attr('r', 1e-6)
-        .style('fill', (d: any) => d._children ? 'lightsteelblue' : '#fff')
         .on('mouseover', d => svg.select(`.text-for-${d.id}`).style('opacity', '1'))
         .on('mouseout', d => svg.select(`.text-for-${d.id}`).style('opacity', '0'))
 
@@ -93,17 +117,20 @@ export class ComponentTreeUI {
 
       const nodeUpdate = nodeEnter.merge(node);
 
-      nodeUpdate //.transition()
+      nodeUpdate
+        //.transition()
         //.duration(duration)
         .attr('transform', (d: any) => 'translate(' + d.x + ',' + d.y + ')')
 
       nodeUpdate.select('circle.node')
         .attr('r', 10)
-        .style('fill', (d: any) => d._children ? 'lightsteelblue' : '#fff')
+        // .style('fill', (d: any) => d._children ? 'lightsteelblue' : '#fff')
+        .style('fill', (d: any) => circleColor(d))
         .attr('cursor', 'pointer')
 
-      const nodeExit = node.exit().transition()
-        .duration(duration)
+      const nodeExit = node.exit()
+        //.transition()
+        //.duration(duration)
         .attr('transform', (d: any) => 'translate(' + source.x + ',' + source.y + ')')
         .remove();
 
@@ -128,12 +155,14 @@ export class ComponentTreeUI {
 
       const linkUpdate = linkEnter.merge(link);
 
-      linkUpdate //.transition()
+      linkUpdate
+        //.transition()
         //.duration(duration)
         .attr('d', (d: any) => diagonal(d, d.parent))
 
-      const linkExit = link.exit().transition()
-        .duration(duration)
+      const linkExit = link.exit()
+        //.transition()
+        //.duration(duration)
         .attr('d', (d: any) => {
           const o = { x: source.x, y: source.y }
           return diagonal(o, o)
