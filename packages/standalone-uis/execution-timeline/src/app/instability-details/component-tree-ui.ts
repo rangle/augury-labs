@@ -79,22 +79,26 @@ export class ComponentTreeUI {
         return nodeData.data.change === 'removed'
       }
 
-      function someChildWasAdded(componentData) {
-        const componentChildren = componentData._children || componentData.children || []
-        if (componentChildren.some(child => componentWasAdded(child))) return true
-        if (componentChildren.some(child => someChildWasAdded(child))) return true
+      function someChildWas(checkNode, node) {
+        const componentChildren = node._children || node.children || []
+        if (componentChildren.some(child => checkNode(child))) return true
+        if (componentChildren.some(child => someChildWas(checkNode, child))) return true
       }
 
-
       function circleColor(componentData) {
-        if (componentWasAdded(componentData)) return 'green'
-        if (componentWasRemoved(componentData)) return 'red'
 
         const childrenAreCollapsed = componentData._children
         if (childrenAreCollapsed) {
-          if (someChildWasAdded(componentData)) return 'lightgreen'
+          if ((<any>window).z) debugger
+          if (someChildWas(componentWasAdded, componentData)) return 'lightgreen'
+          if (someChildWas(componentWasRemoved, componentData)) return 'rgb(251, 159, 159)'
           else return 'lightsteelblue'
-        } else return '#fff'
+        }
+
+        if (componentWasAdded(componentData)) return 'green'
+        if (componentWasRemoved(componentData)) return 'red'
+
+        return '#fff'
       }
 
       nodeEnter.append('circle')
