@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core'
 
 import { ExtendableSegment } from './timeline'
-import { BridgeService } from './bridge.service';
+import { BridgeService } from './bridge.service'
 
 @Component({
   selector: 'app-root',
@@ -10,6 +10,7 @@ import { BridgeService } from './bridge.service';
 })
 export class AppComponent {
   timelineSegments: ExtendableSegment[] = []
+  dragSegments: ExtendableSegment[] = []
   selectedSegment = null
 
   constructor(
@@ -22,6 +23,12 @@ export class AppComponent {
       message => {
         if (this.isTimelineSegmentMessage(message))
           this.addTimelineSegment(this.toTimelineSegment(message))
+        if (message.type === 'drag')
+          this.dragSegments.push({
+            start: message.start,
+            end: message.finish,
+            row: '*'
+          })
       }
     )
   }

@@ -1,4 +1,11 @@
-import { LastElapsedCDReducer, LastElapsedTaskReducer, Plugin, SingleCDRunFull } from '@augury/core'
+import {
+  LastElapsedCDReducer,
+  LastElapsedTaskReducer,
+  LastElapsedEventReducer,
+  Plugin,
+  SingleCDRunFull,
+  Reducer,
+} from '@augury/core'
 
 // @todo: this should be shared across popout plugins
 import { LastElapsedCycleReducer } from '@augury/core'
@@ -28,6 +35,10 @@ export class PerformanceProfilerPlugin extends Plugin {
 
     const { channel: cdChannel } = this.api!.createLiveChannel({
       reducer: new LastElapsedCDReducer(),
+    })
+
+    const { channel: dragChannel } = this.api!.createLiveChannel({
+      reducer: new LastElapsedEventReducer(),
     })
 
     const popout = openPopout('Augury Zone Monitor')
@@ -148,7 +159,7 @@ export class PerformanceProfilerPlugin extends Plugin {
     function recursivelyDeriveCheckTimeForComponentSubTree(
       lifecycleHooksByInstance,
       componentSubTree,
-      parentDoCheck,
+      parentDoCheck = 0,
       checkTimePerInstance,
     ) {
       let lastSiblingDoCheck
@@ -189,6 +200,7 @@ export class PerformanceProfilerPlugin extends Plugin {
 
     function deriveCheckTimePerInstance(lifecycleHooksByInstance, mergedComponentTree) {
       const checkTimePerInstance = new Map()
+
       recursivelyDeriveCheckTimeForComponentSubTree(
         lifecycleHooksByInstance,
         mergedComponentTree,
@@ -202,14 +214,20 @@ export class PerformanceProfilerPlugin extends Plugin {
       popout.bridge.in.emit({ type: 'task', lastElapsedTask }),
     )
 
-    let lec
-    cdChannel.events.subscribe(lastElapsedCD => {
-      lec = lastElapsedCD
-      popout.bridge.in.emit({ type: 'cd', lastElapsedCD })
-    })
+    cdChannel.events.subscribe(lastElapsedCD =>
+      popout.bridge.in.emit({ type: 'cd', lastElapsedCD }),
+    )
 
     cyclesChannel.events.subscribe(lastElapsedCycle =>
       popout.bridge.in.emit({ type: 'cycle', lastElapsedCycle }),
+    )
+
+    dragChannel.events.subscribe(lastElapsedEvent =>
+      popout.bridge.in.emit({
+        type: 'drag',
+        start: lastElapsedEvent.creationAtPerformanceStamp,
+        finish: lastElapsedEvent.auguryHandlingCompletionPerformanceStamp,
+      }),
     )
 
     popout.bridge.out.subscribe(message => {

@@ -17,11 +17,13 @@ export class TimelineUI {
   private primaryHighlights: Segment[] = []
   private onClick: (s: Segment) => void
   private segments: Segment[]
+  private drag: Segment[]
 
   private containerEl: SVGElement
   private rows: string[]
   private container: d3.Selection<SVGElement, {}, null, undefined>
   private focusInternalG: d3.Selection<SVGGElement, {}, null, undefined>
+  private dragG: d3.Selection<SVGGElement, {}, null, undefined>
   private contextInternalG: d3.Selection<SVGGElement, {}, null, undefined>
   private rowColor: (row: string) => string
 
@@ -44,12 +46,13 @@ export class TimelineUI {
       .style('opacity', (d: Segment) => this.opacityForSegment(d))
   }
 
-  updateData(segments: Segment[]) {
+  updateData(segments: Segment[], drag: Segment[]) {
     const rowException = segments.find(d => !this.rows.some(row => row === d.row))
     if (rowException)
       throw new Error(`recevied datum with row "${rowException.row}", which is not listed in given rows`)
 
     this.segments = segments
+    this.drag = drag
 
     this.repaint()
   }
@@ -112,6 +115,10 @@ export class TimelineUI {
 
         this.focusInternalG
           .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+
+        this.dragG
+          .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+
         focusG.select('.axis--x').call(axisXFocus)
         this.container.select('.zoom').call(zoom.transform, transformation)
       });
@@ -128,6 +135,10 @@ export class TimelineUI {
 
         this.focusInternalG
           .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+
+        this.dragG
+          .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+
         focusG.select('.axis--x').call(axisXFocus);
         contextG.select('.brush').call(brush.move, scaleXFocus.range().map(transformation.invertX, transformation));
       });
@@ -160,6 +171,12 @@ export class TimelineUI {
       .attr('clip-path', 'url(#clip)')
       .append('g')
 
+    this.dragG = focusG.append('g')
+      .attr('width', widthShared)
+      .attr('height', 50)
+      .attr('clip-path', 'url(#clip)')
+      .append('g')
+
     this.focusInternalG
       .selectAll('rect')
       .data(this.segments)
@@ -169,7 +186,7 @@ export class TimelineUI {
       .style('fill', d => this.colorForSegment(d))
       .attr('x', d => scaleXFocus(d.start))
       .attr('y', d => scaleYFocus(d.row))
-      .attr('width', d => { if (scaleXFocus(d.end) - scaleXFocus(d.start) < 0) { console.log('xxxx', d) } return scaleXFocus(d.end) - scaleXFocus(d.start) })
+      .attr('width', d => scaleXFocus(d.end) - scaleXFocus(d.start))
       .attr('height', heightFocus / this.rows.length)
       .on('click', d => this.onClick(d))
       .on('mouseover', function (d) {
@@ -184,6 +201,20 @@ export class TimelineUI {
           .selectAll('rect')
           .style('fill', (d: Segment) => this.colorForSegment(d))
       })
+
+    this.dragG
+      .selectAll('rect')
+      .data(this.drag)
+      .enter()
+      .append('rect')
+      .classed('drag-segment', true)
+      .style('fill', d => 'red')
+      .style('opacity', '0.5')
+      .style('pointer-events', 'none')
+      .attr('x', d => scaleXFocus(d.start))
+      .attr('y', d => 0)
+      .attr('width', d => scaleXFocus(d.end) - scaleXFocus(d.start))
+      .attr('height', heightFocus)
 
     focusG.append('g')
       .attr('class', 'axis axis--x')
