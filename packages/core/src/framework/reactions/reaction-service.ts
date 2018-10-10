@@ -1,6 +1,7 @@
 import { ChannelService } from '../channels'
 import { Dispatch, DispatcherEvents, SimpleDispatch } from '../dispatcher'
 import { AuguryEvent, createEvent } from '../events'
+import { HistoryService } from '../history'
 import { ProbeService } from '../probes'
 import { ReactionRegistry } from './reaction-registry'
 import { ReactionResults } from './reaction-results'
@@ -12,6 +13,7 @@ export class ReactionService {
     private probes: ProbeService,
     private channels: ChannelService,
     private registry: ReactionRegistry,
+    private history: HistoryService,
   ) {}
 
   public reactTo(
@@ -33,6 +35,7 @@ export class ReactionService {
           dispatcherEvents,
           channels: this.channels,
           probes: this.probes,
+          history: this.history,
         }),
       }))
       .reduce(

@@ -1,0 +1,55 @@
+{
+  "name": "@augury/execution-timeline-ui",
+  "version": "0.0.1",
+  "description": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "keywords": [
+    "angular",
+    "debugging",
+    "tools"
+  ],
+  "bugs": {
+    "url": "https://github.com/rangle/augury-labs/issues"
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV=development webpack",
+    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:watch": "cross-env NODE_ENV=development webpack --watch",
+    "build:watch:prod": "webpack --watch",
+    "clean": "rimraf build",
+    "start": "rimraf build && cross-env NODE_ENV=development webpack --watch",
+    "test": "npm run lint",
+    "lint": "tslint 'src/**/*.ts'",
+    "lint:fix": "tslint 'src/**/*.ts' --fix "
+  },
+  "dependencies": {
+    "@angular/common": "^6.1.7",
+    "@angular/core": "^6.1.7",
+    "@angular/platform-browser": "^6.1.7",
+    "@angular/platform-browser-dynamic": "^6.1.7",
+    "@ngtools/webpack": "^6.2.2",
+    "@types/d3": "^5.0.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.2",
+    "core-js": "^2.5.7",
+    "corejs": "^1.0.0",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "d3": "^5.7.0",
+    "tslib": "^1.9.3",
+    "typescript": "2.9",
+    "web-animations-js": "^2.3.1",
+    "webpack-filter-warnings-plugin": "^1.2.0",
+    "zone.js": "^0.8.26"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^0.8.2",
+    "@angular/cli": "^6.2.2",
+    "@angular/compiler": "^6.1.7",
+    "@angular/compiler-cli": "^6.1.7"
+  }
+}

@@ -1,9 +1,6 @@
 import { ReactionRegistry } from '../framework/reactions'
 
-import { createChannelFromReducer } from './create-channel-from-reducer'
-import { createLastElapsedCycleChannel } from './create-last-elapsed-cycle-channel'
+import { createLiveChannel } from './create-live-channel'
+import { scanHistory } from './scan-history'
 
-export const reactionRegistry: ReactionRegistry = [
-  createLastElapsedCycleChannel,
-  createChannelFromReducer,
-]
+export const reactionRegistry: ReactionRegistry = [scanHistory, createLiveChannel]

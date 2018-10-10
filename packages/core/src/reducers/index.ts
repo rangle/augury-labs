@@ -4,6 +4,9 @@ export * from './last-elapsed-cycle'
 export * from './last-elapsed-task'
 export * from './current-cd'
 export * from './last-elapsed-cd'
+export * from './single-cd-run-full'
+export * from './accumulated-augury-drag'
+export * from './every-event'
 
 // @todo: logic is pretty much same in these
 export * from './current-ng-zone-task'

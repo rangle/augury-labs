@@ -1,0 +1,8 @@
+<div style="height:100%;display:flex;flex-direction:column;overflow:hidden">
+  <ag-execution-timeline [segments]="timelineSegments" [drag]="dragSegments" (onSegmentClick)="selectSegment($event)" [selectedSegment]="selectedSegment"></ag-execution-timeline>
+  <div class="segment-details" *ngIf="selectedSegment" style="height:100%;padding:3em">
+    <ag-task-details *ngIf="selectedSegment.originalMessage.type === 'task'" [segment]="selectedSegment.originalMessage.lastElapsedTask"></ag-task-details>
+    <ag-instability-details *ngIf="selectedSegment.originalMessage.type === 'cycle'" [segment]="selectedSegment.originalMessage.lastElapsedCycle"></ag-instability-details>
+    <ag-cd-details *ngIf="selectedSegment.originalMessage.type === 'cd'" [segment]="selectedSegment.originalMessage.lastElapsedCD"></ag-cd-details>
+  </div>
+</div>

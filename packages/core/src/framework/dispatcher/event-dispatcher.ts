@@ -1,5 +1,6 @@
 import { EnhancerService } from '../enhancers'
-import { AuguryEvent, ProcessedAuguryEvent } from '../events'
+import { AuguryEvent, ElapsedAuguryEvent, ProcessedAuguryEvent } from '../events'
+import { HistoryService } from '../history'
 import { ReactionService } from '../reactions'
 import { merge, SimpleEventEmitter, SimpleQueue, SyncEventEmitter } from '../utils'
 import { DispatcherEvents } from './dispatcher-event'
@@ -10,7 +11,11 @@ export class EventDispatcher {
   private queue = new SimpleQueue<AuguryEvent>()
   private releasing = false
 
-  constructor(private enhancers: EnhancerService, private reactions: ReactionService) {}
+  constructor(
+    private enhancers: EnhancerService,
+    private reactions: ReactionService,
+    private history: HistoryService,
+  ) {}
 
   public dispatch(event: AuguryEvent) {
     this.queue.enqueue(event)
@@ -46,6 +51,15 @@ export class EventDispatcher {
     this.emitter.emit(processedEvent)
 
     this.releasing = false
+
+    const currentPerfStamp = performance.now()
+    const elapsedEvent: ElapsedAuguryEvent = merge(processedEvent, {
+      auguryHandlingCompletionPerformanceStamp: currentPerfStamp,
+      auguryDrag: currentPerfStamp - processedEvent.creationAtPerformanceStamp,
+    })
+
+    this.history.storeElapsedEvent(elapsedEvent)
+
     return processedEvent
   }
 

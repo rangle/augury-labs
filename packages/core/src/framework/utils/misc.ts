@@ -1,5 +1,5 @@
 // @todo: types
-
+export const shallowClone = obj => Object.assign({}, obj)
 export const keys = obj => Object.keys(obj)
 export const values = obj => keys(obj).map(k => obj[k])
 export const merge = (...objs) => Object.assign({}, ...objs)

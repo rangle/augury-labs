@@ -1,31 +1,38 @@
 import { Reducer } from '../framework/reducers'
 
+import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag'
 import { CurrentCDReducer } from './current-cd'
 
-const INIT_STATE = {
+const initState = () => ({
   result: undefined,
   auxiliary: {
     componentsChecked: [],
   },
-}
+})
 
 export class LastElapsedCDReducer extends Reducer {
   public dependencies = {
     currentCD: new CurrentCDReducer(),
+    accumulatedAuguryDrag: new AccumulatedAuguryDragReducer(),
   }
 
   public deriveShallowState({
-    prevShallowState = INIT_STATE,
+    prevShallowState = initState(),
     nextEvent,
     nextDepResults,
     prevDepResults,
+    resetDependency,
   }) {
     // @todo: generalize this logic ?
     const { currentCD: prevCD } = prevDepResults
 
-    const { currentCD: nextCD } = nextDepResults
+    const { currentCD: nextCD, accumulatedAuguryDrag: drag } = nextDepResults
 
     const updatedComponentsChecked: any[] = prevShallowState.auxiliary.componentsChecked.concat([]) // copy, so we dont mutate original
+
+    if (!prevCD && nextCD) {
+      resetDependency('accumulatedAuguryDrag')
+    }
 
     if (
       nextCD &&
@@ -39,13 +46,13 @@ export class LastElapsedCDReducer extends Reducer {
       return {
         result: {
           startEID: prevCD.startEID,
+          endEID: nextEvent.id,
           startPerformanceStamp: prevCD.startTime,
           finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
           componentsChecked: updatedComponentsChecked,
+          drag,
         },
-        auxiliary: {
-          componentsChecked: [],
-        },
+        auxiliary: initState().auxiliary,
       }
     }
 

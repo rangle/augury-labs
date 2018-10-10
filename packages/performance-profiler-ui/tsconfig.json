@@ -1,8 +1,0 @@
-{
-  "extends": "../tools/tsconfig.base.json",
-  "compilerOptions": {
-    "target": "es5",
-    "lib": ["es2015", "dom"]
-  },
-  "files": ["./src/index.ts"]
-}

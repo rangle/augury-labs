@@ -1,7 +1,7 @@
 import { DeepState, DependencyResults, DependencyStates, ShallowState } from './state'
 
-import { AuguryEvent } from '../events'
-import { merge, objToPairs } from '../utils'
+import { AuguryEvent, ElapsedAuguryEvent } from '../events'
+import { merge, objToPairs, shallowClone } from '../utils'
 
 // @todo: these types
 export interface ShallowStateDerivationParams {
@@ -52,8 +52,12 @@ export abstract class Reducer {
   // @todo: stuff stops working when apply types..
   public abstract deriveShallowState(params: any): any
 
-  public deriveState(prevState: DeepState = DEEP_INIT, event: AuguryEvent) {
-    const nextDepState = this.deriveDepState(prevState.deps, event)
+  public deriveState(
+    prevState: DeepState = DEEP_INIT,
+    nextAgEvent: AuguryEvent,
+    lastElapsedAgEvent?: ElapsedAuguryEvent,
+  ) {
+    const nextDepState = this.deriveDepState(prevState.deps, nextAgEvent, lastElapsedAgEvent)
 
     // @todo: can we do this better?
     function resetDependency(depName) {
@@ -61,15 +65,15 @@ export abstract class Reducer {
     }
 
     const nextShallowState = this.deriveShallowState({
-      nextEvent: event,
-      nextDepResults: Reducer.getDepResults(nextDepState),
-      prevEvent: prevState.lastEvent,
+      nextEvent: nextAgEvent,
+      nextDepResults: Reducer.getDepResults(shallowClone(nextDepState)),
+      lastElapsedEvent: lastElapsedAgEvent,
       prevShallowState: prevState.shallow,
       prevDepResults: Reducer.getDepResults(prevState.deps),
       resetDependency, // @todo: can we do this better?
     })
 
-    return { shallow: nextShallowState, deps: nextDepState, lastEvent: event }
+    return { shallow: nextShallowState, deps: nextDepState }
   }
 
   protected assumption(name: string, assertion) {
@@ -80,12 +84,17 @@ export abstract class Reducer {
 
   private deriveDepState(
     prevDepState: DependencyStates = {},
-    agEvent: AuguryEvent,
+    nextAgEvent: AuguryEvent,
+    lastElapsedAgEvent?: ElapsedAuguryEvent,
   ): DependencyStates {
     return objToPairs(this.dependencies)
       .map(({ k: name, v: reducer }) => ({
         name,
-        state: this.dependencies[name].deriveState(prevDepState[name], agEvent),
+        state: this.dependencies[name].deriveState(
+          prevDepState[name],
+          nextAgEvent,
+          lastElapsedAgEvent,
+        ),
       }))
       .reduce((nextDepState, { name, state }) => merge(nextDepState, { [name]: state }), {})
   }

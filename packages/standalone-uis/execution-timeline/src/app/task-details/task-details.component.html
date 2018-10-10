@@ -1,0 +1,22 @@
+<h2>Task Details
+  <button (click)="consoleLog(segment)" [style.vertical-align]="'middle'">console out</button>
+</h2>
+<div>
+  <b> runtime:</b> {{ runtime() }}ms (+ augury's impact of {{ drag() }}ms)
+</div>
+<div>
+  <b>zone:</b> {{ segment.zone }}
+</div>
+<div>
+  <b>source: {{segment.task.source}} </b>
+</div>
+<div *ngIf="segment.task.target">
+  <b>target type:</b> {{segment.task.target.constructor.name}}
+  <button (click)="consoleLog(segment.task.target)">console out</button>
+</div>
+<div>
+  <b> runtime (ms):</b> {{round(segment.finishPerformanceStamp - segment.startPerformanceStamp)}}
+</div>
+<div>
+  <b> start time (ms since page request):</b> {{round(segment.startPerformanceStamp)}}
+</div>
