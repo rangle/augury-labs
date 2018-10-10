@@ -28,7 +28,7 @@ export class SunburstUI {
 
     var width = this.containerEl.clientWidth,
       height = this.containerEl.clientHeight,
-      radius = (Math.min(width, height) / 2) - 10;
+      radius = (Math.min(width * 0.8, height) / 2) - 10;
 
     var formatNumber = d3.format(",d");
 
@@ -53,7 +53,7 @@ export class SunburstUI {
       .attr("width", width)
       .attr("height", height)
       .append("g")
-      .attr("transform", "translate(" + width / 2 + "," + (height / 3) + ")");
+      .attr("transform", "translate(" + width / 2 + "," + (height / 3.5) + ")");
 
     let root = d3.hierarchy(this.data[0]);
     root.sum(function (d) { return d.size; });
