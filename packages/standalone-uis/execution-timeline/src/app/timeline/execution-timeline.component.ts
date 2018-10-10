@@ -19,17 +19,29 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   @Output() onSegmentClick = new EventEmitter<ExtendableSegment>()
   @ViewChild('svg') svg: ElementRef
 
-  rows = [
+  private refreshInterval
+  private doRefresh = false
+
+  private rows = [
     'zone task',
     'angular instability',
     'change detection'
   ]
 
-  timelineUI: TimelineUI
+  private timelineUI: TimelineUI
 
   constructor(
     private zone: NgZone,
-  ) { }
+  ) {
+    this.refreshInterval = setInterval(
+      () => {
+        if (this.doRefresh)
+          this.timelineUI.updateData(this.segments, this.drag)
+        this.doRefresh = false
+      },
+      500
+    )
+  }
 
   ngAfterViewInit() {
     this.timelineUI = new TimelineUI(
@@ -43,12 +55,13 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
     if (!this.timelineUI)
       return
     if (changes['segments'] || changes['drag'])
-      this.timelineUI.updateData(this.segments, this.drag)
+      this.doRefresh = true
     if (changes['selectedSegment'])
       this.timelineUI.highlightPrimary(this.selectedSegment)
   }
 
   onResizeSVG(event) {
-    this.timelineUI.repaint()
+    if (this.timelineUI.isReady())
+      this.timelineUI.repaint()
   }
 }

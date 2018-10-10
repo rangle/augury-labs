@@ -40,6 +40,9 @@ export class TimelineUI {
       .selectAll('.segment')
       .style('fill', (d: Segment) => this.colorForSegment(d))
       .style('opacity', (d: Segment) => this.opacityForSegment(d))
+    this.dragG
+      .selectAll('.drag-segment')
+      .style('opacity', (d: Segment) => '0.1')
     this.contextInternalG
       .selectAll('.segment')
       .style('fill', (d: Segment) => this.colorForSegment(d))
@@ -55,6 +58,10 @@ export class TimelineUI {
     this.drag = drag
 
     this.repaint()
+  }
+
+  isReady() {
+    return this.segments && this.drag
   }
 
   repaint() {
@@ -208,8 +215,8 @@ export class TimelineUI {
       .enter()
       .append('rect')
       .classed('drag-segment', true)
-      .style('fill', d => 'red')
-      .style('opacity', '0.5')
+      .style('fill', 'grey')
+      .style('opacity', '0.2')
       .style('pointer-events', 'none')
       .attr('x', d => scaleXFocus(d.start))
       .attr('y', d => 0)
@@ -272,7 +279,7 @@ export class TimelineUI {
   }
 
   private opacityForSegment(s: Segment) {
-    if (this.primaryHighlights.length)
+    if ((this.primaryHighlights || []).length)
       if (this.primaryHighlights.indexOf(s) > -1) return '1'
       else return '0.5'
     else return '1'
