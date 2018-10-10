@@ -1,6 +1,6 @@
 <div style="display:inline-block;width:50%;height:100%;vertical-align:top;">
   <h2> Change Detection Run
-    <button (click)="consoleLog(segment)" [style.vertical-align]="middle">console out</button>
+    <button (click)="consoleLog(segment)" [style.vertical-align]="'middle'">console out</button>
   </h2>
   <div>
     <b> runtime:</b> {{ runtime() }}ms (+ augury's impact of {{ drag() }}ms)
