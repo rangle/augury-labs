@@ -34,7 +34,7 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
     private zone: NgZone,
   ) {
     this.refreshInterval = setInterval(
-      () => {
+      _ => {
         if (this.doRefresh)
           this.timelineUI.updateData(this.segments, this.drag)
         this.doRefresh = false
