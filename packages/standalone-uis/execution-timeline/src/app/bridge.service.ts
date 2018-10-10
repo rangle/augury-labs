@@ -9,11 +9,11 @@ export class BridgeService {
     private ngZone: NgZone
   ) { }
 
-  subscribe(callback) {
+  public subscribe(callback) {
     bridge.in.subscribe(message => this.ngZone.run(() => callback(message)))
   }
 
-  send(message) {
+  public send(message) {
     bridge.out.emit(message)
   }
 

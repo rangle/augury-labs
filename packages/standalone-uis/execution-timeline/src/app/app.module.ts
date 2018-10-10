@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 
-import { BridgeService } from './bridge.service'
 import { AppComponent } from './app.component'
-import { ExecutionTimelineComponent } from './timeline'
-import { TaskDetailsComponent } from './task-details'
-import { InstabilityDetailsComponent } from './instability-details'
+import { BridgeService } from './bridge.service'
 import { ChangeDetectionDetailsComponent } from './cd-details'
+import { InstabilityDetailsComponent } from './instability-details'
+import { TaskDetailsComponent } from './task-details'
+import { ExecutionTimelineComponent } from './timeline'
 
 @NgModule({
   declarations: [

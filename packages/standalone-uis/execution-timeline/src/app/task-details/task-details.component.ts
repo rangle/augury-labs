@@ -8,16 +8,18 @@ import { round2 } from '../misc-utils'
   styleUrls: ['./task-details.component.css']
 })
 export class TaskDetailsComponent {
-  @Input() segment: any
+  @Input() public segment: any
 
-  ngAfterViewInit() { }
+  // template utils
+  public round = round2
+  public consoleLog = console.log
 
-  formatZoneName(zoneCode) {
-    if (zoneCode === 'root') return 'root'
-    if (zoneCode === 'ng') return 'ngZone'
+  public formatZoneName(zoneCode) {
+    if (zoneCode === 'root') { return 'root' }
+    if (zoneCode === 'ng') { return 'ngZone' }
   }
 
-  runtime() {
+  public runtime() {
     return round2(
       this.segment.finishPerformanceStamp
       - this.segment.startPerformanceStamp
@@ -25,11 +27,7 @@ export class TaskDetailsComponent {
     )
   }
 
-  drag() {
+  public drag() {
     return round2(this.segment.drag)
   }
-
-  // template utils
-  round = round2
-  consoleLog = console.log
 }

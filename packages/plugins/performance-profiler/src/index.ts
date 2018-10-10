@@ -1,14 +1,12 @@
 import {
   LastElapsedCDReducer,
-  LastElapsedTaskReducer,
+  LastElapsedCycleReducer,
   LastElapsedEventReducer,
+  LastElapsedTaskReducer,
   Plugin,
   SingleCDRunFull,
-  Reducer,
 } from '@augury/core'
 
-// @todo: this should be shared across popout plugins
-import { LastElapsedCycleReducer } from '@augury/core'
 import { openPopout } from './popout'
 
 /**
@@ -90,27 +88,22 @@ export class PerformanceProfilerPlugin extends Plugin {
       const instancesBefore = new Map(beforeChildNodes.map(node => [node.componentInstance, node]))
       const instancesAfter = new Map(afterChildNodes.map(node => [node.componentInstance, node]))
 
-      const commonInstances = new Map(<any>(
-        [...intersection(new Set(instancesBefore.keys()), new Set(instancesAfter.keys()))].map(
-          ins => [ins, { before: instancesBefore.get(ins), after: instancesAfter.get(ins) }],
-        )
-      ))
+      const commonInstances = new Map([
+        ...intersection(new Set(instancesBefore.keys()), new Set(instancesAfter.keys())),
+      ].map(ins => [
+        ins,
+        { before: instancesBefore.get(ins), after: instancesAfter.get(ins) },
+      ]) as any)
 
-      const addedInstances = new Map(<any>(
-        [...minus(new Set(instancesAfter.keys()), new Set(instancesBefore.keys()))].map(ins => [
-          ins,
-          instancesAfter.get(ins),
-        ])
-      ))
+      const addedInstances = new Map([
+        ...minus(new Set(instancesAfter.keys()), new Set(instancesBefore.keys())),
+      ].map(ins => [ins, instancesAfter.get(ins)]) as any)
 
-      const removedInstances = new Map(<any>(
-        [...minus(new Set(instancesBefore.keys()), new Set(instancesAfter.keys()))].map(ins => [
-          ins,
-          instancesBefore.get(ins),
-        ])
-      ))
+      const removedInstances = new Map([
+        ...minus(new Set(instancesBefore.keys()), new Set(instancesAfter.keys())),
+      ].map(ins => [ins, instancesBefore.get(ins)]) as any)
 
-      const commonNodes = (<any>[...commonInstances.entries()]).map(
+      const commonNodes = ([...commonInstances.entries()] as any).map(
         ([instance, { before, after }]) =>
           merge(after, {
             change: inheritedChange || 'none',
@@ -118,14 +111,14 @@ export class PerformanceProfilerPlugin extends Plugin {
           }),
       )
 
-      const addedNodes = (<any>[...addedInstances.entries()]).map(([instance, node]) =>
+      const addedNodes = ([...addedInstances.entries()] as any).map(([instance, node]) =>
         merge(node, {
           change: 'added',
           childNodes: recursivelyMergeChildNodes([], node.childNodes, 'added'),
         }),
       )
 
-      const removedNodes = (<any>[...removedInstances.entries()]).map(([instance, node]) =>
+      const removedNodes = ([...removedInstances.entries()] as any).map(([instance, node]) =>
         merge(node, {
           change: 'removed',
           childNodes: recursivelyMergeChildNodes(node.childNodes, [], 'removed'),

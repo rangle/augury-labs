@@ -23,7 +23,7 @@
     "clean": "rimraf build",
     "start": "rimraf build && cross-env NODE_ENV=development webpack --watch",
     "test": "npm run lint && npm run build:test && cat build/test.js | tape-run | tap-spec",
-    "lint": "tslint 'src/**/*.ts'"
+    "lint": "tslint 'src/**/*.ts' --fix "
   },
   "dependencies": {
     "@angular/common": "^6.1.7",

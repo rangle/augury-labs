@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy, NgZone, Input, Output, EventEmitter, ViewChild, OnChanges, AfterViewInit, ElementRef } from '@angular/core'
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, Output, ViewChild } from '@angular/core'
 
 import { BridgeService } from '../bridge.service'
-import { TimelineUI, Segment } from './timeline-ui'
+import { Segment, TimelineUI } from './timeline-ui'
 
 type Required<T> = T & { [P in keyof T]: T[P] }
 
@@ -13,11 +13,11 @@ export type ExtendableSegment = Required<Segment>
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
-  @Input() segments: ExtendableSegment[]
-  @Input() drag: ExtendableSegment[]
-  @Input() selectedSegment: ExtendableSegment = null
-  @Output() onSegmentClick = new EventEmitter<ExtendableSegment>()
-  @ViewChild('svg') svg: ElementRef
+  @Input() public segments: ExtendableSegment[]
+  @Input() public drag: ExtendableSegment[]
+  @Input() public selectedSegment: ExtendableSegment = null
+  @Output() public onSegmentClick = new EventEmitter<ExtendableSegment>()
+  @ViewChild('svg') public svg: ElementRef
 
   private refreshInterval
   private doRefresh = false
@@ -35,15 +35,16 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   ) {
     this.refreshInterval = setInterval(
       _ => {
-        if (this.doRefresh)
+        if (this.doRefresh) {
           this.timelineUI.updateData(this.segments, this.drag)
+        }
         this.doRefresh = false
       },
       500
     )
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     this.timelineUI = new TimelineUI(
       this.svg.nativeElement,
       this.rows,
@@ -51,17 +52,21 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
     )
   }
 
-  ngOnChanges(changes) {
-    if (!this.timelineUI)
+  public ngOnChanges(changes) {
+    if (!this.timelineUI) {
       return
-    if (changes['segments'] || changes['drag'])
+    }
+    if (changes.segments || changes.drag) {
       this.doRefresh = true
-    if (changes['selectedSegment'])
+    }
+    if (changes.selectedSegment) {
       this.timelineUI.highlightPrimary(this.selectedSegment)
+    }
   }
 
-  onResizeSVG(event) {
-    if (this.timelineUI.isReady())
+  public onResizeSVG(event) {
+    if (this.timelineUI.isReady()) {
       this.timelineUI.repaint()
+    }
   }
 }

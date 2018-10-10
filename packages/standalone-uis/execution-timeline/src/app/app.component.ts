@@ -1,7 +1,7 @@
-import { Component, ChangeDetectorRef } from '@angular/core'
+import { ChangeDetectorRef, Component } from '@angular/core'
 
-import { ExtendableSegment } from './timeline'
 import { BridgeService } from './bridge.service'
+import { ExtendableSegment } from './timeline'
 
 @Component({
   selector: 'app-root',
@@ -9,9 +9,9 @@ import { BridgeService } from './bridge.service'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  timelineSegments: ExtendableSegment[] = []
-  dragSegments: ExtendableSegment[] = []
-  selectedSegment = null
+  public timelineSegments: ExtendableSegment[] = []
+  public dragSegments: ExtendableSegment[] = []
+  public selectedSegment = null
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -21,23 +21,25 @@ export class AppComponent {
     //        add to @augury/ui-tools
     this.bridge.subscribe(
       message => {
-        if (this.isTimelineSegmentMessage(message))
+        if (this.isTimelineSegmentMessage(message)) {
           this.addTimelineSegment(this.toTimelineSegment(message))
-        if (message.type === 'drag')
+        }
+        if (message.type === 'drag') {
           this.dragSegments.push({
             start: message.start,
             end: message.finish,
             row: '*'
           })
+        }
       }
     )
   }
 
-  addTimelineSegment(segment) {
+  public addTimelineSegment(segment) {
     this.timelineSegments = this.timelineSegments.concat([segment])
   }
 
-  selectSegment(segment) {
+  public selectSegment(segment) {
     this.selectedSegment = segment
   }
 
@@ -46,26 +48,29 @@ export class AppComponent {
   }
 
   private toTimelineSegment(message) {
-    if (message.type === 'task')
+    if (message.type === 'task') {
       return {
         originalMessage: message,
         start: message.lastElapsedTask.startPerformanceStamp,
         end: message.lastElapsedTask.finishPerformanceStamp,
         row: 'zone task'
       }
-    if (message.type === 'cycle')
+    }
+    if (message.type === 'cycle') {
       return {
         originalMessage: message,
         start: message.lastElapsedCycle.startPerformanceStamp,
         end: message.lastElapsedCycle.finishPerformanceStamp,
         row: 'angular instability'
       }
-    if (message.type === 'cd')
+    }
+    if (message.type === 'cd') {
       return {
         originalMessage: message,
         start: message.lastElapsedCD.startPerformanceStamp,
         end: message.lastElapsedCD.finishPerformanceStamp,
         row: 'change detection'
       }
+    }
   }
 }

@@ -1,10 +1,10 @@
-import { Component, Input, ViewChild, ElementRef } from '@angular/core'
+import { Component, ElementRef, Input, ViewChild } from '@angular/core'
 
 import { BridgeService } from '../bridge.service'
-import { ComponentTreeUI } from './component-tree-ui'
 import { round2 } from '../misc-utils'
+import { ComponentTreeUI } from './component-tree-ui'
 
-function createHierarchyDataFromNodeArray(nodes = <any[]>[]) {
+function createHierarchyDataFromNodeArray(nodes = [] as any[]) {
   return nodes.map(node => ({
     name: node.componentInstance.constructor.name,
     change: node.change,
@@ -12,7 +12,7 @@ function createHierarchyDataFromNodeArray(nodes = <any[]>[]) {
   }))
 }
 
-function createHierarchyDataFromTree(tree = <any[]>[]) {
+function createHierarchyDataFromTree(tree = [] as any[]) {
   return createHierarchyDataFromNodeArray(tree)[0]
 }
 
@@ -22,36 +22,38 @@ function createHierarchyDataFromTree(tree = <any[]>[]) {
   styleUrls: ['./instability-details.component.css']
 })
 export class InstabilityDetailsComponent {
-  @Input() segment: any
-  @ViewChild('componentTreeSvg') componentTreeSvg: ElementRef
+  @Input() public segment: any
+  @ViewChild('componentTreeSvg') public componentTreeSvg: ElementRef
 
-  didInit = false
-  componentTreeUI: ComponentTreeUI
+  public didInit = false
+  public componentTreeUI: ComponentTreeUI
 
   // template utils
-  round = round2
-  consoleLog = console.log
+  public round = round2
+  public consoleLog = console.log
 
   constructor(
     private bridge: BridgeService
   ) { }
 
-  ngOnChanges({ segment }) {
-    if (!this.didInit)
+  public ngOnChanges({ segment }) {
+    if (!this.didInit) {
       this.init()
+    }
 
     // @todo: get just component trees
     //        full CD reducer should use before/after component tree reducer
-    if (segment && segment.currentValue)
+    if (segment && segment.currentValue) {
       this.bridge.send({
         type: 'get_full_cd',
         cdStartEID: segment.currentValue.startEID + 10, // @todo: hack because of above ^
         cdEndEID: segment.currentValue.finishEID - 10
       })
+    }
 
   }
 
-  init() {
+  public init() {
     this.componentTreeUI = new ComponentTreeUI(this.componentTreeSvg.nativeElement)
     // @todo: unsubscribe on unmounts
     this.bridge.subscribe(message => {
@@ -65,11 +67,11 @@ export class InstabilityDetailsComponent {
     this.didInit = true
   }
 
-  onResizeSVG() {
+  public onResizeSVG() {
     this.componentTreeUI.repaint()
   }
 
-  runtime() {
+  public runtime() {
     return round2(
       this.segment.finishPerformanceStamp
       - this.segment.startPerformanceStamp
@@ -77,7 +79,7 @@ export class InstabilityDetailsComponent {
     )
   }
 
-  drag() {
+  public drag() {
     return round2(this.segment.drag)
   }
 }

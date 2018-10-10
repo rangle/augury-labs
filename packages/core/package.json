@@ -25,7 +25,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
-    "lint": "tslint --project .",
+    "lint": "tslint --project . --fix",
     "precommit": "lint-staged",
     "link": "yarn link"
   },

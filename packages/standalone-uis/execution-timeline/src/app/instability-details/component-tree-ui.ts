@@ -9,28 +9,27 @@ export class ComponentTreeUI {
     this.containerEl = svgEl
   }
 
-  hasData() {
+  public hasData() {
     return !!this.data
   }
 
-  updateData(data: any) {
+  public updateData(data: any) {
     this.data = data
     console.log(data)
     this.repaint()
   }
 
-  repaint() {
+  public repaint() {
     this.containerEl.innerHTML = ''
     this.paint()
   }
 
   private paint() {
-    if (!this.data) throw new Error('no data provided')
-    const _this = this
+    if (!this.data) { throw new Error('no data provided') }
 
-    const margin = { top: 20, right: 20, bottom: 30, left: 20 },
-      width = this.containerEl.clientWidth - margin.left - margin.right,
-      height = this.containerEl.clientHeight - margin.top - margin.bottom;
+    const margin = { top: 20, right: 20, bottom: 30, left: 20 }
+    const width = this.containerEl.clientWidth - margin.left - margin.right
+    const height = this.containerEl.clientHeight - margin.top - margin.bottom
 
     const svg = d3.select(this.containerEl)
       .attr('width', width + margin.right + margin.left)
@@ -39,7 +38,8 @@ export class ComponentTreeUI {
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`)
 
-    let i = 0, duration = 750, root
+    let i = 0
+    let root
 
     const treemap = d3.tree().size([width, height])
 
@@ -53,10 +53,10 @@ export class ComponentTreeUI {
 
     function draw(source) {
 
-      const treeData = treemap(root);
+      const treeData = treemap(root)
 
-      const nodes = treeData.descendants(),
-        links = treeData.descendants().slice(1)
+      const nodes = treeData.descendants()
+      const links = treeData.descendants().slice(1)
 
       nodes.forEach((d: any) => d.y = d.depth * 30)
 
@@ -68,7 +68,7 @@ export class ComponentTreeUI {
         .append('g')
         .style('cursor', 'pointer')
         .attr('class', 'node')
-        .attr('transform', (d: any) => 'translate(' + source.x0 + ',' + source.y0 + ')')
+        .attr('transform', _ => 'translate(' + source.x0 + ',' + source.y0 + ')')
         .on('click', click)
 
       function componentWasAdded(nodeData) {
@@ -79,24 +79,23 @@ export class ComponentTreeUI {
         return nodeData.data.change === 'removed'
       }
 
-      function someChildWas(checkNode, node) {
-        const componentChildren = node._children || node.children || []
-        if (componentChildren.some(child => checkNode(child))) return true
-        if (componentChildren.some(child => someChildWas(checkNode, child))) return true
+      function someChildWas(checkNode, childNode) {
+        const componentChildren = childNode._children || childNode.children || []
+        if (componentChildren.some(child => checkNode(child))) { return true }
+        if (componentChildren.some(child => someChildWas(checkNode, child))) { return true }
       }
 
       function circleColor(componentData) {
 
         const childrenAreCollapsed = componentData._children
         if (childrenAreCollapsed) {
-          if ((<any>window).z) debugger
-          if (someChildWas(componentWasAdded, componentData)) return 'lightgreen'
-          if (someChildWas(componentWasRemoved, componentData)) return 'rgb(251, 159, 159)'
-          else return 'lightsteelblue'
+          if (someChildWas(componentWasAdded, componentData)) { return 'lightgreen' }
+          if (someChildWas(componentWasRemoved, componentData)) { return 'rgb(251, 159, 159)' }
+          else { return 'lightsteelblue' }
         }
 
-        if (componentWasAdded(componentData)) return 'green'
-        if (componentWasRemoved(componentData)) return 'red'
+        if (componentWasAdded(componentData)) { return 'green' }
+        if (componentWasRemoved(componentData)) { return 'red' }
 
         return '#fff'
       }
@@ -122,8 +121,8 @@ export class ComponentTreeUI {
       const nodeUpdate = nodeEnter.merge(node);
 
       nodeUpdate
-        //.transition()
-        //.duration(duration)
+        // .transition()
+        // .duration(duration)
         .attr('transform', (d: any) => 'translate(' + d.x + ',' + d.y + ')')
 
       nodeUpdate.select('circle.node')
@@ -133,8 +132,8 @@ export class ComponentTreeUI {
         .attr('cursor', 'pointer')
 
       const nodeExit = node.exit()
-        //.transition()
-        //.duration(duration)
+        // .transition()
+        // .duration(duration)
         .attr('transform', (d: any) => 'translate(' + source.x + ',' + source.y + ')')
         .remove();
 
@@ -160,13 +159,13 @@ export class ComponentTreeUI {
       const linkUpdate = linkEnter.merge(link);
 
       linkUpdate
-        //.transition()
-        //.duration(duration)
+        // .transition()
+        // .duration(duration)
         .attr('d', (d: any) => diagonal(d, d.parent))
 
       const linkExit = link.exit()
-        //.transition()
-        //.duration(duration)
+        // .transition()
+        // .duration(duration)
         .attr('d', (d: any) => {
           const o = { x: source.x, y: source.y }
           return diagonal(o, o)

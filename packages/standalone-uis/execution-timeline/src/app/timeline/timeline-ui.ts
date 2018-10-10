@@ -34,7 +34,7 @@ export class TimelineUI {
     this.container = d3.select(svgEl)
   }
 
-  highlightPrimary(datum: Segment) {
+  public highlightPrimary(datum: Segment) {
     this.primaryHighlights = [datum]
     this.focusInternalG
       .selectAll('.segment')
@@ -49,10 +49,11 @@ export class TimelineUI {
       .style('opacity', (d: Segment) => this.opacityForSegment(d))
   }
 
-  updateData(segments: Segment[], drag: Segment[]) {
+  public updateData(segments: Segment[], drag: Segment[]) {
     const rowException = segments.find(d => !this.rows.some(row => row === d.row))
-    if (rowException)
+    if (rowException) {
       throw new Error(`recevied datum with row "${rowException.row}", which is not listed in given rows`)
+    }
 
     this.segments = segments
     this.drag = drag
@@ -60,23 +61,23 @@ export class TimelineUI {
     this.repaint()
   }
 
-  isReady() {
+  public isReady() {
     return this.segments && this.drag
   }
 
-  repaint() {
+  public repaint() {
     this.containerEl.innerHTML = ''
     this.paint()
   }
 
   private paint() {
-    const _this = this
+    const tUI = this
 
     const heightFocus = this.container.node().clientHeight - marginFocus.top - marginFocus.bottom
     const heightContext = this.container.node().clientHeight - marginContext.top - marginContext.bottom
     const widthShared = this.container.node().clientWidth - marginShared.left - marginShared.right
 
-    if (widthShared < 0) return
+    if (widthShared < 0) { return }
 
     const scaleXFocus = d3.scaleLinear()
       .domain([0, d3.max(this.segments, d => d.end)])
@@ -95,7 +96,7 @@ export class TimelineUI {
       .range([0, heightContext])
 
     // to support more than 10 rows, we have to change the color scheme
-    if (this.rows.length > 10) throw new Error('more than 10 rows')
+    if (this.rows.length > 10) { throw new Error('more than 10 rows') }
 
     this.rowColor = d3.scaleOrdinal(d3.schemeCategory10)
       .domain(this.rows)
@@ -111,7 +112,7 @@ export class TimelineUI {
     const brush = d3.brushX()
       .extent([[0, 0], [widthShared, heightContext]])
       .on('brush end', () => {
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') return; // ignore brush-by-zoom
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return; } // ignore brush-by-zoom
         const selection = d3.event.selection || scaleXContext.range()
 
         const transformation = d3.zoomIdentity
@@ -135,7 +136,7 @@ export class TimelineUI {
       .translateExtent([[0, 0], [widthShared, heightFocus]])
       .extent([[0, 0], [widthShared, heightFocus]])
       .on('zoom', () => {
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'brush') return // ignore zoom-by-brush
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'brush') { return } // ignore zoom-by-brush
         const transformation = d3.event.transform
 
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain())
@@ -197,16 +198,16 @@ export class TimelineUI {
       .attr('height', heightFocus / this.rows.length)
       .on('click', d => this.onClick(d))
       .on('mouseover', function (d) {
-        _this.focusInternalG
+        tUI.focusInternalG
           .selectAll('rect')
-          .style('fill', (d: Segment) => _this.colorForSegment(d))
+          .style('fill', (d2: Segment) => tUI.colorForSegment(d2))
         d3.select(this)
-          .style('fill', _this.hoverColorForSegment(d))
+          .style('fill', tUI.hoverColorForSegment(d))
       })
       .on('mouseout', (d) => {
         this.focusInternalG
           .selectAll('rect')
-          .style('fill', (d: Segment) => this.colorForSegment(d))
+          .style('fill', (d2: Segment) => this.colorForSegment(d2))
       })
 
     this.dragG
@@ -274,14 +275,17 @@ export class TimelineUI {
   }
 
   private hoverColorForSegment(s: Segment) {
-    if (this.primaryHighlights.indexOf(s) > -1) return this.rowColor(s.row)
+    if (this.primaryHighlights.indexOf(s) > -1) { return this.rowColor(s.row) }
     return darkenColor(this.rowColor(s.row), 0.3)
   }
 
   private opacityForSegment(s: Segment) {
-    if ((this.primaryHighlights || []).length)
-      if (this.primaryHighlights.indexOf(s) > -1) return '1'
-      else return '0.5'
-    else return '1'
+    if ((this.primaryHighlights || []).length) {
+      if (this.primaryHighlights.indexOf(s) > -1) { return '1' }
+      else {
+        return '0.5'
+      }
+    }
+    else { return '1' }
   }
 }

@@ -7,7 +7,7 @@ export class SingleCDRunFull extends Reducer {
       auxiliary: {
         lastComponentTree: undefined,
         nextComponentTree: undefined,
-        lifecycleHooksTriggered: <any[]>[],
+        lifecycleHooksTriggered: [] as any[],
       },
     }
   }

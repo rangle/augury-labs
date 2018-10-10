@@ -1,10 +1,10 @@
-import { Component, Input, ViewChild, ElementRef } from '@angular/core'
+import { Component, ElementRef, Input, ViewChild } from '@angular/core'
 
+import { BridgeService } from '../bridge.service';
 import { round2 } from '../misc-utils'
 import { SunburstUI } from './sunburst-ui'
-import { BridgeService } from '../bridge.service';
 
-function createSunburstFromCDTree(tree = <any[]>[], checkTimePerInstance = new Map()) {
+function createSunburstFromCDTree(tree = [] as any[], checkTimePerInstance = new Map()) {
   return tree.map(node => ({
     name: node.componentInstance.constructor.name,
     size: checkTimePerInstance.get(node.componentInstance),
@@ -18,33 +18,35 @@ function createSunburstFromCDTree(tree = <any[]>[], checkTimePerInstance = new M
   styleUrls: ['./cd-details.component.css']
 })
 export class ChangeDetectionDetailsComponent {
-  @Input() segment: any
-  @ViewChild('sunburst') sunburstSVG: ElementRef
+  @Input() public segment: any
+  @ViewChild('sunburst') public sunburstSVG: ElementRef
+
+  // template utils
+  public round = round2
+  public consoleLog = console.log
 
   private sunburstUI: SunburstUI
   private didInit = false
-
-  // template utils
-  round = round2
-  consoleLog = console.log
 
   constructor(
     private bridge: BridgeService
   ) { }
 
-  ngOnChanges({ segment }) {
-    if (!this.didInit)// @todo: unsubscribe on unmount
+  public ngOnChanges({ segment }) {
+    if (!this.didInit) {// @todo: unsubscribe on unmount
       this.init()
+    }
 
-    if (segment && segment.currentValue)
+    if (segment && segment.currentValue) {
       this.bridge.send({
         type: 'get_full_cd',
         cdStartEID: segment.currentValue.startEID,
         cdEndEID: segment.currentValue.endEID
       })
+    }
   }
 
-  init() {
+  public init() {
     this.sunburstUI = new SunburstUI(this.sunburstSVG.nativeElement)
     this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
@@ -59,11 +61,11 @@ export class ChangeDetectionDetailsComponent {
     this.didInit = true
   }
 
-  onResizeSVG() {
+  public onResizeSVG() {
     this.sunburstUI.repaint()
   }
 
-  runtime() {
+  public runtime() {
     return round2(
       this.segment.finishPerformanceStamp
       - this.segment.startPerformanceStamp
@@ -71,7 +73,7 @@ export class ChangeDetectionDetailsComponent {
     )
   }
 
-  drag() {
+  public drag() {
     return round2(this.segment.drag)
   }
 }
