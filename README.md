@@ -114,6 +114,9 @@ also provides common dev dependencies and configurations.
 # Install lerna globally
 yarn global add lerna
 
+# Download/update submodules
+git submodule update --recursive --remote
+
 # Install dependencies
 yarn install
 
