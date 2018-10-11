@@ -1,0 +1,3 @@
+[submodule "demos/realworld-app"]
+	path = demos/realworld-app
+	url = https://github.com/rangle/angular-realworld-example-app-with-augury
