@@ -142,7 +142,9 @@ The following commands will run across packages:
 
 ### Running Demo Apps
 
-Demo apps (found in `demos`) must have their dependencies installed separately, as they are not part of the yarn workspace. For more info see `demos/README.md`.
+Demo apps (found in `demos`) must have their dependencies installed separately, as they are not part of the yarn workspace. 
+
+For more info see `demos/README.md` (TLDR: go to demo directory and do `yarn; yarn start:augury` )
 
 ### Referencing local packages from other local projects
 
