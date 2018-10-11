@@ -114,7 +114,7 @@ also provides common dev dependencies and configurations.
 # Install lerna globally
 yarn global add lerna
 
-# Download/update submodules
+# Download/pdate submodules
 git submodule update --recursive --remote
 
 # Install dependencies
@@ -139,6 +139,10 @@ The following commands will run across packages:
 - `yarn test:watch`
 - `yarn coverage`
 - `yarn lint`
+
+### Running Demo Apps
+
+Demo apps (found in `demos`) must have their dependencies installed separately, as they are not part of the yarn workspace. For more info see `demos/README.md`.
 
 ### Referencing local packages from other local projects
 
