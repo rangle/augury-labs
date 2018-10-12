@@ -1,7 +1,7 @@
 {
-  "name": "@augury/performance-profiler-plugin",
+  "name": "@augury/unit-tester-plugin",
   "version": "0.2.3",
-  "description": "Performance profiler plugin for Augury Labs",
+  "description": "Unit testing plugin for Augury Labs",
   "author": "rangle.io",
   "homepage": "https://github.com/rangle/augury-labs#readme",
   "keywords": [
@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "@augury/core": "^0.2.3",
-    "@augury/execution-timeline-ui": "^0.0.1",
     "@augury/tools": "^0.2.0"
   }
 }
