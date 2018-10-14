@@ -1,6 +1,6 @@
 {
   "name": "@augury/core",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Provides the core infrastructure for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -31,9 +31,8 @@
     "link": "yarn link"
   },
   "devDependencies": {
-    "@augury/tools": "^0.2.0",
+    "@augury/tools": "^0.3.0",
     "@types/jest": "^23.3.0",
     "ts-jest": "^23.10.4"
-  },
-  "dependencies": {}
+  }
 }
