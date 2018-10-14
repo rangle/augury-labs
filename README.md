@@ -19,7 +19,7 @@ auguryBootstrap({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [new PerformanceProfilerPlugin()]
+  plugins: [new PerformanceProfilerPlugin()],
 });
 ```
 
@@ -47,7 +47,7 @@ auguryBootstrap({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [new PerformanceProfilerPlugin()]
+  plugins: [new PerformanceProfilerPlugin()],
 });
 ```
 
@@ -114,9 +114,6 @@ also provides common dev dependencies and configurations.
 # Install lerna globally
 yarn global add lerna
 
-# Download/pdate submodules
-git submodule update --recursive --remote
-
 # Install dependencies
 yarn install
 
@@ -142,7 +139,7 @@ The following commands will run across packages:
 
 ### Running Demo Apps
 
-Demo apps (found in `demos`) must have their dependencies installed separately, as they are not part of the yarn workspace. 
+Demo apps (found in `demos`) must have their dependencies installed separately, as they are not part of the yarn workspace.
 
 For more info see `demos/README.md` (TLDR: go to demo directory and do `yarn; yarn start:augury` )
 
