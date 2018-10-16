@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@augury/tools": "^0.3.0",
-    "@types/jest": "^23.3.0",
-    "ts-jest": "^23.10.4"
+    "ts-jest": "^23.1.3"
   }
 }

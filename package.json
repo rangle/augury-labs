@@ -7,7 +7,8 @@
     "url": "https://github.com/rangle/augury-labs"
   },
   "workspaces": [
-    "packages/**"
+    "packages/**",
+    "tools"
   ],
   "scripts": {
     "build": "lerna run build",
@@ -24,9 +25,8 @@
     "pretty:fix": "prettier --write '**/*.{css,js,json,md,scss,ts}'"
   },
   "devDependencies": {
-    "@augury/tools": "^0.2.0",
     "husky": "^0.14.3",
-    "lerna": "^3.0.5",
+    "lerna": "^3.4.3",
     "lerna-changelog": "^0.8.0"
   }
 }

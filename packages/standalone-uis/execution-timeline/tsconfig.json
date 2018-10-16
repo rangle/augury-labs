@@ -2,10 +2,7 @@
   "compileOnSave": false,
   "buildOnSave": false,
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "es7"
-    ],
+    "lib": ["dom", "es7"],
     "target": "es5",
     "moduleResolution": "node",
     "declaration": false,
@@ -16,8 +13,5 @@
     "sourceMap": true,
     "baseUrl": "./src"
   },
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "exclude": ["node_modules", "build"]
 }
