@@ -43,6 +43,6 @@
   },
   "dependencies": {
     "@augury/core": "^0.2.3",
-    "@augury/tools": "^0.2.0"
+    "@augury/tools": "^0.3.0"
   }
 }
