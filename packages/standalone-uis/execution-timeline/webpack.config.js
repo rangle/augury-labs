@@ -105,16 +105,20 @@ module.exports = {
         from: './src/index.html',
         to: 'index.html',
       },
+      {
+        from: './src/rangle-font.woff2',
+        to: 'rangle-font.woff2',
+      },
     ]),
   ].concat(
     isProduction
       ? [
-          // ... prod-only pluginss
-        ]
+        // ... prod-only pluginss
+      ]
       : [
-          // ... dev-only plugins
-          // new BundleAnalyzerPlugin(),
-        ],
+        // ... dev-only plugins
+        // new BundleAnalyzerPlugin(),
+      ],
   ),
 
   /*

@@ -1,11 +1,15 @@
 import { SyncEventEmitter } from '@augury/core'
+import { active } from 'd3'
 
 // @todo: this should be shared across plugins
 // @todo: if you open popouts with the same name from 2 different tabs,
 //        i think it'll try to use the same one, causing a bridge conflict
 
+const allControllers = <PopoutController[]>[]
+window.onunload = window.onbeforeunload = () => allControllers.forEach(c => c.kill())
+
 export function openPopout(name: string) {
-  let popoutWindow: any = open('', name, 'height=800,width=800,titlebar=yes,location=no')
+  let popoutWindow: any = open('', name, 'height=692,width=908,titlebar=yes,location=no')
 
   if (!popoutWindow) {
     throw new Error('please allow popups')
@@ -13,7 +17,7 @@ export function openPopout(name: string) {
 
   if (popoutWindow.bridge) {
     popoutWindow.close()
-    popoutWindow = open('', name, 'height=400,width=800,titlebar=yes,location=no')
+    popoutWindow = open('', name, 'height=692,width=908,titlebar=yes,location=no')
   }
 
   const bridge = {
@@ -21,7 +25,11 @@ export function openPopout(name: string) {
     out: new SyncEventEmitter(),
   }
 
-  return new PopoutController(name, popoutWindow, bridge)
+  const controller = new PopoutController(name, popoutWindow, bridge)
+
+  allControllers.push(controller)
+
+  return controller
 }
 
 export class PopoutController {
@@ -47,5 +55,9 @@ export class PopoutController {
 
   public function(name, implementation) {
     this.window[name] = implementation
+  }
+
+  public kill() {
+    this.window.close()
   }
 }

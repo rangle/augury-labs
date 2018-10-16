@@ -35,6 +35,12 @@ export class AppComponent {
     )
   }
 
+  clear() {
+    this.timelineSegments = []
+    this.dragSegments = []
+    this.selectedSegment = null
+  }
+
   public addTimelineSegment(segment) {
     this.timelineSegments = this.timelineSegments.concat([segment])
   }

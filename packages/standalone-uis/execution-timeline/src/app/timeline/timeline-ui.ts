@@ -80,7 +80,7 @@ export class TimelineUI {
     if (widthShared < 0) { return }
 
     const scaleXFocus = d3.scaleLinear()
-      .domain([0, d3.max(this.segments, d => d.end)])
+      .domain([d3.min(this.segments, d => d.start), d3.max(this.segments, d => d.end)])
       .range([0, widthShared])
 
     const scaleXContext = d3.scaleLinear()
@@ -236,7 +236,8 @@ export class TimelineUI {
 
     // format ticks
     this.container.selectAll('#y-axis')
-      .style('font', 'bold 15px sans-serif')
+      .style('font-family', 'RangleFont')
+      .style('font-size', '1em')
       .attr('transform', `translate(0, ${(heightFocus / this.rows.length) / 2})`)
 
     // fix line after formatting ticks
