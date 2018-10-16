@@ -12,6 +12,7 @@ export class AppComponent {
   public timelineSegments: ExtendableSegment[] = []
   public dragSegments: ExtendableSegment[] = []
   public selectedSegment = null
+  recording = true
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -21,6 +22,7 @@ export class AppComponent {
     //        add to @augury/ui-tools
     this.bridge.subscribe(
       message => {
+        if (!this.recording) return
         if (this.isTimelineSegmentMessage(message)) {
           this.addTimelineSegment(this.toTimelineSegment(message))
         }
@@ -33,6 +35,15 @@ export class AppComponent {
         }
       }
     )
+  }
+
+  stop() {
+    this.recording = false
+  }
+
+  start() {
+    this.clear()
+    this.recording = true
   }
 
   clear() {
