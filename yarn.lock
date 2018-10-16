@@ -152,10 +152,6 @@
   dependencies:
     tslib "^1.9.0"
 
-"@augury/core@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@augury/core/-/core-0.2.3.tgz#4a37f5898f5649ea50e19043358c861afdbcf727"
-
 "@babel/code-frame@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0-beta.51.tgz#bd71d9b192af978df915829d39d4094456439a0c"

@@ -1,11 +1,4 @@
-import {
-  LastElapsedCDReducer,
-  LastElapsedCycleReducer,
-  LastElapsedEventReducer,
-  LastElapsedTaskReducer,
-  Plugin,
-  SingleCDRunFull,
-} from '@augury/core'
+import { LastElapsedCDReducer, Plugin } from '@augury/core'
 
 declare const window
 
