@@ -1,9 +1,9 @@
 const path = require('path');
 const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin
+const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Environment config
 const NODE_ENV = process.env.NODE_ENV || 'production';
@@ -11,9 +11,8 @@ const DIST_DIR = path.join(__dirname, 'dist');
 const isProduction = NODE_ENV === 'production';
 
 /**
- *  @note: building our angular UIs without cli affords us 
- *         more flexibility and less errors. as of sept 2018, angular-cli is buggy
- *  @todo: this build is generic and should be shared across UIs in 
+ *  @note: building our angular UIs without cli affords us more flexibility and less errors.
+ *  @todo: this build is generic and should be shared across UIs in
  *         a package like @augury/ui-tools
  */
 
@@ -36,7 +35,7 @@ module.exports = {
 
   entry: {
     polyfills: './src/polyfills.ts',
-    main: './src/main.ts'
+    main: './src/main.ts',
   },
 
   // Config for our build files
@@ -52,7 +51,7 @@ module.exports = {
     modules: ['./node_modules'], // @todo: try without this
     alias: {
       // 'example': path.resolve('./src/example')
-    }
+    },
   },
 
   // Opt-in to the old behavior with the resolveLoader.moduleExtensions
@@ -70,10 +69,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          'to-string-loader',
-          'css-loader',
-        ],
+        use: ['to-string-loader', 'css-loader'],
       },
       {
         test: /\.png$/,
@@ -99,7 +95,7 @@ module.exports = {
      *  https://github.com/angular/angular/issues/21560
      */
     new FilterWarningsPlugin({
-      exclude: /System.import/
+      exclude: /System.import/,
     }),
     /**
      * to move the index.html file
@@ -109,13 +105,16 @@ module.exports = {
         from: './src/index.html',
         to: 'index.html',
       },
-    ])
-  ].concat(isProduction ? [
-    // ... prod-only pluginss
-  ] : [
-      // ... dev-only plugins
-      // new BundleAnalyzerPlugin(),
-    ]
+    ]),
+  ].concat(
+    isProduction
+      ? [
+          // ... prod-only pluginss
+        ]
+      : [
+          // ... dev-only plugins
+          // new BundleAnalyzerPlugin(),
+        ],
   ),
 
   /*
