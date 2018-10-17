@@ -119,23 +119,27 @@ export class TimelineUI {
     const brush = d3.brushX()
       .extent([[0, 0], [widthContext, heightContext]])
       .on('brush end', () => {
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return; } // ignore brush-by-zoom
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return } // ignore brush-by-zoom
         const selection = d3.event.selection || scaleXContext.range()
 
         const transformation = d3.zoomIdentity
           .scale(widthContext / (selection[1] - selection[0]))
           .translate(-selection[0], 0)
 
+        if (transformation.x === 0 && transformation.k === 1) { return }
+
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain())
 
         const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
         const scale = transformation.k
 
+        if ((window as any).x) debugger
+
         this.focusInternalG
-          .attr('transform', `translate(${transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])}) scale(${transformation.k}, 1)`)
+          .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
 
         this.dragG
-          .attr('transform', `translate(${transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])}) scale(${transformation.k}, 1)`)
+          .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
 
         focusG.select('.axis--x').call(axisXFocus)
         this.container.select('.zoom').call(zoom.transform, transformation)
@@ -153,6 +157,8 @@ export class TimelineUI {
 
         const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
         const scale = transformation.k
+
+        if ((window as any).x) debugger
 
         this.focusInternalG
           .attr('transform', `translate(${translation}) scale(${scale}, 1)`)

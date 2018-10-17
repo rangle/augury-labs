@@ -37,7 +37,7 @@
     </button>
   </div>
 </div>
-<div style="height:100%;display:flex;flex-direction:column;overflow:hidden;">
+<div style="height:90%;display:flex;flex-direction:column;overflow:hidden;">
   <ag-execution-timeline [segments]="timelineSegments" [drag]="dragSegments" (onSegmentClick)="selectSegment($event)" [selectedSegment]="selectedSegment"></ag-execution-timeline>
   <div class="segment-details" *ngIf="selectedSegment" style="height:100%;padding:3em">
     <ag-task-details *ngIf="selectedSegment.originalMessage.type === 'task'" [segment]="selectedSegment.originalMessage.lastElapsedTask"></ag-task-details>
