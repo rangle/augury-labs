@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 
 import { darkenColor } from './color-utils'
+import { max } from 'd3';
 
 export interface Segment {
   start: number
@@ -8,9 +9,9 @@ export interface Segment {
   row: string
 }
 
-const marginFocus = { top: 20, bottom: 110 }
-const marginContext = { top: 180, bottom: 30 }
-const marginShared = { left: 150, right: 20 }
+const marginFocus = { top: 110, bottom: 20 }
+const marginContext = { top: 20, bottom: 180 }
+const marginSideFocus = { left: 150, right: 20 }
 
 export class TimelineUI {
 
@@ -75,17 +76,23 @@ export class TimelineUI {
 
     const heightFocus = this.container.node().clientHeight - marginFocus.top - marginFocus.bottom
     const heightContext = this.container.node().clientHeight - marginContext.top - marginContext.bottom
-    const widthShared = this.container.node().clientWidth - marginShared.left - marginShared.right
+    const widthFocus = this.container.node().clientWidth - marginSideFocus.left - marginSideFocus.right
+    const widthContext = this.container.node().clientWidth
+    const contextWithOverFocusWidth = widthContext / widthFocus
+    const focusWithOverContextWith = widthFocus / widthContext
 
-    if (widthShared < 0) { return }
+    if (widthFocus < 0) { return }
+
+    const minStart = d3.min(this.segments, d => d.start)
+    const maxEnd = d3.max(this.segments, d => d.end)
 
     const scaleXFocus = d3.scaleLinear()
-      .domain([d3.min(this.segments, d => d.start), d3.max(this.segments, d => d.end)])
-      .range([0, widthShared])
+      .domain([0, maxEnd - minStart])
+      .range([0, widthFocus])
 
     const scaleXContext = d3.scaleLinear()
       .domain(scaleXFocus.domain())
-      .range(scaleXFocus.range())
+      .range([0, widthContext])
 
     const scaleYFocus = d3.scalePoint()
       .domain(this.rows.concat(['']))
@@ -110,22 +117,25 @@ export class TimelineUI {
       .tickSize(0)
 
     const brush = d3.brushX()
-      .extent([[0, 0], [widthShared, heightContext]])
+      .extent([[0, 0], [widthContext, heightContext]])
       .on('brush end', () => {
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return; } // ignore brush-by-zoom
         const selection = d3.event.selection || scaleXContext.range()
 
         const transformation = d3.zoomIdentity
-          .scale(widthShared / (selection[1] - selection[0]))
+          .scale(widthContext / (selection[1] - selection[0]))
           .translate(-selection[0], 0)
 
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain())
 
+        const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
+        const scale = transformation.k
+
         this.focusInternalG
-          .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+          .attr('transform', `translate(${transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])}) scale(${transformation.k}, 1)`)
 
         this.dragG
-          .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+          .attr('transform', `translate(${transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])}) scale(${transformation.k}, 1)`)
 
         focusG.select('.axis--x').call(axisXFocus)
         this.container.select('.zoom').call(zoom.transform, transformation)
@@ -133,54 +143,57 @@ export class TimelineUI {
 
     const zoom = d3.zoom()
       .scaleExtent([1, Infinity])
-      .translateExtent([[0, 0], [widthShared, heightFocus]])
-      .extent([[0, 0], [widthShared, heightFocus]])
+      .translateExtent([[0, 0], [widthFocus, heightFocus]])
+      .extent([[0, 0], [widthFocus, heightFocus]])
       .on('zoom', () => {
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'brush') { return } // ignore zoom-by-brush
         const transformation = d3.event.transform
 
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain())
 
+        const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
+        const scale = transformation.k
+
         this.focusInternalG
-          .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+          .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
 
         this.dragG
-          .attr('transform', `translate(${transformation.x}) scale(${transformation.k}, 1)`)
+          .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
 
         focusG.select('.axis--x').call(axisXFocus);
-        contextG.select('.brush').call(brush.move, scaleXFocus.range().map(transformation.invertX, transformation));
+        contextG.select('.brush').call(brush.move, scaleXContext.range().map(transformation.invertX, transformation));
       });
 
     this.container.append('defs').append('clipPath')
       .attr('id', 'clip')
       .append('rect')
-      .attr('width', widthShared)
+      .attr('width', widthFocus)
       .attr('height', heightFocus);
 
     this.container.append('rect')
       .attr('class', 'zoom')
       .style('opacity', '0')
-      .attr('width', widthShared)
+      .attr('width', widthFocus)
       .attr('height', heightFocus)
-      .attr('transform', `translate(${marginShared.left},${marginFocus.top})`)
+      .attr('transform', `translate(${marginSideFocus.left},${marginFocus.top})`)
       .call(zoom);
 
     const focusG = this.container.append('g')
       .attr('class', 'focus')
-      .attr('transform', `translate(${marginShared.left},${marginFocus.top})`);
+      .attr('transform', `translate(${marginSideFocus.left},${marginFocus.top})`);
 
     const contextG = this.container.append('g')
       .attr('class', 'context')
-      .attr('transform', `translate(${marginShared.left},${marginContext.top})`);
+      .attr('transform', `translate(0,${marginContext.top})`);
 
     this.focusInternalG = focusG.append('g')
-      .attr('width', widthShared)
+      .attr('width', widthFocus)
       .attr('height', 50)
       .attr('clip-path', 'url(#clip)')
       .append('g')
 
     this.dragG = focusG.append('g')
-      .attr('width', widthShared)
+      .attr('width', widthFocus)
       .attr('height', 50)
       .attr('clip-path', 'url(#clip)')
       .append('g')
@@ -192,9 +205,9 @@ export class TimelineUI {
       .append('rect')
       .classed('segment', true)
       .style('fill', d => this.colorForSegment(d))
-      .attr('x', d => scaleXFocus(d.start))
+      .attr('x', d => scaleXFocus(d.start - minStart))
       .attr('y', d => scaleYFocus(d.row))
-      .attr('width', d => scaleXFocus(d.end) - scaleXFocus(d.start))
+      .attr('width', d => scaleXFocus(d.end - minStart) - scaleXFocus(d.start - minStart))
       .attr('height', heightFocus / this.rows.length)
       .on('click', d => this.onClick(d))
       .on('mouseover', function (d) {
@@ -219,9 +232,9 @@ export class TimelineUI {
       .style('fill', 'grey')
       .style('opacity', '0.2')
       .style('pointer-events', 'none')
-      .attr('x', d => scaleXFocus(d.start))
+      .attr('x', d => scaleXFocus(d.start - minStart))
       .attr('y', d => 0)
-      .attr('width', d => scaleXFocus(d.end) - scaleXFocus(d.start))
+      .attr('width', d => scaleXFocus(d.end - minStart) - scaleXFocus(d.start - minStart))
       .attr('height', heightFocus)
 
     focusG.append('g')
@@ -245,7 +258,7 @@ export class TimelineUI {
       .attr('transform', `translate(0, ${-(heightFocus / this.rows.length) / 2})`)
 
     this.contextInternalG = contextG.append('g')
-      .attr('width', widthShared)
+      .attr('width', widthContext)
       .append('g')
 
     this.contextInternalG
@@ -255,9 +268,9 @@ export class TimelineUI {
       .append('rect')
       .classed('segment', true)
       .style('fill', d => this.colorForSegment(d))
-      .attr('x', d => scaleXContext(d.start))
+      .attr('x', d => scaleXContext(d.start - minStart))
       .attr('y', d => scaleYContext(d.row))
-      .attr('width', d => scaleXContext(d.end) - scaleXContext(d.start))
+      .attr('width', d => scaleXContext(d.end - minStart) - scaleXContext(d.start - minStart))
       .attr('height', heightContext / (scaleYContext.domain().length - 1))
 
     this.contextInternalG.append('g')

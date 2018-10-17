@@ -1,5 +1,5 @@
 <div style="display:flex;justify-content:space-between;">
-  <div style="display:inline-block;">
+  <div style="display:inline-block;height:3.3em;overflow:hidden;">
     <a href="https://rangle.io/" style="text-decoration: none;" target="_blank">
       <svg style="margin:1em" width="56px" viewBox="0 0 56 28">
         <g id="R">
@@ -10,7 +10,7 @@
         </g>
       </svg>
     </a>
-    <h1 style="margin-top:0.37em;display:inline-block;vertical-align:top;color:black;">
+    <h1 style="margin-top:0.37em;display:inline-block;vertical-align:top;color:black;padding-right:30px;">
       Augury: Execution Timeline
     </h1>
   </div>
@@ -37,7 +37,7 @@
     </button>
   </div>
 </div>
-<div style="height:100%;display:flex;flex-direction:column;overflow:hidden">
+<div style="height:100%;display:flex;flex-direction:column;overflow:hidden;">
   <ag-execution-timeline [segments]="timelineSegments" [drag]="dragSegments" (onSegmentClick)="selectSegment($event)" [selectedSegment]="selectedSegment"></ag-execution-timeline>
   <div class="segment-details" *ngIf="selectedSegment" style="height:100%;padding:3em">
     <ag-task-details *ngIf="selectedSegment.originalMessage.type === 'task'" [segment]="selectedSegment.originalMessage.lastElapsedTask"></ag-task-details>
