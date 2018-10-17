@@ -5,7 +5,7 @@ import { active } from 'd3'
 // @todo: if you open popouts with the same name from 2 different tabs,
 //        i think it'll try to use the same one, causing a bridge conflict
 
-const allControllers = <PopoutController[]>[]
+const allControllers: PopoutController[] = []
 window.onunload = window.onbeforeunload = () => allControllers.forEach(c => c.kill())
 
 export function openPopout(name: string) {

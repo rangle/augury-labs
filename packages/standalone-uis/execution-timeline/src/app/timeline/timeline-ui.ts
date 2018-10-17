@@ -1,7 +1,6 @@
 import * as d3 from 'd3'
 
 import { darkenColor } from './color-utils'
-import { max } from 'd3';
 
 export interface Segment {
   start: number
@@ -133,7 +132,7 @@ export class TimelineUI {
         const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
         const scale = transformation.k
 
-        if ((window as any).x) debugger
+        // if ((window as any).x) debugger
 
         this.focusInternalG
           .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
@@ -158,7 +157,7 @@ export class TimelineUI {
         const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
         const scale = transformation.k
 
-        if ((window as any).x) debugger
+        // if ((window as any).x) debugger
 
         this.focusInternalG
           .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
