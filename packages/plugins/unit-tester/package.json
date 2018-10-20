@@ -1,5 +1,6 @@
 {
   "name": "@augury/unit-tester-plugin",
+  "private": true,
   "version": "0.3.0",
   "description": "Unit testing plugin for Augury Labs",
   "author": "rangle.io",
