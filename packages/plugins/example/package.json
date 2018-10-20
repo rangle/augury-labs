@@ -1,7 +1,7 @@
 {
   "name": "@augury/example-plugin",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "dist/index.js",
   "typings": "dist/index.d.js",
   "license": "MIT",
@@ -16,9 +16,9 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@augury/core": "^0.3.0"
+    "@augury/core": "^0.3.1"
   },
   "devDependencies": {
-    "@augury/tools": "^0.3.0"
+    "@augury/tools": "^0.3.1"
   }
 }

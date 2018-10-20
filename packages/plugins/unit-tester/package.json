@@ -1,7 +1,7 @@
 {
   "name": "@augury/unit-tester-plugin",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Unit testing plugin for Augury Labs",
   "author": "rangle.io",
   "homepage": "https://github.com/rangle/augury-labs#readme",
@@ -43,7 +43,7 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
-    "@augury/core": "^0.3.0",
-    "@augury/tools": "^0.3.0"
+    "@augury/core": "^0.3.1",
+    "@augury/tools": "^0.3.1"
   }
 }
