@@ -77,8 +77,8 @@ export class TimelineUI {
     const heightContext = this.container.node().clientHeight - marginContext.top - marginContext.bottom
     const widthFocus = this.container.node().clientWidth - marginSideFocus.left - marginSideFocus.right
     const widthContext = this.container.node().clientWidth
-    const contextWithOverFocusWidth = widthContext / widthFocus
-    const focusWithOverContextWith = widthFocus / widthContext
+    const contextWidthOverFocusWidth = widthContext / widthFocus
+    const focusWidthOverContextWidth = widthFocus / widthContext
 
     if (widthFocus < 0) { return }
 
@@ -129,7 +129,7 @@ export class TimelineUI {
 
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain())
 
-        const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
+        const translation = transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidthOverContextWidth
         const scale = transformation.k
 
         // if ((window as any).x) debugger
@@ -154,7 +154,7 @@ export class TimelineUI {
 
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain())
 
-        const translation = transformation.k * (scaleXContext.domain()[0] - scaleXFocus.domain()[0])
+        const translation = transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidthOverContextWidth
         const scale = transformation.k
 
         // if ((window as any).x) debugger
