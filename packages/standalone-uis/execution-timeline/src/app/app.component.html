@@ -1,4 +1,43 @@
-<div style="height:100%;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;justify-content:space-between;">
+  <div style="display:inline-block;height:3.3em;overflow:hidden;">
+    <a href="https://rangle.io/" style="text-decoration: none;" target="_blank">
+      <svg style="margin:1em" width="56px" viewBox="0 0 56 28">
+        <g id="R">
+          <path id="Fill-1" d="M14.4,12.4c2.4,0,4-1.6,4-4c0-2.4-1.6-4-4-4H5.2v8H14.4z M5.2,28H0V0h14.4c5.6,0,9.2,3.4,9.2,8.4 s-3.6,8.4-9.2,8.4h-1.2L24.4,28h-7l-11-11.2H5.2V28z"></path>
+        </g>
+        <g id="_x30_1_1_">
+          <polygon points="56,0 56,28 28,28"></polygon>
+        </g>
+      </svg>
+    </a>
+    <h1 style="margin-top:0.37em;display:inline-block;vertical-align:top;color:black;padding-right:30px;">
+      Augury: Execution Timeline
+    </h1>
+  </div>
+  <div style="display:flex;">
+    <button *ngIf="recording" class="rangle-button" (click)="clear()"> clear </button>
+    <button *ngIf="recording" class="rangle-button" (click)="stop()">
+      <svg version="1.1" id="Capa_1" x="0px" y="0px" width="50%" viewBox="0 0 357 357" style="height: 40%;vertical-align: middle;">
+        <g>
+          <g id="pause">
+            <path d="M25.5,357h102V0h-102V357z M229.5,0v357h102V0H229.5z" style="fill:white" />
+          </g>
+        </g>
+      </svg>
+    </button>
+    <button *ngIf="!recording" class="rangle-button" (click)="start()">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="
+        height: 40%;
+        vertical-align: middle;
+    ">
+        <circle cx="50" cy="50" r="50" style="
+        fill: #dc4141;
+    "></circle>
+      </svg>
+    </button>
+  </div>
+</div>
+<div style="height:90%;display:flex;flex-direction:column;overflow:hidden;">
   <ag-execution-timeline [segments]="timelineSegments" [drag]="dragSegments" (onSegmentClick)="selectSegment($event)" [selectedSegment]="selectedSegment"></ag-execution-timeline>
   <div class="segment-details" *ngIf="selectedSegment" style="height:100%;padding:3em">
     <ag-task-details *ngIf="selectedSegment.originalMessage.type === 'task'" [segment]="selectedSegment.originalMessage.lastElapsedTask"></ag-task-details>

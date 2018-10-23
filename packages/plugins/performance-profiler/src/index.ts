@@ -64,8 +64,6 @@ export class PerformanceProfilerPlugin extends Plugin {
       }, [])
     }
 
-    ;(window as any).r = rawTreeToComponentInstanceTree
-
     // misc utils
     function merge(...objs) {
       return Object.assign({}, ...objs)
