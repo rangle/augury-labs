@@ -12,6 +12,7 @@ export interface Segment {
 const marginFocus = { top: 110, bottom: 20 }
 const marginContext = { top: 20, bottom: 180 }
 const marginSideFocus = { left: 150, right: 20 }
+const handleColor = '#6dc7ff'
 
 export class TimelineUI {
 
@@ -284,10 +285,22 @@ export class TimelineUI {
       .attr('transform', `translate(0,${heightContext})`)
       .call(axisXContext);
 
-    this.contextInternalG.append('g')
+    this.contextInternalG
+      .append('g')
       .attr('class', 'brush')
       .call(brush)
       .call(brush.move, scaleXContext.range());
+
+    this.contextInternalG
+      .on('mouseover', (d) => {
+        this.contextInternalG.selectAll('.handle')
+          .style('fill', (d: Segment) => handleColor)
+      })
+      .on('mouseout', (d) => {
+        this.contextInternalG.selectAll('.handle')
+          .style('fill', null)
+      })
+
   }
 
   private colorForSegment(s: Segment) {
