@@ -6,6 +6,7 @@ export interface Segment {
   start: number
   end: number
   row: string
+  color?: string
 }
 
 const marginFocus = { top: 110, bottom: 20 }
@@ -290,12 +291,12 @@ export class TimelineUI {
   }
 
   private colorForSegment(s: Segment) {
-    return this.rowColor(s.row)
+    return s.color || this.rowColor(s.row)
   }
 
   private hoverColorForSegment(s: Segment) {
-    if (this.primaryHighlights.indexOf(s) > -1) { return this.rowColor(s.row) }
-    return darkenColor(this.rowColor(s.row), 0.3)
+    if (this.primaryHighlights.indexOf(s) > -1) { return this.colorForSegment(s) }
+    return darkenColor(this.colorForSegment(s), 0.3)
   }
 
   private opacityForSegment(s: Segment) {

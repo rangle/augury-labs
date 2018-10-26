@@ -66,11 +66,21 @@ export class AppComponent {
 
   private toTimelineSegment(message) {
     if (message.type === 'task') {
+
+      // @todo: color stuff is scattered around different files and duplicated
+      let color
+      if (message.lastElapsedTask.zone === 'root') {
+        color = '#5a1eae'
+      } else if (message.lastElapsedTask.zone === 'ng') {
+        color = '#1f77b4'
+      }
+
       return {
         originalMessage: message,
         start: message.lastElapsedTask.startPerformanceStamp,
         end: message.lastElapsedTask.finishPerformanceStamp,
-        row: 'zone task'
+        row: 'zone task',
+        color
       }
     }
     if (message.type === 'cycle') {

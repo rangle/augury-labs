@@ -28,8 +28,14 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
 
   public legend = [
     {
-      label: 'zone task',
-      color: 'blue',
+      label: 'ng zone tasks',
+      color: '#1f77b4',
+      desc: `Zone tasks represent synchronous JS
+      execution runs detected by ZoneJS.`
+    },
+    {
+      label: 'root zone task',
+      color: '#5a1eae',
       desc: `Zone tasks represent synchronous JS
       execution runs detected by ZoneJS.`
     },
