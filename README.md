@@ -10,7 +10,7 @@ The `augury-labs` project is a set of developer tools to help aid with [Angular]
 
 The `@augury/core` engine bootstraps alongside your Angular app when and provides visibility into the inner workings of your application. Today it tracks performance and change detection, though it can potentially allow inspection into any aspect of an application's runtime.
 
-The recommended configuration setup will keep Augury entirely out of any production or development bundle, except when explicitly requested (`yarn start:augury`).
+The recommended configuration setup will keep Augury entirely out of any production or development build, except when explicitly requested (`yarn start:augury`).
 
 ### How does it work?
 
