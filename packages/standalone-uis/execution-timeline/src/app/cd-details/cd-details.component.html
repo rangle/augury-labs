@@ -1,9 +1,8 @@
 <div style="display:inline-block;width:50%;height:100%;vertical-align:top;">
-  <h2> Change Detection Run
-    <!-- <button (click)="consoleLog(segment)" [style.vertical-align]="'middle'">console out</button> -->
-  </h2>
+  <h2 style="display:inline-block"> Change Detection Run </h2>
   <div>
-    <b> runtime:</b> {{ runtime() }}ms (+ augury's impact of {{ drag() }}ms)
+    <b> runtime:</b> {{ runtime() }}ms
+    <!-- (+ augury's impact of {{ drag() }}ms) -->
   </div>
 </div>
 <div style="display:inline-block;width:50%;height:100%;" (window:resize)="onResizeSVG()">

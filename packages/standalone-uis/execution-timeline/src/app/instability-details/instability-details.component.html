@@ -1,9 +1,8 @@
 <div style="display:inline-block;width:50%;height:100%;vertical-align:top;">
-  <h2> Instability Period
-    <!-- <button (click)="consoleLog(segment)" [style.vertical-align]="'middle'">console out</button> -->
-  </h2>
+  <h2 style="display:inline-block"> Instability Period </h2>
   <div>
-    <b> runtime:</b> {{ runtime() }}ms (+ augury's impact of {{ drag() }}ms)
+    <b> runtime:</b> {{ runtime() }}ms
+    <!-- (+ augury's impact of {{ drag() }}ms) -->
   </div>
   <div>
     <b> start time (ms since page request):</b> {{round(segment.startPerformanceStamp)}}

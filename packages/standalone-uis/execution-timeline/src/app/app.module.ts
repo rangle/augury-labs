@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
+import { TooltipModule } from 'ng2-tooltip-directive'
 
 import { AppComponent } from './app.component'
 import { BridgeService } from './bridge.service'
@@ -16,7 +17,7 @@ import { ExecutionTimelineComponent } from './timeline'
     InstabilityDetailsComponent,
     ChangeDetectionDetailsComponent
   ],
-  imports: [BrowserModule],
+  imports: [BrowserModule, TooltipModule],
   providers: [BridgeService],
   bootstrap: [AppComponent]
 })
