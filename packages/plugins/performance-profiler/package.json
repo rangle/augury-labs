@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@augury/tools": "^0.3.1",
+    "@augury/execution-timeline-ui": "^0.3.2",
     "css-loader": "^1.0.0",
     "postcss-loader": "^3.0.0",
     "raw-loader": "^0.5.1",
@@ -43,7 +44,6 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
-    "@augury/core": "^0.3.1",
-    "@augury/execution-timeline-ui": "^0.3.2"
+    "@augury/core": "^0.3.1"
   }
 }
