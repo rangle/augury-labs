@@ -14,13 +14,13 @@ The recommended configuration setup will keep Augury entirely out of any product
 
 ### How does it work?
 
-`@augury/core` maintains a number of `Probe`s, which [attach](https://stackoverflow.com/questions/5626193/what-is-monkey-patching) themselves to various objects present in the application's context, for example: NgZone, NgModule, the global Promise constructor, etc. Certain triggers from these `Probe`s will emit events within `@augury/core`, which will synchronously handle the event before returning control back to the application. Events can be consumed by `Plugin`s to provide different types of metrics and interfaces. `Probe`s can also affect the object they are attached to, allowing for `Plugin`s to offer interactive behavior.
+`@augury/core` [attaches](https://stackoverflow.com/questions/5626193/what-is-monkey-patching) `Probe`s to various objects present in the application's context, for example: NgZone, NgModule, the global Promise constructor, etc. Certain triggers from these `Probe`s will emit events within `@augury/core`, which will synchronously react to the event before returning control back to the application. Events can be consumed by `Plugin`s to provide different types of metrics and interfaces. `Probe`s can also affect the object they are attached to, allowing for `Plugin`s to offer interactive behavior.
 
 ## Plugins
 
 ### Performance Profiler
 
-`@augury/performance-profiler-plugin` opens a popup window dashboard, displaying the execution of your app as a timeline graph, showing the interaction between ZoneJS tasks, Angular's `stability` cycle, and Angular's change detection.
+`@augury/performance-profiler-plugin` opens a popup window dashboard, displaying the execution of your app as a timeline graph, showing the interaction between ZoneJS tasks, Angular's stability cycle, and Angular's change detection.
 
 
 ## Getting Started
