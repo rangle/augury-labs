@@ -1,7 +1,7 @@
 {
   "name": "@augury/execution-timeline-ui",
   "private": true,
-  "version": "0.3.2",
+  "version": "0.4.1",
   "description": "",
   "license": "MIT",
   "repository": {
@@ -43,7 +43,7 @@
     "@angular/cli": "^6.2.2",
     "@angular/compiler": "^6.1.7",
     "@angular/compiler-cli": "^6.1.7",
-    "@augury/tools": "^0.3.1",
+    "@augury/tools": "^0.4.1",
     "@ngtools/webpack": "^6.2.2",
     "@types/d3": "^5.0.0",
     "css-loader": "^1.0.0",

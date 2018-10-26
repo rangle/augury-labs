@@ -1,7 +1,7 @@
 {
   "name": "@augury/tools",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.4.1",
   "main": "index.js",
   "license": "MIT",
   "files": [
