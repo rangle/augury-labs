@@ -33,7 +33,7 @@ export class SunburstUI {
 
     const y = d3.scaleSqrt().range([0, radius])
 
-    const color = d3.scaleOrdinal(d3.schemeCategory10)
+    const color = d3.scaleOrdinal(d3.schemeRdYlGn[10])
 
     const partition = d3.partition()
 
@@ -48,7 +48,7 @@ export class SunburstUI {
       .attr("width", width)
       .attr("height", height)
       .append("g")
-      .attr("transform", "translate(" + width / 2 + "," + (height / 3.5) + ")")
+      .attr("transform", "translate(" + width / 2 + "," + (height / 2.18) + ")")
 
     const click = d => {
       svg.transition()

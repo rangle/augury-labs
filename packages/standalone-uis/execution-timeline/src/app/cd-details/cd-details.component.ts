@@ -12,6 +12,24 @@ function createSunburstFromCDTree(tree = [] as any[], checkTimePerInstance = new
   }))
 }
 
+function aggregatesByComponentType(checkTimePerInstance) {
+  const abct = new Map()
+  checkTimePerInstance.forEach((checkTime, instance) => {
+
+    if (!abct.has(instance.constructor)) {
+      abct.set(instance.constructor, { numChecks: 0 })
+    }
+
+    const entry = abct.get(instance.constructor)
+
+    entry.numChecks++
+
+  })
+
+  return Array.from(abct.entries())
+    .map(([componentType, entry]) => ({ componentType, entry }))
+}
+
 @Component({
   selector: 'ag-cd-details',
   templateUrl: './cd-details.component.html',
@@ -24,6 +42,8 @@ export class ChangeDetectionDetailsComponent {
   // template utils
   public round = round2
   public consoleLog = console.log
+
+  public aggregatesByComponentType
 
   private sunburstUI: SunburstUI
   private didInit = false
@@ -50,12 +70,19 @@ export class ChangeDetectionDetailsComponent {
     this.sunburstUI = new SunburstUI(this.sunburstSVG.nativeElement)
     this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
+
+        this.aggregatesByComponentType =
+          aggregatesByComponentType(
+            message.data.checkTimePerInstance
+          )
+
         this.sunburstUI.updateData(
           createSunburstFromCDTree(
             message.data.mergedComponentTree,
             message.data.checkTimePerInstance
           )
         )
+
       }
     })
     this.didInit = true
