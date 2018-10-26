@@ -16,8 +16,9 @@ function aggregatesByComponentType(checkTimePerInstance) {
   const abct = new Map()
   checkTimePerInstance.forEach((checkTime, instance) => {
 
-    if (!abct.has(instance.constructor))
+    if (!abct.has(instance.constructor)) {
       abct.set(instance.constructor, { numChecks: 0 })
+    }
 
     const entry = abct.get(instance.constructor)
 
@@ -39,10 +40,10 @@ export class ChangeDetectionDetailsComponent {
   @ViewChild('sunburst') public sunburstSVG: ElementRef
 
   // template utils
-  round = round2
-  consoleLog = console.log
+  public round = round2
+  public consoleLog = console.log
 
-  aggregatesByComponentType
+  public aggregatesByComponentType
 
   private sunburstUI: SunburstUI
   private didInit = false
