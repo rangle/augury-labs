@@ -75,7 +75,7 @@ export class TimelineUI {
 
     const heightFocus = this.container.node().clientHeight - marginFocus.top - marginFocus.bottom
     const heightContext = this.container.node().clientHeight - marginContext.top - marginContext.bottom
-    const widthFocus = this.container.node().clientWidth - marginSideFocus.left - marginSideFocus.right
+    const widthFocus = this.container.node().clientWidth
     const widthContext = this.container.node().clientWidth
     const contextWidthOverFocusWidth = widthContext / widthFocus
     const focusWidthOverContextWidth = widthFocus / widthContext
@@ -180,12 +180,12 @@ export class TimelineUI {
       .style('opacity', '0')
       .attr('width', widthFocus)
       .attr('height', heightFocus)
-      .attr('transform', `translate(${marginSideFocus.left},${marginFocus.top})`)
+      .attr('transform', `translate(${0},${marginFocus.top})`)
       .call(zoom);
 
     const focusG = this.container.append('g')
       .attr('class', 'focus')
-      .attr('transform', `translate(${marginSideFocus.left},${marginFocus.top})`);
+      .attr('transform', `translate(${0},${marginFocus.top})`);
 
     const contextG = this.container.append('g')
       .attr('class', 'context')
@@ -247,16 +247,16 @@ export class TimelineUI {
       .attr('transform', 'translate(0,' + heightFocus + ')')
       .call(axisXFocus);
 
-    focusG.append('g')
-      .attr('class', 'axis axis--y')
-      .attr('id', 'y-axis')
-      .call(axisYFocus);
+    // focusG.append('g')
+    //   .attr('class', 'axis axis--y')
+    //   .attr('id', 'y-axis')
+    //   .call(axisYFocus);
 
-    // format ticks
-    this.container.selectAll('#y-axis')
-      .style('font-family', 'RangleFont')
-      .style('font-size', '1em')
-      .attr('transform', `translate(0, ${(heightFocus / this.rows.length) / 2})`)
+    // // format ticks
+    // this.container.selectAll('#y-axis')
+    //   .style('font-family', 'RangleFont')
+    //   .style('font-size', '1em')
+    //   .attr('transform', `translate(0, ${(heightFocus / this.rows.length) / 2})`)
 
     // fix line after formatting ticks
     this.container.selectAll('#y-axis path.domain')

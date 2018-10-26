@@ -19,16 +19,21 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   @Output() public onSegmentClick = new EventEmitter<ExtendableSegment>()
   @ViewChild('svg') public svg: ElementRef
 
-  private refreshInterval
-  private doRefresh = false
-
-  private rows = [
+  public rows = [
     'zone task',
     'angular instability',
     'change detection'
   ]
 
+  public legend = [
+    { label: 'zone task', color: 'blue' },
+    { label: 'angular instability', color: 'orange' },
+    { label: 'change detection', color: 'green' }
+  ]
+
   private timelineUI: TimelineUI
+  private refreshInterval
+  private doRefresh = false
 
   constructor(
     private zone: NgZone,
