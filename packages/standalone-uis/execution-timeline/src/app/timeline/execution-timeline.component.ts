@@ -19,6 +19,7 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   @Output() public onSegmentClick = new EventEmitter<ExtendableSegment>()
   @ViewChild('svg') public svg: ElementRef
 
+  // @todo: merge rows with legend (will have to touch timeline-ui)
   public rows = [
     'zone task',
     'angular instability',
@@ -26,9 +27,24 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   ]
 
   public legend = [
-    { label: 'zone task', color: 'blue' },
-    { label: 'angular instability', color: 'orange' },
-    { label: 'change detection', color: 'green' }
+    {
+      label: 'zone task',
+      color: 'blue',
+      desc: `Zone tasks represent synchronous JS
+      execution runs detected by ZoneJS.`
+    },
+    {
+      label: 'angular instability',
+      color: 'orange',
+      desc: `Angular defines instability as the period
+        after some JS activity occurred within ngZone,
+        but before change detection has reconciled the view.`
+    },
+    {
+      label: 'change detection',
+      color: 'green',
+      desc: `Change detection occurs at least once for each instability period.`
+    }
   ]
 
   private timelineUI: TimelineUI
