@@ -8,6 +8,21 @@
 
 The `augury-labs` project is a set of developer tools to help aid with [Angular](https://angular.io) development.
 
+The `@augury/core` engine bootstraps alongside your Angular app when and provides visibility into the inner workings of your application. Today it tracks performance and change detection, though it can potentially allow inspection into any aspect of an application's runtime.
+
+The recommended configuration setup will keep Augury entirely out of any production or development bundle, except when explicitly requested (`yarn start:augury`).
+
+### How does it work?
+
+`@augury/core` maintains a number of `Probe`s, which [attach](https://stackoverflow.com/questions/5626193/what-is-monkey-patching) themselves to various objects present in the application's context, for example: NgZone, NgModule, the global Promise constructor, etc. Certain triggers from these `Probe`s will emit events within `@augury/core`, which will synchronously handle the event before returning control back to the application. Events can be consumed by `Plugin`s to provide different types of metrics and interfaces. `Probe`s can also affect the object they are attached to, allowing for `Plugin`s to offer interactive behavior.
+
+## Plugins
+
+### Performance Profiler
+
+`@augury/performance-profiler-plugin` opens a popup window dashboard, displaying the execution of your app as a timeline graph, showing the interaction between ZoneJS tasks, Angular's `stability` cycle, and Angular's change detection.
+
+
 ## Getting Started
 
 To run your app under Augury Labs you should call the `auguryBootstrap` function exported by `@augury/core`,
