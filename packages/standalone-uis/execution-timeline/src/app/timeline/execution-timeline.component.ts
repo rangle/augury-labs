@@ -22,10 +22,16 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   private refreshInterval
   private doRefresh = false
 
-  private rows = [
+  rows = [
     'zone task',
     'angular instability',
     'change detection'
+  ]
+
+  legend = [
+    { label: 'zone task', color: 'blue' },
+    { label: 'angular instability', color: 'orange' },
+    { label: 'change detection', color: 'green' }
   ]
 
   private timelineUI: TimelineUI
