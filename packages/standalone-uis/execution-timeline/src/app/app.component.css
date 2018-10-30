@@ -1,4 +1,10 @@
-.segment-details {
+.page-container {
+  max-width:1000pt;
+  margin:0 auto;
+  min-height:100%;
+  background:#E1E9EE;
+}
+
+.content-container {
   padding: 2em;
-  padding-top: 0;
 }

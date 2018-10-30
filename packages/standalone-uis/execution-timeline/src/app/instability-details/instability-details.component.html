@@ -1,13 +1,18 @@
-<div style="display:inline-block;width:50%;height:100%;vertical-align:top;">
-  <h2 style="display:inline-block"> Instability Period </h2>
-  <div>
-    <b> runtime:</b> {{ runtime() }}ms
-    <!-- (+ augury's impact of {{ drag() }}ms) -->
+<div fxLayout="row">
+  <Card fxFlex>
+    <h2> Instability Period
+      <!-- <button (click)="consoleLog(segment)" [style.vertical-align]="'middle'">console out</button> -->
+    </h2>
+    <div>
+      <b> runtime:</b> {{ runtime() }}ms (+ augury's impact of {{ drag() }}ms)
+    </div>
+    <div>
+      <b> start time (ms since page request):</b> {{round(segment.startPerformanceStamp)}}
+    </div>
+  </Card>
+  <div style="width:50%;" (window:resize)="onResizeSVG()">
+    <Card>
+      <svg #componentTreeSvg style="width:100%;height:100%;"></svg>
+    </Card>
   </div>
-  <div>
-    <b> start time (ms since page request):</b> {{round(segment.startPerformanceStamp)}}
-  </div>
-</div>
-<div style="display:inline-block;width:50%;height:100%;" (window:resize)="onResizeSVG()">
-  <svg #componentTreeSvg style="width:100%;height:100%;"></svg>
 </div>

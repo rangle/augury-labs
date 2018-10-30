@@ -8,6 +8,9 @@ import { ChangeDetectionDetailsComponent } from './cd-details'
 import { InstabilityDetailsComponent } from './instability-details'
 import { TaskDetailsComponent } from './task-details'
 import { ExecutionTimelineComponent } from './timeline'
+import { FlexModule } from '@angular/flex-layout/flex'
+import { GridModule } from '@angular/flex-layout/grid'
+import { CardComponent } from './card'
 
 @NgModule({
   declarations: [
@@ -15,10 +18,11 @@ import { ExecutionTimelineComponent } from './timeline'
     ExecutionTimelineComponent,
     TaskDetailsComponent,
     InstabilityDetailsComponent,
-    ChangeDetectionDetailsComponent
+    ChangeDetectionDetailsComponent,
+    CardComponent,
   ],
-  imports: [BrowserModule, TooltipModule],
+  imports: [BrowserModule, TooltipModule, FlexModule, GridModule],
   providers: [BridgeService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
