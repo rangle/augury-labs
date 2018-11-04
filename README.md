@@ -46,7 +46,7 @@ _NOTE: This tool is still experimental. Feedback is greatly appreciated :smile:_
   Opens a popup window dashboard, displaying the execution of your app as a timeline graph,
   showing the interaction between `Zone.js` tasks, Angular's stability cycles & change detection.
 
-## Getting Started
+## Installation
 
 To setup `augury-labs` in your application you'll need to follow a few manual steps for now
 (should only take a few minutes).
