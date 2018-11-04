@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { } from '@angular/forms';
+import {} from '@angular/forms';
 
 @Component({
   selector: 'agdemo-trackby',
@@ -11,10 +11,10 @@ import { } from '@angular/forms';
       <agdemo-trackby-with *ngIf="use"></agdemo-trackby-with>
       <agdemo-trackby-without *ngIf="!use"></agdemo-trackby-without>
     </div>
-  `
+  `,
 })
 export class AgDemoTrackByComponent {
-  use = false
+  use = false;
 }
 
 @Component({
@@ -29,35 +29,33 @@ export class AgDemoTrackByComponent {
     <div>
       <agdemo-trackby-item *ngFor="let datum of data" [datum]="datum"></agdemo-trackby-item>
     <div>
-  </div>`
+  </div>`,
 })
 export class AgDemoWithoutTrackByComponent {
-
-  target = ''
-  replacement = ''
-  data = Array(1000)
+  target = '';
+  replacement = '';
+  data = Array(100)
     .fill(true)
     .map((_, i) => ({
       id: i,
       recentlyUpdated: false,
       content: randString(),
-    }))
+    }));
 
   runUpdate() {
-    this.updateData(this.target, this.replacement)
+    this.updateData(this.target, this.replacement);
   }
 
   updateData(target, replacement) {
     this.data = this.data.map(item => {
-      const newContent = item.content.replace(target, replacement)
+      const newContent = item.content.replace(target, replacement);
       return {
         id: item.id,
         recentlyUpdated: newContent !== item.content,
-        content: newContent
-      }
-    })
+        content: newContent,
+      };
+    });
   }
-
 }
 
 @Component({
@@ -72,39 +70,37 @@ export class AgDemoWithoutTrackByComponent {
     <div>
       <agdemo-trackby-item *ngFor="let datum of data; trackBy: trackByFn" [datum]="datum"></agdemo-trackby-item>
     <div>
-  </div>`
+  </div>`,
 })
 export class AgDemoWithTrackByComponent {
-
-  target = ''
-  replacement = ''
-  data = Array(1000)
+  target = '';
+  replacement = '';
+  data = Array(100)
     .fill(true)
     .map((_, i) => ({
       id: i,
       recentlyUpdated: false,
       content: randString(),
-    }))
+    }));
 
   runUpdate() {
-    this.updateData(this.target, this.replacement)
+    this.updateData(this.target, this.replacement);
   }
 
   updateData(target, replacement) {
     this.data = this.data.map(item => {
-      const newContent = item.content.replace(target, replacement)
+      const newContent = item.content.replace(target, replacement);
       return {
         id: item.id,
         recentlyUpdated: newContent !== item.content,
-        content: newContent
-      }
-    })
+        content: newContent,
+      };
+    });
   }
 
   trackByFn(i, datum) {
-    return datum.id
+    return datum.id;
   }
-
 }
 
 @Component({
@@ -112,26 +108,25 @@ export class AgDemoWithTrackByComponent {
   template: `
   <div [style.color]="datum.recentlyUpdated? 'red' : 'black'">
     {{ datum.content }}
-  </div>`
+  </div>`,
 })
 export class AgDemoTrackByItemComponent {
-
-  @Input() datum
+  @Input()
+  datum;
 
   constructor() {
-    console.log('constructing item')
-    for (let i; i < 100; i++);
+    console.log('constructing item');
+    for (let i; i < 100; i++) {}
   }
-
 }
 
-
 function randString() {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  for (var i = 0; i < 10; i++)
+  for (let i = 0; i < 10; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
 
   return text;
 }

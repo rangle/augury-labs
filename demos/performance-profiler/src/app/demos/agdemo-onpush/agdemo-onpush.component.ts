@@ -1,5 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { } from '@angular/forms';
+import {} from '@angular/forms';
+
+const numOfItems = 10;
 
 @Component({
   selector: 'agdemo-without-onpush',
@@ -11,10 +13,10 @@ import { } from '@angular/forms';
       <agdemo-onpush-with *ngIf="use"></agdemo-onpush-with>
       <agdemo-onpush-without *ngIf="!use"></agdemo-onpush-without>
     </div>
-  `
+  `,
 })
 export class AgDemoOnPushComponent {
-  use = false
+  use = false;
 }
 
 @Component({
@@ -35,28 +37,26 @@ export class AgDemoOnPushComponent {
         </agdemo-list-onpush>
       </li>
     </ul>
-  </div>`
+  </div>`,
 })
 export class AgDemoWithOnPushComponent {
-
-  num = 0
-  lists: Array<any> = []
+  num = 0;
+  lists: Array<any> = [];
 
   constructor() {
-    for (let i = 0; i < 30; i++)
-      this.addList()
+    for (let i = 0; i < numOfItems; i++) { this.addList(); }
   }
 
   count() {
-    this.num++
+    this.num++;
   }
 
   addList() {
-    this.lists.unshift(makeList())
+    this.lists.unshift(makeList());
   }
 
   removeList(list) {
-    this.lists = this.lists.filter(l => l !== list)
+    this.lists = this.lists.filter(l => l !== list);
   }
 }
 
@@ -78,28 +78,26 @@ export class AgDemoWithOnPushComponent {
         </agdemo-list>
       </li>
     </ul>
-  </div>`
+  </div>`,
 })
 export class AgDemoWithoutOnPushComponent {
-
-  num = 0
-  lists: Array<any> = []
+  num = 0;
+  lists: Array<any> = [];
 
   constructor() {
-    for (let i = 0; i < 30; i++)
-      this.addList()
+    for (let i = 0; i < numOfItems; i++) { this.addList(); }
   }
 
   count() {
-    this.num++
+    this.num++;
   }
 
   addList() {
-    this.lists.unshift(makeList())
+    this.lists.unshift(makeList());
   }
 
   removeList(list) {
-    this.lists = this.lists.filter(l => l !== list)
+    this.lists = this.lists.filter(l => l !== list);
   }
 }
 
@@ -114,20 +112,19 @@ export class AgDemoWithoutOnPushComponent {
       </li>
     </ul>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AgDemoListWithOnPushComponent {
-
-  @Input() list: any
+  @Input()
+  list: any;
 
   addItem() {
-    this.list.items.unshift(makeItem())
+    this.list.items.unshift(makeItem());
   }
 
   removeItem(item) {
-    this.list.items = this.list.items.filter(i => i !== item)
+    this.list.items = this.list.items.filter(i => i !== item);
   }
-
 }
 
 @Component({
@@ -135,12 +132,11 @@ export class AgDemoListWithOnPushComponent {
   template: `
     item {{ item.id }}
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AgDemoItemWithOnPushComponent {
-
-  @Input() item
-
+  @Input()
+  item;
 }
 
 @Component({
@@ -156,17 +152,16 @@ export class AgDemoItemWithOnPushComponent {
   `,
 })
 export class AgDemoListWithoutOnPushComponent {
-
-  @Input() list: any
+  @Input()
+  list: any;
 
   addItem() {
-    this.list.items.unshift(makeItem())
+    this.list.items.unshift(makeItem());
   }
 
   removeItem(item) {
-    this.list.items = this.list.items.filter(i => i !== item)
+    this.list.items = this.list.items.filter(i => i !== item);
   }
-
 }
 
 @Component({
@@ -176,26 +171,24 @@ export class AgDemoListWithoutOnPushComponent {
   `,
 })
 export class AgDemoItemWithoutOnPushComponent {
-
-  @Input() item
-
+  @Input()
+  item;
 }
 
-let nextListId = 0
+let nextListId = 0;
 function makeList() {
   const list = {
     id: nextListId++,
-    items: []
-  }
-  for (let i = 0; i < 30; i++)
-    list.items.push(makeItem())
-  return list
+    items: [],
+  };
+  for (let i = 0; i < numOfItems; i++) { list.items.push(makeItem()); }
+  return list;
 }
 
-let nextItemId = 0
+let nextItemId = 0;
 function makeItem() {
   const item = {
-    id: nextItemId++
-  }
-  return item
+    id: nextItemId++,
+  };
+  return item;
 }
