@@ -1,10 +1,28 @@
 .page-container {
-  max-width:1000pt;
-  margin:0 auto;
-  min-height:100%;
-  background:#E1E9EE;
+  max-width: 1000pt;
+  margin: 0 auto;
+  min-height: 100%;
+  background: #E1E9EE;
 }
 
 .content-container {
   padding: 2em;
+}
+
+.sidebar-container {
+  background: white;
+}
+
+.sidebar-header {
+  background: #31394D;
+  padding: 1em;
+}
+
+.sidebar-sub-header {
+  padding: 1em;
+}
+
+.sidebar-sub-header .description {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
 }

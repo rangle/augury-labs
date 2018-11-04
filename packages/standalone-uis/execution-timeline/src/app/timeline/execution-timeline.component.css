@@ -1,0 +1,7 @@
+:host ::ng-deep .tick line {
+  visibility: hidden;
+}
+
+:host ::ng-deep .segment {
+  margin-top: 10px;
+}

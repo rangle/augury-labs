@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'
+import { NgModule, Injectable } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { TooltipModule } from 'ng2-tooltip-directive'
 
@@ -9,8 +9,9 @@ import { InstabilityDetailsComponent } from './instability-details'
 import { TaskDetailsComponent } from './task-details'
 import { ExecutionTimelineComponent } from './timeline'
 import { FlexModule } from '@angular/flex-layout/flex'
-import { GridModule } from '@angular/flex-layout/grid'
+import { GridModule } from '@angular/flex-layout'
 import { CardComponent } from './card'
+import { LegendComponent } from './legend';
 
 @NgModule({
   declarations: [
@@ -20,9 +21,10 @@ import { CardComponent } from './card'
     InstabilityDetailsComponent,
     ChangeDetectionDetailsComponent,
     CardComponent,
+    LegendComponent,
   ],
   imports: [BrowserModule, TooltipModule, FlexModule, GridModule],
   providers: [BridgeService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

@@ -10,6 +10,7 @@ export type ExtendableSegment = Required<Segment>
 @Component({
   selector: 'ag-execution-timeline',
   templateUrl: './execution-timeline.component.html',
+  styleUrls: ['./execution-timeline.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
@@ -18,6 +19,7 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   @Input() public selectedSegment: ExtendableSegment = null
   @Output() public onSegmentClick = new EventEmitter<ExtendableSegment>()
   @ViewChild('svg') public svg: ElementRef
+  @ViewChild('svg2') public svg2: ElementRef
 
   // @todo: merge rows with legend (will have to touch timeline-ui)
   public rows = [
@@ -74,6 +76,7 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
   public ngAfterViewInit() {
     this.timelineUI = new TimelineUI(
       this.svg.nativeElement,
+      this.svg2.nativeElement,
       this.rows,
       s => this.zone.run(() => this.onSegmentClick.emit(s))
     )
