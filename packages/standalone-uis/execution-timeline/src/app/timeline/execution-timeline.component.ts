@@ -89,7 +89,7 @@ export class ExecutionTimelineComponent implements OnChanges, AfterViewInit {
     if (changes.segments || changes.drag) {
       this.doRefresh = true
     }
-    if (changes.selectedSegment) {
+    if (changes.hasOwnProperty('selectedSegment')) {
       this.timelineUI.highlightPrimary(this.selectedSegment)
     }
   }

@@ -42,19 +42,17 @@ export class TimelineUI {
     this.contextG = this.container.select('#context-group')
   }
 
-  public highlightPrimary(datum: Segment) {
-    this.primaryHighlights = [datum]
+  public highlightPrimary(segment: Segment) {
+    this.primaryHighlights = segment ? [segment] : []
     this.focusInternalG
       .selectAll('.segment')
       .style('fill', (d: Segment) => this.colorForSegment(d))
-      .style('opacity', (d: Segment) => this.opacityForSegment(d))
     this.dragG
       .selectAll('.drag-segment')
       .style('opacity', (d: Segment) => '0.1')
     this.contextInternalG
       .selectAll('.segment')
       .style('fill', (d: Segment) => this.colorForSegment(d))
-      .style('opacity', (d: Segment) => this.opacityForSegment(d))
   }
 
   public updateData(segments: Segment[], drag: Segment[]) {
@@ -179,12 +177,6 @@ export class TimelineUI {
         this.contextG.select('.brush').call(brush.move, scaleXContext.range().map(transformation.invertX, transformation));
       });
 
-    // this.container.append('defs').append('clipPath')
-    //   .attr('id', 'clip')
-    //   .append('rect')
-    //   .attr('width', widthFocus)
-    //   .attr('height', heightFocus)
-
     // this.container2.append('rect')
     //   .attr('class', 'zoom')
     //   .style('opacity', '0')
@@ -198,14 +190,12 @@ export class TimelineUI {
 
     this.focusInternalG = focusG.append('g')
       .attr('width', widthFocus)
-      .attr('clip-path', 'url(#clip)')
       .attr('class', 'internalG')
       .append('g')
 
     this.dragG = focusG.append('g')
       .attr('width', widthFocus)
       .attr('class', 'dragG')
-      .attr('clip-path', 'url(#clip)')
       .append('g')
 
     this.focusInternalG
@@ -294,7 +284,12 @@ export class TimelineUI {
   }
 
   private colorForSegment(s: Segment) {
-    return s.color || this.rowColor(s.row)
+    const c = s.color || this.rowColor(s.row)
+    if ((this.primaryHighlights || []).length) {
+      const isHighlighted = this.primaryHighlights.indexOf(s) > -1
+      return isHighlighted ? darkenColor(c, .5) : c
+    }
+    return c
   }
 
   private hoverColorForSegment(s: Segment) {
@@ -302,13 +297,4 @@ export class TimelineUI {
     return darkenColor(this.colorForSegment(s), 0.3)
   }
 
-  private opacityForSegment(s: Segment) {
-    if ((this.primaryHighlights || []).length) {
-      if (this.primaryHighlights.indexOf(s) > -1) { return '1' }
-      else {
-        return '0.5'
-      }
-    }
-    else { return '1' }
-  }
 }

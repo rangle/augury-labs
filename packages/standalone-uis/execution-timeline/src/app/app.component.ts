@@ -58,7 +58,7 @@ export class AppComponent {
   }
 
   public selectSegment(segment) {
-    this.selectedSegment = segment
+    this.selectedSegment = segment === this.selectedSegment ? null : segment;
   }
 
   private isTimelineSegmentMessage(message) {
