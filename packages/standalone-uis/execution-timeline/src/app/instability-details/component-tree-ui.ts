@@ -1,11 +1,12 @@
 import * as d3 from 'd3'
+import { NgZone } from '@angular/core';
 
 export class ComponentTreeUI {
 
   private containerEl: SVGElement
   private data: any
 
-  constructor(svgEl: SVGElement) {
+  constructor(private zone: NgZone, svgEl: SVGElement) {
     this.containerEl = svgEl
   }
 
@@ -15,25 +16,20 @@ export class ComponentTreeUI {
 
   public updateData(data: any) {
     this.data = data
-    console.log(data)
     this.repaint()
   }
 
   public repaint() {
     this.containerEl.innerHTML = ''
-    this.paint()
+    setTimeout(() => this.zone.run(() => this.paint()), 500)
   }
 
   private paint() {
     if (!this.data) { throw new Error('no data provided') }
-
-    const margin = { top: 20, right: 20, bottom: 30, left: 20 }
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 }
     const width = this.containerEl.clientWidth - margin.left - margin.right
     const height = this.containerEl.clientHeight - margin.top - margin.bottom
-
     const svg = d3.select(this.containerEl)
-      .attr('width', width + margin.right + margin.left)
-      .attr('height', height + margin.top + margin.bottom)
 
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`)

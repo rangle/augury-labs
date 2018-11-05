@@ -4,6 +4,7 @@
 
 :host .instability-details-container {
   margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 :host .instability-details-left {
@@ -12,5 +13,17 @@
 
 :host .instability-details-right {
   padding-left: .5em;
-  /* text-align: right; */
+}
+
+:host .instability-details-right svg {
+  height: 250px;
+  margin: 0 auto;
+}
+
+:host .component-tree-container {
+  height: 100%;
+}
+
+:host #componentTreeSvg {
+  width: 100%;
 }
