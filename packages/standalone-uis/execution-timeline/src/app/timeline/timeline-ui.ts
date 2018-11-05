@@ -13,6 +13,7 @@ const handleColor = '#6dc7ff'
 const spacingFocus = { marginBottom: 20, paddingInner: 2, tickSize: 10 }
 const spacingContext = { marginTop: 20, marginBottom: 50, paddingInner: 2, xAxisOffset: 30, tickSize: 10 }
 const spacingBrush = { marginTopAndBottom: 3 }
+const focusStartSize = 1000
 
 export class TimelineUI {
 
@@ -31,6 +32,7 @@ export class TimelineUI {
   private contextG: d3.Selection<SVGGElement, {}, null, undefined>
   private contextInternalG: d3.Selection<SVGGElement, {}, null, undefined>
   private rowColor: (row: string) => string
+  private lastPosition: [number, number]
 
   constructor(svgEl: SVGElement, svgEl2: SVGElement, rows: string[], onClick: (s: Segment) => void) {
     this.containerEl = svgEl
@@ -132,7 +134,9 @@ export class TimelineUI {
       .on('brush end', () => {
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return } // ignore brush-by-zoom
         const selection = d3.event.selection || scaleXContext.range()
-
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'mousemove') {
+          this.lastPosition = [scaleXContext(selection[0]), scaleXContext(selection[1])]
+        }
         const transformation = d3.zoomIdentity
           .scale(widthContext / (selection[1] - selection[0]))
           .translate(-selection[0], 0)
@@ -174,7 +178,6 @@ export class TimelineUI {
           .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
 
         focusG.select('.axis--x').call(axisXFocus);
-        this.contextG.select('.brush').call(brush.move, scaleXContext.range().map(transformation.invertX, transformation));
       });
 
     // this.container2.append('rect')
@@ -265,11 +268,23 @@ export class TimelineUI {
       .attr('transform', `translate(0,${heightContextInner + spacingContext.xAxisOffset})`)
       .call(axisXContext);
 
-    this.contextInternalG
+    const lastSegment = this.segments[this.segments.length - 1]
+
+    const b = this.contextInternalG
       .append('g')
       .attr('class', 'brush')
       .call(brush)
-      .call(brush.move, scaleXContext.range());
+
+    if (lastSegment) {
+      const hasPassedMin = lastSegment.end > focusStartSize + 100
+      const endMs = hasPassedMin ? focusStartSize : lastSegment.end * .8
+      const pos: [number, number] = [0, endMs]
+      if (!this.lastPosition && hasPassedMin) {
+        this.lastPosition = pos
+      }
+      const scaleFactor = (scaleXContext.range()[1] / (scaleXContext.domain()[1] - scaleXContext.domain()[0]))
+      b.call(brush.move, [scaleFactor * this.lastPosition[0], scaleFactor * this.lastPosition[1]])
+    }
 
     this.contextInternalG
       .on('mouseover', (d) => {
@@ -280,7 +295,6 @@ export class TimelineUI {
         this.contextInternalG.selectAll('.handle')
           .style('fill', null)
       })
-
   }
 
   private colorForSegment(s: Segment) {
