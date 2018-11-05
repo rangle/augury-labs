@@ -6,12 +6,13 @@ export interface Segment {
   start: number
   end: number
   row: string
-  color?: string
+  color: string
 }
 
-const spacingFocus = { marginBottom: 20, paddingInner: 2 }
-const spacingContext = { marginBottom: 20, paddingInner: 2 }
 const handleColor = '#6dc7ff'
+const spacingFocus = { marginBottom: 20, paddingInner: 2, tickSize: 10 }
+const spacingContext = { marginTop: 20, marginBottom: 50, paddingInner: 2, xAxisOffset: 30, tickSize: 10 }
+const spacingBrush = { marginTopAndBottom: 3 }
 
 export class TimelineUI {
 
@@ -27,6 +28,7 @@ export class TimelineUI {
   private container2: d3.Selection<SVGElement, {}, null, undefined>
   private focusInternalG: d3.Selection<SVGGElement, {}, null, undefined>
   private dragG: d3.Selection<SVGGElement, {}, null, undefined>
+  private contextG: d3.Selection<SVGGElement, {}, null, undefined>
   private contextInternalG: d3.Selection<SVGGElement, {}, null, undefined>
   private rowColor: (row: string) => string
 
@@ -37,6 +39,7 @@ export class TimelineUI {
     this.onClick = onClick
     this.container = d3.select(svgEl)
     this.container2 = d3.select(svgEl2)
+    this.contextG = this.container.select('#context-group')
   }
 
   public highlightPrimary(datum: Segment) {
@@ -71,7 +74,7 @@ export class TimelineUI {
   }
 
   public repaint() {
-    this.containerEl.innerHTML = ''
+    this.contextG.selectAll('*').remove()
     this.containerEl2.innerHTML = ''
     this.paint()
   }
@@ -80,7 +83,8 @@ export class TimelineUI {
     const tUI = this
 
     const heightFocus = this.container2.node().clientHeight - spacingFocus.marginBottom
-    const heightContext = this.container.node().clientHeight - spacingContext.marginBottom
+    const heightContextOuter = this.container.node().clientHeight
+    const heightContextInner = heightContextOuter - spacingContext.marginBottom - spacingContext.marginTop
     const widthFocus = this.container2.node().clientWidth
     const widthContext = this.container.node().clientWidth
     const contextWidthOverFocusWidth = widthContext / widthFocus
@@ -103,9 +107,9 @@ export class TimelineUI {
       .domain(this.rows)
       .range([0, heightFocus])
 
-    const scaleYContext = d3.scalePoint()
-      .domain(scaleYFocus.domain().concat(['']))
-      .range([0, heightContext])
+    const scaleYContext = d3.scaleBand()
+      .domain(scaleYFocus.domain())
+      .range([0, heightContextInner])
 
     // to support more than 10 rows, we have to change the color scheme
     if (this.rows.length > 10) { throw new Error('more than 10 rows') }
@@ -117,14 +121,16 @@ export class TimelineUI {
       .tickFormat((d: number) => `${d} ms`)
 
     const axisXContext = d3.axisBottom(scaleXContext)
+      .tickSize(spacingContext.tickSize)
       .tickFormat((d: number) => `${d} ms`)
 
     const axisYFocus = d3.axisLeft(scaleYFocus)
+      .tickSize(spacingFocus.tickSize)
       .tickPadding(4)
       .tickSize(0)
 
     const brush = d3.brushX()
-      .extent([[0, 0], [widthContext, heightContext]])
+      .extent([[0, spacingBrush.marginTopAndBottom], [widthContext, heightContextOuter - spacingBrush.marginTopAndBottom]])
       .on('brush end', () => {
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return } // ignore brush-by-zoom
         const selection = d3.event.selection || scaleXContext.range()
@@ -170,29 +176,25 @@ export class TimelineUI {
           .attr('transform', `translate(${translation}) scale(${scale}, 1)`)
 
         focusG.select('.axis--x').call(axisXFocus);
-        contextG.select('.brush').call(brush.move, scaleXContext.range().map(transformation.invertX, transformation));
+        this.contextG.select('.brush').call(brush.move, scaleXContext.range().map(transformation.invertX, transformation));
       });
 
-    this.container.append('defs').append('clipPath')
-      .attr('id', 'clip')
-      .append('rect')
-      .attr('width', widthFocus)
-      .attr('height', heightFocus);
+    // this.container.append('defs').append('clipPath')
+    //   .attr('id', 'clip')
+    //   .append('rect')
+    //   .attr('width', widthFocus)
+    //   .attr('height', heightFocus)
 
-    this.container2.append('rect')
-      .attr('class', 'zoom')
-      .style('opacity', '0')
-      .attr('width', widthFocus)
-      .attr('height', heightFocus)
-      .attr('transform', `translate(${0},${marginFocus.top})`)
-      .call(zoom);
+    // this.container2.append('rect')
+    //   .attr('class', 'zoom')
+    //   .style('opacity', '0')
+    //   .attr('width', widthFocus)
+    //   .attr('height', heightFocus)
+    //   .call(zoom);
 
     const focusG = this.container2.append('g')
       .attr('class', 'focus')
       .attr('height', heightFocus - spacingFocus.paddingInner)
-
-    const contextG = this.container.append('g')
-      .attr('class', 'context')
 
     this.focusInternalG = focusG.append('g')
       .attr('width', widthFocus)
@@ -246,11 +248,12 @@ export class TimelineUI {
       .attr('height', heightFocus)
 
     focusG.append('g')
+      .style('font', '8px times')
       .attr('class', 'axis axis--x')
       .attr('transform', 'translate(0,' + heightFocus + ')')
       .call(axisXFocus);
 
-    this.contextInternalG = contextG.append('g')
+    this.contextInternalG = this.contextG.append('g')
       .attr('width', widthContext)
       .append('g')
 
@@ -262,13 +265,14 @@ export class TimelineUI {
       .classed('segment', true)
       .style('fill', d => this.colorForSegment(d))
       .attr('x', d => scaleXContext(d.start - minStart))
-      .attr('y', d => scaleYContext(d.row) + spacingContext.paddingInner)
+      .attr('y', d => scaleYContext(d.row) + spacingContext.paddingInner + spacingContext.marginTop)
       .attr('width', d => scaleXContext(d.end - minStart) - scaleXContext(d.start - minStart))
-      .attr('height', (heightContext / this.rows.length) - spacingFocus.paddingInner)
+      .attr('height', (heightContextInner / this.rows.length) - spacingFocus.paddingInner)
 
     this.contextInternalG.append('g')
+      .style('font', '8px times')
       .attr('class', 'axis axis--x')
-      .attr('transform', `translate(0,${heightContext})`)
+      .attr('transform', `translate(0,${heightContextInner + spacingContext.xAxisOffset})`)
       .call(axisXContext);
 
     this.contextInternalG

@@ -1,10 +1,24 @@
-<div>
-  <Card>
-    <svg #svg width="100%" (window:resize)="onResizeSVG($event)"></svg>
-  </Card>
+<Card>
+  <div fxFlex fxLayout="column" class="content-container">
+    <div fxFlex>
+      <h3 class="section-heading">Total Segment View</h3>
+    </div>
+    <div fxFlex>
+      <svg #svg width="100%" height="160" (window:resize)="onResizeSVG($event)">
+        <g id="context-group"></g>
+      </svg>
+    </div>
+  </div>
+</Card>
 
-  <Card style="margin-top: 1em;">
-    <Legend></Legend>
-    <svg #svg2 width="100%" (window:resize)="onResizeSVG($event)"></svg>
-  </Card>
-</div>
+<Card style="margin-top:1em;">
+  <div fxFlex fxLayout="column" class="content-container">
+    <div fxFlex>
+      <h3 class="section-heading">Detailed Segment View</h3>
+    </div>
+    <Legend fxFlex></Legend>
+    <div fxFlex>
+      <svg #svg2 width="100%" (window:resize)="onResizeSVG($event)"></svg>
+    </div>
+  </div>
+</Card>

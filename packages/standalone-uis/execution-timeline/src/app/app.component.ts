@@ -30,7 +30,8 @@ export class AppComponent {
           this.dragSegments.push({
             start: message.start,
             end: message.finish,
-            row: '*'
+            row: '*',
+            color: '',
           })
         }
       }
@@ -66,21 +67,12 @@ export class AppComponent {
 
   private toTimelineSegment(message) {
     if (message.type === 'task') {
-
-      // @todo: color stuff is scattered around different files and duplicated
-      let color
-      if (message.lastElapsedTask.zone === 'root') {
-        color = '#5a1eae'
-      } else if (message.lastElapsedTask.zone === 'ng') {
-        color = '#1f77b4'
-      }
-
       return {
         originalMessage: message,
         start: message.lastElapsedTask.startPerformanceStamp,
         end: message.lastElapsedTask.finishPerformanceStamp,
         row: 'zone task',
-        color
+        color: message.lastElapsedTask.zone === 'ng' ? '#95BCDA' : '#5A1EAE',
       }
     }
     if (message.type === 'cycle') {
@@ -88,7 +80,8 @@ export class AppComponent {
         originalMessage: message,
         start: message.lastElapsedCycle.startPerformanceStamp,
         end: message.lastElapsedCycle.finishPerformanceStamp,
-        row: 'angular instability'
+        row: 'angular instability',
+        color: '#D34627',
       }
     }
     if (message.type === 'cd') {
@@ -96,7 +89,8 @@ export class AppComponent {
         originalMessage: message,
         start: message.lastElapsedCD.startPerformanceStamp,
         end: message.lastElapsedCD.finishPerformanceStamp,
-        row: 'change detection'
+        row: 'change detection',
+        color: '#9B9B9B',
       }
     }
   }

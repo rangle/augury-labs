@@ -8,7 +8,7 @@
       <div fxFlex *ngIf="selectedSegment">
         <div class="segment-details">
           <div *ngIf="selectedSegment.originalMessage.type === 'task'">
-            <Card>
+            <Card style="margin-top:1em;">
               <ag-task-details [segment]="selectedSegment.originalMessage.lastElapsedTask"></ag-task-details>
             </Card>
           </div>
@@ -16,7 +16,7 @@
             <ag-instability-details [segment]="selectedSegment.originalMessage.lastElapsedCycle"></ag-instability-details>
           </div>
           <div *ngIf="selectedSegment.originalMessage.type === 'cd'">
-            <Card>
+            <Card style="margin-top:1em;">
               <ag-cd-details [segment]="selectedSegment.originalMessage.lastElapsedCD"></ag-cd-details>
             </Card>
           </div>
