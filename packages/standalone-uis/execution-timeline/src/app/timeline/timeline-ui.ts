@@ -289,7 +289,7 @@ export class TimelineUI {
     this.contextInternalG
       .on('mouseover', (d) => {
         this.contextInternalG.selectAll('.handle')
-          .style('fill', (d: Segment) => handleColor)
+          .style('fill', () => handleColor)
       })
       .on('mouseout', (d) => {
         this.contextInternalG.selectAll('.handle')

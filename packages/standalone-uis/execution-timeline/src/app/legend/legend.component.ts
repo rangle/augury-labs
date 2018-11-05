@@ -5,6 +5,4 @@ import { Component, Input } from '@angular/core'
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.css']
 })
-export class LegendComponent {
-  constructor() { }
-}
+export class LegendComponent { }

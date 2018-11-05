@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, NgZone } from '@angular/core'
+import { Component, ElementRef, Input, NgZone, ViewChild } from '@angular/core'
 
 import { BridgeService } from '../bridge.service';
 import { round2 } from '../misc-utils'
