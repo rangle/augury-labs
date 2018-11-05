@@ -26,3 +26,12 @@
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 200;
 }
+
+:host ::ng-deep h3.section-heading {
+  font-family: Helvetica;
+  font-size: 20px;
+  color: #31394D;
+  letter-spacing: 0;
+  font-weight: 200;
+  margin-bottom: 0.3em;
+}
