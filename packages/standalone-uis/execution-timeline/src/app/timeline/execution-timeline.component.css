@@ -1,0 +1,22 @@
+:host ::ng-deep .tick line {
+  visibility: hidden;
+}
+
+:host ::ng-deep .tick text {
+  fill: #888888;
+}
+
+:host ::ng-deep .segment {
+  margin-top: 10px;
+}
+
+:host ::ng-deep .brush > .selection {
+  fill: none;
+  stroke:#E1E9EE;
+  box-shadow: 0 2px 4px 0 #E5E9F2;
+  stroke-width: 5;
+}
+
+:host ::ng-deep .domain {
+  stroke: #D8D8D8;
+}

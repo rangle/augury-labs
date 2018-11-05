@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core'
+import { Component, ElementRef, Input, NgZone, ViewChild } from '@angular/core'
 
 import { BridgeService } from '../bridge.service'
 import { round2 } from '../misc-utils'
@@ -33,7 +33,8 @@ export class InstabilityDetailsComponent {
   public consoleLog = console.log
 
   constructor(
-    private bridge: BridgeService
+    private bridge: BridgeService,
+    private zone: NgZone
   ) { }
 
   public ngOnChanges({ segment }) {
@@ -54,7 +55,7 @@ export class InstabilityDetailsComponent {
   }
 
   public init() {
-    this.componentTreeUI = new ComponentTreeUI(this.componentTreeSvg.nativeElement)
+    this.componentTreeUI = new ComponentTreeUI(this.zone, this.componentTreeSvg.nativeElement)
     // @todo: unsubscribe on unmounts
     this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {

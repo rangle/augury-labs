@@ -1,47 +1,130 @@
-<div style="display:flex;justify-content:space-between;">
-  <div style="display:inline-block;height:3.3em;overflow:hidden;">
-    <a href="https://rangle.io/" style="text-decoration: none;" target="_blank">
-      <svg style="margin:1em" width="56px" viewBox="0 0 56 28">
-        <g id="R">
-          <path id="Fill-1" d="M14.4,12.4c2.4,0,4-1.6,4-4c0-2.4-1.6-4-4-4H5.2v8H14.4z M5.2,28H0V0h14.4c5.6,0,9.2,3.4,9.2,8.4 s-3.6,8.4-9.2,8.4h-1.2L24.4,28h-7l-11-11.2H5.2V28z"></path>
-        </g>
-        <g id="_x30_1_1_">
-          <polygon points="56,0 56,28 28,28"></polygon>
-        </g>
-      </svg>
-    </a>
-    <h1 style="margin-top:0.37em;display:inline-block;vertical-align:top;color:black;padding-right:30px;">
-      Augury: Execution Timeline
-    </h1>
-  </div>
-  <div style="display:flex;">
-    <button *ngIf="recording" class="rangle-button" (click)="clear()"> clear </button>
-    <button *ngIf="recording" class="rangle-button" (click)="stop()">
-      <svg version="1.1" id="Capa_1" x="0px" y="0px" width="50%" viewBox="0 0 357 357" style="height: 40%;vertical-align: middle;">
-        <g>
-          <g id="pause">
-            <path d="M25.5,357h102V0h-102V357z M229.5,0v357h102V0H229.5z" style="fill:white" />
+<div gdAuto class="page-container">
+  <div fxLayout="row">
+    <div fxFlex fxLayout="column" class="content-container">
+      <div fxFlex>
+        <ag-execution-timeline [segments]="timelineSegments" [drag]="dragSegments" (onSegmentClick)="selectSegment($event)"
+          [selectedSegment]="selectedSegment"></ag-execution-timeline>
+      </div>
+      <div fxFlex *ngIf="selectedSegment">
+        <div class="segment-details">
+          <div *ngIf="selectedSegment.originalMessage.type === 'task'">
+            <Card style="margin-top:1em;">
+              <ag-task-details [segment]="selectedSegment.originalMessage.lastElapsedTask"></ag-task-details>
+            </Card>
+          </div>
+          <div *ngIf="selectedSegment.originalMessage.type === 'cycle'">
+            <ag-instability-details [segment]="selectedSegment.originalMessage.lastElapsedCycle"></ag-instability-details>
+          </div>
+          <div *ngIf="selectedSegment.originalMessage.type === 'cd'">
+            <Card style="margin-top:1em;">
+              <ag-cd-details [segment]="selectedSegment.originalMessage.lastElapsedCD"></ag-cd-details>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div fxFlex="1 1 300px" fxLayout="column" class="sidebar-container">
+      <div fxFlex="0 1 0%" class="sidebar-header">
+        <svg width="220px" height="34px" viewBox="0 0 220 34" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g id="Dashboard---Concept" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Dashboard---Concept-v4" transform="translate(-1138.000000, -33.000000)">
+              <g id="Group-4" transform="translate(1112.000000, 0.000000)">
+                <g id="angular-logo-with-text" transform="translate(26.000000, 33.000000)">
+                  <g id="Group-5">
+                    <polygon id="Fill-5" fill="#F2F2F2" points="15.6952075 10.7944417 15.6952075 17.7331769 19.1314723 17.7331769"></polygon>
+                    <polygon id="Fill-6" fill="#F2F2F2" points="15.6953063 4.94071147e-05 15.6953063 3.76758893 25.9690217 25.6381423 22.5638834 25.6381423 20.401087 20.6976779 15.6953063 20.6976779 15.6953063 33.7905632 29.2437253 26.3056324 31.8398221 5.50375494"></polygon>
+                    <polygon id="Fill-8" fill="#FFFFFF" points="15.6953063 4.94071147e-05 -9.88142292e-05 5.60306324 2.38626482 26.4051877 15.6953063 33.7905632 15.6953063 20.6976779 11.5722826 20.6976779 9.5972332 25.6265316 5.88799407 25.6885375 15.6953063 3.76758893"></polygon>
+                    <polygon id="Fill-7" fill="#FFFFFF" points="12.8685524 17.7332016 15.6951334 17.7332016 15.6951334 14.263834 15.6951334 10.7944664"></polygon>
+                  </g>
+                  <polygon id="Fill-22" fill="#FFFFFF" points="36.4816453 25.0297925 36.4816453 9.82870553 38.4478014 9.82870553 47.7491848 22.0740119 47.7491848 9.82870553 49.6096097 9.82870553 49.6096097 25.0297925 47.6434536 25.0297925 38.3413291 12.6767787 38.3413291 25.0297925"></polygon>
+                  <g id="Group-33" transform="translate(52.371542, 7.604743)" fill="#FFFFFF">
+                    <path d="M12.332337,16.8293972 C11.1067935,17.2977767 9.78515316,17.5312253 8.36741601,17.5312253 C2.86173419,17.5312253 0.108028656,14.8916502 0.108028656,9.61151186 C0.108028656,4.61546443 2.76563735,2.11694664 8.08085474,2.11694664 C9.60432312,2.11694664 11.0220603,2.33013834 12.332337,2.75578063 L12.332337,4.45637352 C11.0220603,3.96032609 9.67472826,3.71205534 8.2930583,3.71205534 C4.14829545,3.71205534 2.07517292,5.67895257 2.07517292,9.61151186 C2.07517292,13.827915 4.11593379,15.9373518 8.1979496,15.9373518 C8.84913538,15.9373518 9.5729496,15.8523715 10.3669219,15.6811759 L10.3669219,10.515168 L12.332337,10.515168 L12.332337,16.8293972 Z"
+                      id="Fill-23"></path>
+                    <path d="M15.4683547,11.5568676 L15.4683547,2.22336957 L17.4337698,2.22336957 L17.4337698,11.5568676 C17.4337698,14.476334 18.886586,15.9368083 21.7927125,15.9368083 C24.6978508,15.9368083 26.1511611,14.476334 26.1511611,11.5568676 L26.1511611,2.22336957 L28.1175642,2.22336957 L28.1175642,11.5568676 C28.1175642,15.5408103 26.0091156,17.5309289 21.7927125,17.5309289 C17.5765563,17.5309289 15.4683547,15.5408103 15.4683547,11.5568676"
+                      id="Fill-25"></path>
+                    <polygon id="Fill-27" points="33.5919219 2.22319664 33.5919219 15.830163 41.54375 15.830163 41.54375 17.4242836 31.6265069 17.4242836 31.6265069 2.22319664"></polygon>
+                    <polygon id="Fill-29" points="44.3818429 17.4248271 42.3413291 17.4248271 49.8991354 0.217564229 57.4562006 17.4248271 55.2770998 17.4248271 53.3106966 12.6407362 48.2830287 12.6407362 48.8255188 11.0468626 52.6516057 11.0468626 49.8139081 4.15778162"></polygon>
+                    <path d="M59.5295208,17.4250494 L59.5295208,2.22396245 L66.0142045,2.22396245 C68.9057559,2.22396245 70.35042,3.43913043 70.35042,5.86996047 C70.35042,7.84673913 68.9381176,9.31141304 66.1100543,10.2597826 L71.3291749,17.4250494 L68.7343132,17.4250494 L63.899086,10.5900692 L63.899086,9.30375494 C66.8042243,8.84179842 68.2575346,7.72692688 68.2575346,5.95469368 C68.2575346,4.55227273 67.4489872,3.85044466 65.8328804,3.85044466 L61.4956769,3.85044466 L61.4956769,17.4250494 L59.5295208,17.4250494 Z"
+                      id="Fill-31"></path>
+                  </g>
+                </g>
+                <text id="Augury" font-family="Helvetica" font-size="21" font-weight="normal" fill="#FFFFFF">
+                  <tspan x="157" y="57">AUGURY</tspan>
+                </text>
+              </g>
+            </g>
           </g>
-        </g>
-      </svg>
-    </button>
-    <button *ngIf="!recording" class="rangle-button" (click)="start()">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="
-        height: 40%;
-        vertical-align: middle;
-    ">
-        <circle cx="50" cy="50" r="50" style="
-        fill: #dc4141;
-    "></circle>
-      </svg>
-    </button>
-  </div>
-</div>
-<div style="height:90%;display:flex;flex-direction:column;overflow:hidden;">
-  <ag-execution-timeline [segments]="timelineSegments" [drag]="dragSegments" (onSegmentClick)="selectSegment($event)" [selectedSegment]="selectedSegment"></ag-execution-timeline>
-  <div class="segment-details" *ngIf="selectedSegment" style="height:60%;">
-    <ag-task-details *ngIf="selectedSegment.originalMessage.type === 'task'" [segment]="selectedSegment.originalMessage.lastElapsedTask"></ag-task-details>
-    <ag-instability-details *ngIf="selectedSegment.originalMessage.type === 'cycle'" [segment]="selectedSegment.originalMessage.lastElapsedCycle"></ag-instability-details>
-    <ag-cd-details *ngIf="selectedSegment.originalMessage.type === 'cd'" [segment]="selectedSegment.originalMessage.lastElapsedCD"></ag-cd-details>
-  </div>
-</div>
+        </svg>
+      </div>
+      <div fxFlex="1 1 100%" class="sidebar-sub-header" fxLayout="column">
+        <div fxLayout="row">
+          <div fxFlex="1 1 75%">
+            <span class="title">Augury Labs Performance Profiler</span>
+          </div>
+          <div fxFlex class="augury-logo">
+            <svg width="41px" height="44px" viewBox="0 0 41 44" version="1.1" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink">
+              <g id="Dashboard---Concept" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Dashboard---Concept-v4" transform="translate(-1378.000000, -117.000000)">
+                  <g id="augury-angular" transform="translate(1378.000000, 117.000000)">
+                    <polygon id="Path" fill="#4A3493" points="20.4116379 0 20.4116379 0 20.4116379 0 0 7.326 3.09267241 34.342 20.4116379 44 20.4116379 44 20.4116379 44 37.841056 34.342 41 7.326"></polygon>
+                    <polygon id="Path" fill="#311B92" points="20 0 20 4.884 20 4.884 20 27.104 20 27.104 20 44 20 44 37.777897 34.342 41 7.326"></polygon>
+                    <g id="Group-2" transform="translate(11.000000, 11.000000)" fill="#FFFFFF">
+                      <g id="Group-2-2" opacity="0.5" transform="translate(0.439560, 0.652174)">
+                        <path d="M19.4285714,8.30434783 C19.9877606,12.1469653 18.148838,15.9438363 14.7710313,17.9208918 C11.3932245,19.8979473 7.14341084,19.6648589 4.00729466,17.330536 C0.87117849,14.9962132 -0.532079617,11.0215191 0.453185747,7.26360997 C1.43845111,3.50570081 4.6177199,0.706497147 8.50549451,0.173913043 C8.94225223,0.112484923 9.38303943,0.0834185212 9.82417582,0.0869565217 C11.0180183,0.0858125557 12.2021189,0.299433106 13.3186813,0.717391304 C10.5926372,1.11502831 8.55021954,3.39358258 8.47757295,6.1182102 C8.40492636,8.84283782 10.3230834,11.2247095 13.0241484,11.7639206 C15.7252133,12.3031316 18.4271787,10.8435707 19.4285714,8.30434783 Z"
+                          id="Combined-Shape"></path>
+                      </g>
+                      <path d="M19.4725275,8.43478261 C20.0317166,12.2774001 18.1927941,16.0742711 14.8149873,18.0513266 C11.4371806,20.0283821 7.18736688,19.7952937 4.05125071,17.4609708 C0.915134534,15.126648 -0.488123573,11.1519539 0.49714179,7.39404475 C1.48240715,3.63613559 4.66167594,0.836931929 8.54945055,0.304347826 C8.98620828,0.242919706 9.42699547,0.213853304 9.86813187,0.217391304 C11.0616259,0.220044758 12.2450456,0.433542482 13.3626374,0.847826087 C10.6365933,1.24546309 8.59417558,3.52401736 8.52152899,6.24864498 C8.44888241,8.97327261 10.3670395,11.3551443 13.0681044,11.8943553 C15.7691693,12.4335664 18.4711347,10.9740055 19.4725275,8.43478261 Z"
+                        id="Combined-Shape-2"></path>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div fxFlex="0 0 0%" class="description">
+          Experimental developer tools & instrumentation framework used to profile, inspect and troubleshoot Angular
+          web applications.
+        </div>
+        <div class="controls-container" flexLayout="row">
+          <div flexLayout="row">
+            <button fxFlex="1 1 50%" *ngIf="recording" class="rangle-button" (click)="clear()">Clear</button>
+            <div fxFlex="1 1 50%">
+              <button fxFlex="1 1 100%" *ngIf="recording" class="rangle-button pause" (click)="stop()">
+                <svg version="1.1" id="Capa_1" x="0px" y="0px" width="50%" viewBox="0 0 357 357" style="height: 40%;vertical-align: middle;">
+                  <g>
+                    <g id="pause">
+                      <path d="M25.5,357h102V0h-102V357z M229.5,0v357h102V0H229.5z" style="fill:white" />
+                    </g>
+                  </g>
+                </svg>
+              </button>
+              <button fxFlex="1 1 100%" *ngIf="!recording" class="rangle-button" (click)="start()">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="height:40%;vertical-align: middle;">
+                  <circle cx="50" cy="50" r="50" style="fill: #dc4141;"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div fxFlex="0 0 0%" fxFlexAlign="end" class="made-by-rangle-container">
+        Made with love by Rangle
+        <a target="_blank" href="https://rangle.io">
+          <svg width="54px" height="27px" viewBox="0 0 54 27" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="Dashboard---Concept" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="Dashboard---Concept-v4" transform="translate(-1365.000000, -1075.000000)" fill="#D34627">
+                <g id="Group" transform="translate(1365.000000, 1075.000000)">
+                  <path d="M5.12588402,27 L0,27 L0,0 L14.1725601,0 C19.688826,0 23.2192362,3.27524631 23.2192362,8.09667488 C23.2192362,12.9181034 19.6718529,16.1933498 14.1725601,16.1933498 L12.9844413,16.1933498 L24,26.9833744 L17.1089109,26.9833744 L6.28005658,16.1933498 L5.09193777,16.1933498 L5.09193777,27 L5.12588402,27 Z M14.1895332,11.9538177 C16.5487977,11.9538177 18.1272984,10.4076355 18.1272984,8.09667488 C18.1272984,5.78571429 16.5487977,4.23953202 14.1895332,4.23953202 L5.14285714,4.23953202 L5.14285714,11.9538177 L14.1895332,11.9538177 Z"
+                    id="Shape" fill-rule="nonzero"></path>
+                  <polygon id="Path" points="54 0 54 27 27 27"></polygon>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </a>
+      </div>
+    </div>

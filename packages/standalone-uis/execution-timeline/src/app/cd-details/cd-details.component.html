@@ -1,32 +1,23 @@
-<div style="display:inline-block;width:50%;height:100%;vertical-align:top;">
-  <div style="height:30%">
-    <h2 style="display:inline-block"> Change Detection Run </h2>
+<div fxLayout="row">
+  <div fxFlex="1 1 50%">
     <div>
-      <b> runtime:</b> {{ runtime() }}ms
-      <!-- (+ augury's impact of {{ drag() }}ms) -->
+      <h3 class="section-heading">Change Detection Run</h3>
+      <h4 class="sub-section-heading">Runtime</h4>
+      <span class="sub-section-text">{{ runtime() }}ms</span>
+    </div>
+    <div>
+      <h4 class="sub-section-heading">Instance Check Counts</h4>
+      <table class="zui-table" style="width:100%">
+        <tbody>
+          <tr *ngFor="let a of aggregatesByComponentType ">
+            <td> {{a.componentType.name}} </td>
+            <td> {{a.entry.numChecks}} </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-  <div style="height:50%;overflow:scroll">
-    <table class="zui-table" style="width:100%">
-      <thead>
-        <tr>
-          <th>
-            Component Class
-          </th>
-          <th>
-            Number of instance checks
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let a of aggregatesByComponentType ">
-          <td> {{a.componentType.name}} </td>
-          <td> {{a.entry.numChecks}} </td>
-        </tr>
-      </tbody>
-    </table>
+  <div fxFlex="1 1 50%" fxLayout="column" fxLayoutAlign="center center" (window:resize)="onResizeSVG()">
+    <svg #sunburst style="width:100%;height:100%;"></svg>
   </div>
-</div>
-<div style="display:inline-block;width:50%;height:100%; " (window:resize)="onResizeSVG() ">
-  <svg #sunburst style="width:100%;height:100%; "></svg>
 </div>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core'
+import { Component, ElementRef, Input, NgZone, ViewChild } from '@angular/core'
 
 import { BridgeService } from '../bridge.service';
 import { round2 } from '../misc-utils'
@@ -49,6 +49,7 @@ export class ChangeDetectionDetailsComponent {
   private didInit = false
 
   constructor(
+    private zone: NgZone,
     private bridge: BridgeService
   ) { }
 
@@ -67,7 +68,7 @@ export class ChangeDetectionDetailsComponent {
   }
 
   public init() {
-    this.sunburstUI = new SunburstUI(this.sunburstSVG.nativeElement)
+    this.sunburstUI = new SunburstUI(this.zone, this.sunburstSVG.nativeElement)
     this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
 
