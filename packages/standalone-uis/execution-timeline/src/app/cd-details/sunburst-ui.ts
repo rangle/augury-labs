@@ -1,11 +1,12 @@
 import * as d3 from 'd3'
+import { NgZone } from '@angular/core';
 
 export class SunburstUI {
 
   private containerEl: SVGElement
   private data: any
 
-  constructor(svgEl: SVGElement) {
+  constructor(private zone: NgZone, svgEl: SVGElement) {
     this.containerEl = svgEl
   }
 
@@ -17,7 +18,7 @@ export class SunburstUI {
 
   public repaint() {
     this.containerEl.innerHTML = ''
-    this.paint()
+    setTimeout(() => this.zone.run(() => this.paint()), 500)
   }
 
   private paint() {
