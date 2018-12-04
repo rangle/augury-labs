@@ -10,7 +10,7 @@
   margin-top: 10px;
 }
 
-:host .brush > .selection {
+:host ::ng-deep .brush > .selection {
   fill: none;
   stroke:#E1E9EE;
   box-shadow: 0 2px 4px 0 #E5E9F2;
