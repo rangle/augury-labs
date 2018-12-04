@@ -121,7 +121,6 @@ export class ExecutionTimelineComponent implements OnChanges {
   }
 
   private paint() {
-    console.log('!!! Painting !!!')
     d3.select(this.contextContentGElement.nativeElement).selectAll('*').remove()
     d3.select(this.focusContentAuguryGElement.nativeElement).selectAll('*').remove()
     d3.select(this.focusContentMainGElement.nativeElement).selectAll('*').remove()
