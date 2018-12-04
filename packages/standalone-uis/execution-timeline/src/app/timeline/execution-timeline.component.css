@@ -10,7 +10,7 @@
   margin-top: 10px;
 }
 
-:host ::ng-deep .brush > .selection {
+:host .brush > .selection {
   fill: none;
   stroke:#E1E9EE;
   box-shadow: 0 2px 4px 0 #E5E9F2;
@@ -19,4 +19,9 @@
 
 :host ::ng-deep .domain {
   stroke: #D8D8D8;
+}
+
+
+:host #focus-chart, :host #focus-chart g {
+  width: 100%;
 }

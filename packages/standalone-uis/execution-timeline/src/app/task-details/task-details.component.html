@@ -5,7 +5,7 @@
   <h4 class="sub-section-heading">Zone</h4>
   <span class="sub-section-text">{{ segment.zone }}</span>
   <h4 class="sub-section-heading">Target Type</h4>
-  <span class="sub-section-text">{{segment.task.target.constructor.name}}</span>
+  <span class="sub-section-text">{{segment.task.target && segment.task.target.constructor.name}}</span>
   <h4 class="sub-section-heading">Source</h4>
   <span class="sub-section-text">{{segment.task.source}}</span>
   <h4 class="sub-section-heading">Runtime</h4>

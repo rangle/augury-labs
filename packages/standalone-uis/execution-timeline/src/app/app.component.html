@@ -1,11 +1,11 @@
 <div gdAuto class="page-container">
   <div fxLayout="row">
     <div fxFlex fxLayout="column" class="content-container">
-      <div fxFlex>
-        <ag-execution-timeline [segments]="timelineSegments" [drag]="dragSegments" (onSegmentClick)="selectSegment($event)"
+      <div>
+        <ag-execution-timeline [segments]="timelineSegments" [augurySegments]="dragSegments" (onSegmentClick)="selectSegment($event)"
           [selectedSegment]="selectedSegment"></ag-execution-timeline>
       </div>
-      <div fxFlex *ngIf="selectedSegment">
+      <div *ngIf="selectedSegment">
         <div class="segment-details">
           <div *ngIf="selectedSegment.originalMessage.type === 'task'">
             <Card style="margin-top:1em;">
