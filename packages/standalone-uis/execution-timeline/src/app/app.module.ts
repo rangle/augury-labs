@@ -8,10 +8,10 @@ import { AppComponent } from './app.component'
 import { BridgeService } from './bridge.service'
 import { CardComponent } from './card'
 import { ChangeDetectionDetailsComponent } from './cd-details'
+import { ExecutionTimelineComponent } from './execution-timeline'
 import { InstabilityDetailsComponent } from './instability-details'
 import { LegendComponent } from './legend';
 import { TaskDetailsComponent } from './task-details'
-import { ExecutionTimelineComponent } from './timeline'
 
 @NgModule({
   declarations: [

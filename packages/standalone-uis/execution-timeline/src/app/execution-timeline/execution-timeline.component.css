@@ -20,3 +20,8 @@
 :host ::ng-deep .domain {
   stroke: #D8D8D8;
 }
+
+
+:host #focus-chart, :host #focus-chart g {
+  width: 100%;
+}

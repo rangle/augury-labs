@@ -1,0 +1,32 @@
+<Card>
+  <div fxFlex fxLayout="column">
+    <div fxFlex>
+      <h3 class="section-heading">Timeline Overview</h3>
+    </div>
+    <div #contextOuterContainer fxFlex>
+      <svg #contextContainer width="100%" height="160" (window:resize)="onResizeSVG($event)">
+        <g #contextContent></g>
+        <g #contextAxis></g>
+        <g #contextBrush class="brush"></g>
+      </svg>
+    </div>
+  </div>
+</Card>
+
+<Card style="margin-top:1em;">
+  <div fxFlex fxLayout="column">
+    <div fxFlex>
+      <h3 class="section-heading">Timeline Detail View</h3>
+    </div>
+    <Legend fxFlex></Legend>
+    <div #focusOuterContainer fxFlex="1 1 150px">
+      <svg #focusContainer width="100%" (window:resize)="onResizeSVG($event)">
+        <g #focusContent id="focus-chart">
+          <g #focusMainContent></g>
+          <g #focusAuguryContent></g>
+        </g>
+        <g #focusAxis></g>
+      </svg>
+    </div>
+  </div>
+</Card>

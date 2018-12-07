@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core'
 
 import { BridgeService } from './bridge.service'
-import { ExtendableSegment } from './timeline'
+import { ExtendableSegment } from './execution-timeline';
 
 @Component({
   selector: 'app-root',
