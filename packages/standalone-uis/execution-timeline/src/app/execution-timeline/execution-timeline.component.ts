@@ -181,8 +181,13 @@ export class ExecutionTimelineComponent implements OnChanges {
     const brush = d3.brushX()
       .extent([[0, spacingBrush.marginTopAndBottom], [widthContext, Math.max(0, heightContextOuter - spacingBrush.marginTopAndBottom)]])
       .on('brush end', () => {
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return } // ignore brush-by-zoom
         const selection = d3.event.selection || scaleXContext.range()
+        d3.select(this.contextContainerSVGElement.nativeElement)
+          .select('#selectionMaskBackground')
+          .attr('width', selection[1] - selection[0])
+          .attr('x', selection[0])
+
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return } // ignore brush-by-zoom
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'end') {
           this.lastPosition = [scaleXContext(selection[0]), scaleXContext(selection[1])]
         }
@@ -307,6 +312,16 @@ export class ExecutionTimelineComponent implements OnChanges {
       d3.select(this.contextBrushGElement.nativeElement)
         .call(brush.move, pos)
   }
+
+  d3.select(this.contextContainerSVGElement.nativeElement)
+    .select('.brush .overlay')
+    .attr('mask', 'url(#selectionMask)')
+
+  d3.select(this.contextContainerSVGElement.nativeElement)
+    .select('#selectionMaskCutout')
+    .style('width', widthContext)
+    .style('height', heightContextInner)
+    .attr('y', spacingContext.marginTop)
 
   d3.select(this.contextBrushGElement.nativeElement)
     .on('mouseover', (d) => {
