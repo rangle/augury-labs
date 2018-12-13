@@ -301,6 +301,14 @@ export class ExecutionTimelineComponent implements OnChanges {
     d3.select(this.focusContainerSVGElement.nativeElement)
       .call(zoom)
 
+    d3.select(this.focusOuterContainerElement.nativeElement)
+      .on('wheel.zoom', () => {
+        if (d3.event.shiftKey) {
+          d3.select(this.contextBrushGElement.nativeElement)
+            .call(brush.move, [scaleXContext(scaleXFocus.domain()[0] + d3.event.deltaX), scaleXContext(scaleXFocus.domain()[1] + d3.event.deltaX)])
+        }
+      })
+
     if (lastSegment) {
       const hasPassedMin = lastSegment.end > focusStartSize + 100
       const endMs = hasPassedMin ? focusStartSize : lastSegment.end * .8
