@@ -266,7 +266,7 @@ export class ExecutionTimelineComponent implements OnChanges {
       .data(this.augurySegments)
       .enter()
       .append('rect')
-      .classed('drag-segment', true)
+      .classed('augury-segment', true)
       .style('fill', 'grey')
       .style('opacity', '0.2')
       .style('pointer-events', 'none')
