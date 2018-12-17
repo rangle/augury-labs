@@ -21,6 +21,7 @@ const spacingFocus = { marginBottom: 20, paddingInner: 2, tickSize: 10 }
 const spacingContext = { marginTop: 20, marginBottom: 50, paddingInner: 2, xAxisOffset: 30, tickSize: 10 }
 const spacingBrush = { marginTopAndBottom: 3 }
 const focusStartSize = 1000
+const horizontalScrollScaleFactor = 4
 
 export type ExtendableSegment = Required<Segment>
 export interface Segment {
@@ -181,8 +182,13 @@ export class ExecutionTimelineComponent implements OnChanges {
     const brush = d3.brushX()
       .extent([[0, spacingBrush.marginTopAndBottom], [widthContext, Math.max(0, heightContextOuter - spacingBrush.marginTopAndBottom)]])
       .on('brush end', () => {
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return } // ignore brush-by-zoom
         const selection = d3.event.selection || scaleXContext.range()
+        d3.select(this.contextContainerSVGElement.nativeElement)
+          .select('#selectionMaskBackground')
+          .attr('width', selection[1] - selection[0])
+          .attr('x', selection[0])
+
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') { return } // ignore brush-by-zoom
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'end') {
           this.lastPosition = [scaleXContext(selection[0]), scaleXContext(selection[1])]
         }
@@ -261,7 +267,7 @@ export class ExecutionTimelineComponent implements OnChanges {
       .data(this.augurySegments)
       .enter()
       .append('rect')
-      .classed('drag-segment', true)
+      .classed('augury-segment', true)
       .style('fill', 'grey')
       .style('opacity', '0.2')
       .style('pointer-events', 'none')
@@ -296,17 +302,43 @@ export class ExecutionTimelineComponent implements OnChanges {
     d3.select(this.focusContainerSVGElement.nativeElement)
       .call(zoom)
 
+    d3.select(this.focusOuterContainerElement.nativeElement)
+      .on('wheel.zoom', () => {
+        if (d3.event.shiftKey) {
+          const scaledDelta = d3.event.deltaX / horizontalScrollScaleFactor
+          const selectionRange = [scaleXContext(scaleXFocus.domain()[0]), scaleXContext(scaleXFocus.domain()[1])]
+          const constrainedDelta = scaledDelta > 0 ? Math.min(scaleXContext.range()[1] - selectionRange[1], scaledDelta) : Math.max(scaledDelta, -selectionRange[0])
+          if (scaledDelta !== 0) {
+            d3.select(this.contextBrushGElement.nativeElement)
+              .call(brush.move, [selectionRange[0] + constrainedDelta, selectionRange[1] + constrainedDelta])
+          }
+        }
+      })
+
     if (lastSegment) {
       const hasPassedMin = lastSegment.end > focusStartSize + 100
       const endMs = hasPassedMin ? focusStartSize : lastSegment.end * .8
       const scaleFactor = scaleXContext.range()[1] / (scaleXContext.domain()[1] - scaleXContext.domain()[0])
-      const pos: [number, number] = !this.lastPosition && hasPassedMin ? [0, endMs] : [scaleFactor * this.lastPosition[0], scaleFactor * this.lastPosition[1]]
+      const pos: [number, number] = !this.lastPosition && hasPassedMin
+        ? [0, endMs]
+        : [scaleFactor * (this.lastPosition ? this.lastPosition[0] : 0), scaleFactor * (this.lastPosition ? this.lastPosition[1] : endMs)]
+
       if (!this.lastPosition && hasPassedMin) {
         this.lastPosition = pos
       }
       d3.select(this.contextBrushGElement.nativeElement)
         .call(brush.move, pos)
   }
+
+  d3.select(this.contextContainerSVGElement.nativeElement)
+    .select('.brush .overlay')
+    .attr('mask', 'url(#selectionMask)')
+
+  d3.select(this.contextContainerSVGElement.nativeElement)
+    .select('#selectionMaskCutout')
+    .style('width', widthContext)
+    .style('height', heightContextInner)
+    .attr('y', spacingContext.marginTop)
 
   d3.select(this.contextBrushGElement.nativeElement)
     .on('mouseover', (d) => {

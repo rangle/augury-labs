@@ -12,16 +12,20 @@
 
 :host ::ng-deep .brush > .selection {
   fill: none;
-  stroke:#E1E9EE;
-  box-shadow: 0 2px 4px 0 #E5E9F2;
+  stroke: #e1e9ee;
+  box-shadow: 0 2px 4px 0 #e5e9f2;
   stroke-width: 5;
 }
 
 :host ::ng-deep .domain {
-  stroke: #D8D8D8;
+  stroke: #d8d8d8;
 }
 
+:host ::ng-deep .brush .overlay {
+  fill: rgba(255, 255, 255, 0.5);
+}
 
-:host #focus-chart, :host #focus-chart g {
+:host #focus-chart,
+:host #focus-chart g {
   width: 100%;
 }
