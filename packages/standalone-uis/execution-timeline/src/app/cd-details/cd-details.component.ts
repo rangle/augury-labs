@@ -1,14 +1,14 @@
 import { Component, ElementRef, Input, NgZone, ViewChild } from '@angular/core'
 
+import { FlameGraphData } from 'app/flame-graph';
 import { BridgeService } from '../bridge.service';
 import { round2 } from '../misc-utils'
-import { SunburstUI } from './sunburst-ui'
 
-function createSunburstFromCDTree(tree = [] as any[], checkTimePerInstance = new Map()) {
+function flameGraphDataFromCDTree(tree = [] as any[], checkTimePerInstance = new Map()) {
   return tree.map(node => ({
     name: node.componentInstance.constructor.name,
-    size: checkTimePerInstance.get(node.componentInstance),
-    children: createSunburstFromCDTree(node.childNodes, checkTimePerInstance)
+    value: checkTimePerInstance.get(node.componentInstance),
+    children: flameGraphDataFromCDTree(node.childNodes, checkTimePerInstance)
   }))
 }
 
@@ -37,21 +37,20 @@ function aggregatesByComponentType(checkTimePerInstance) {
 })
 export class ChangeDetectionDetailsComponent {
   @Input() public segment: any
-  @ViewChild('sunburst') public sunburstSVG: ElementRef
+  @ViewChild('chartContainer') public chartContainerElement: ElementRef
 
-  // template utils
   public round = round2
-  public consoleLog = console.log
 
   public aggregatesByComponentType
 
-  private sunburstUI: SunburstUI
+  public treeData: FlameGraphData
+
   private didInit = false
 
   constructor(
-    private zone: NgZone,
-    private bridge: BridgeService
-  ) { }
+    private bridge: BridgeService,
+    private ngZone: NgZone
+  ) {}
 
   public ngOnChanges({ segment }) {
     if (!this.didInit) {// @todo: unsubscribe on unmount
@@ -68,7 +67,6 @@ export class ChangeDetectionDetailsComponent {
   }
 
   public init() {
-    this.sunburstUI = new SunburstUI(this.zone, this.sunburstSVG.nativeElement)
     this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
 
@@ -77,31 +75,19 @@ export class ChangeDetectionDetailsComponent {
             message.data.checkTimePerInstance
           )
 
-        this.sunburstUI.updateData(
-          createSunburstFromCDTree(
-            message.data.mergedComponentTree,
-            message.data.checkTimePerInstance
-          )
-        )
-
+        this.treeData = flameGraphDataFromCDTree(
+          message.data.mergedComponentTree,
+          message.data.checkTimePerInstance
+        )[0]
       }
     })
     this.didInit = true
   }
-
-  public onResizeSVG() {
-    this.sunburstUI.repaint()
-  }
-
   public runtime() {
     return round2(
       this.segment.finishPerformanceStamp
       - this.segment.startPerformanceStamp
       - this.segment.drag
     )
-  }
-
-  public drag() {
-    return round2(this.segment.drag)
   }
 }

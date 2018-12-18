@@ -36,6 +36,8 @@
     "@angular/platform-browser-dynamic": "^7.1.2",
     "core-js": "^2.6.0",
     "d3": "^5.7.0",
+    "d3-flame-graph": "^2.0.6",
+    "d3-tip": "^0.9.1",
     "ng2-tooltip-directive": "^2.1.6",
     "tslib": "^1.9.3",
     "web-animations-js": "^2.3.1",
@@ -48,6 +50,7 @@
     "@angular/compiler-cli": "^7.1.2",
     "@augury/tools": "^0.5.0",
     "@ngtools/webpack": "^7.1.2",
-    "@types/d3": "^5.0.0"
+    "@types/d3": "^5.0.0",
+    "@types/d3-tip": "3.5.5"
   }
 }
