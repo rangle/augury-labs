@@ -1,7 +1,7 @@
 {
   "name": "@augury/unit-tester-plugin",
   "private": true,
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Unit testing plugin for Augury Labs",
   "author": "rangle.io",
   "homepage": "https://github.com/rangle/augury-labs#readme",
@@ -32,9 +32,9 @@
     "link": "yarn link"
   },
   "devDependencies": {
-    "@augury/tools": "^0.5.1"
+    "@augury/tools": "^0.5.2"
   },
   "dependencies": {
-    "@augury/core": "^0.5.1"
+    "@augury/core": "^0.5.2"
   }
 }

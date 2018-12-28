@@ -1,6 +1,6 @@
 {
   "name": "@augury/core",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Provides the core infrastructure for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -31,6 +31,6 @@
     "link": "yarn link"
   },
   "devDependencies": {
-    "@augury/tools": "^0.5.1"
+    "@augury/tools": "^0.5.2"
   }
 }
