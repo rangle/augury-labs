@@ -9,6 +9,7 @@ import { BridgeService } from './bridge.service'
 import { CardComponent } from './card'
 import { ChangeDetectionDetailsComponent } from './cd-details'
 import { ExecutionTimelineComponent } from './execution-timeline'
+import { FlameGraphComponent } from './flame-graph';
 import { InstabilityDetailsComponent } from './instability-details'
 import { LegendComponent } from './legend';
 import { TaskDetailsComponent } from './task-details'
@@ -22,6 +23,7 @@ import { TaskDetailsComponent } from './task-details'
     ChangeDetectionDetailsComponent,
     CardComponent,
     LegendComponent,
+    FlameGraphComponent,
   ],
   imports: [BrowserModule, TooltipModule, FlexModule, GridModule],
   providers: [BridgeService],

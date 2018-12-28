@@ -1,0 +1,35 @@
+:host ::ng-deep g[name="__HIDDEN__"] {
+  visibility: hidden;
+}
+
+:host {
+  width: 100%;
+}
+
+:host .container, :host .container svg {
+  width: 100%;
+}
+
+:host ::ng-deep .d3-flame-graph-label {
+  pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 12px;
+  font-family: Verdana;
+  margin-left: 4px;
+  margin-right: 4px;
+  line-height: 1.5;
+  padding: 0 0 0;
+  font-weight: 400;
+  color: black;
+  text-align: left;
+}
+
+::ng-deep .d3-flame-graph-tip {
+  line-height: 1;
+  padding: 1em;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
