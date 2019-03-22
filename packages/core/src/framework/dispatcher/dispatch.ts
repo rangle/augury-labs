@@ -1,3 +1,3 @@
-import { AuguryEvent } from '../events'
+import { AuguryEvent } from '../events';
 
-export type Dispatch = (event: AuguryEvent) => void
+export type Dispatch = (event: AuguryEvent) => void;

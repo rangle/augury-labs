@@ -1,0 +1,16 @@
+<form [formGroup]="formGroup"
+      (ngSubmit)="updated.emit(formGroup.value)">
+  <label>
+    Use trackBy:
+    <input type="checkbox"
+           [formControl]="formGroup.get('useTrackBy')" />
+  </label>
+  <label>
+    Replace: <input [formControl]="formGroup.get('target')" />
+  </label>
+  <label>
+    With: <input [formControl]="formGroup.get('replacement')" />
+  </label>
+
+  <button type="submit">Run Update</button>
+</form>

@@ -1,5 +1,5 @@
-import { Probe } from '../framework/probes/probe'
-import * as helpers from './shared-helpers/ng-module'
+import { Probe } from '../framework/probes/probe';
+import * as helpers from './shared-helpers/ng-module';
 
 export class ModuleMethodsProbe extends Probe {
   // actions
@@ -13,31 +13,31 @@ export class ModuleMethodsProbe extends Probe {
   // private detainJobs: boolean = false
 
   // target
-  private ngModule
+  private ngModule;
 
   public beforeNgBootstrap({ ngModule }) {
-    this.ngModule = ngModule
+    this.ngModule = ngModule;
 
     function getAllRecursively(getAllFromModule: (module) => any[], module: any) {
-      const allInModule = getAllFromModule(module)
-      const recursiveImports = helpers.getImportedModulesFromModule(module)
+      const allInModule = getAllFromModule(module);
+      const recursiveImports = helpers.getImportedModulesFromModule(module);
       const allInImports = recursiveImports.reduce(
         (all, importedModule) => all.concat(getAllFromModule(importedModule)),
         [],
-      )
-      return allInModule.concat(allInImports)
+      );
+      return allInModule.concat(allInImports);
     }
 
-    const components = getAllRecursively(helpers.getComponentsFromModule, this.ngModule)
-    const services = getAllRecursively(helpers.getServicesFromModule, this.ngModule)
+    const components = getAllRecursively(helpers.getComponentsFromModule, this.ngModule);
+    const services = getAllRecursively(helpers.getServicesFromModule, this.ngModule);
 
-    const probe = this
+    const probe = this;
     function wrapMethod(
       Class: any,
       methodName: string,
       classType: 'service' | 'component', // todo: there are other options
     ) {
-      const original = Class.prototype[methodName]
+      const original = Class.prototype[methodName];
       Class.prototype[methodName] = function(...args) {
         probe.emit('method_invoked', {
           perfstamp: performance.now(),
@@ -47,9 +47,9 @@ export class ModuleMethodsProbe extends Probe {
           instance: this,
           args,
           module: Class.__m,
-        })
+        });
 
-        const retVal = original.apply(this, args)
+        const retVal = original.apply(this, args);
 
         probe.emit('method_completed', {
           perfstamp: performance.now(),
@@ -60,49 +60,49 @@ export class ModuleMethodsProbe extends Probe {
           args,
           retVal,
           module: Class.__m,
-        })
+        });
 
-        return retVal
-      }
-      Class.prototype[methodName].__augury_wrapped__ = true
+        return retVal;
+      };
+      Class.prototype[methodName].__augury_wrapped__ = true;
     }
 
     function shouldWrapMethod(Class: any, propertyName: string): boolean {
       if (propertyName === 'constructor') {
-        return false
+        return false;
       }
 
       // TODO: some prototype members use getters/setters
-      const propDesc = Object.getOwnPropertyDescriptor(Class.prototype, propertyName)
+      const propDesc = Object.getOwnPropertyDescriptor(Class.prototype, propertyName);
       if (propDesc && propDesc.get) {
-        return false
+        return false;
       }
 
-      const property = Class.prototype[propertyName]
+      const property = Class.prototype[propertyName];
       if (typeof property !== 'function') {
-        return false
+        return false;
       }
       if (property.__added_by_augury__) {
-        return false
+        return false;
       }
       if (property.__augury_wrapped__) {
-        return false
+        return false;
       }
       if (typeof property !== 'function') {
-        return false
+        return false;
       }
-      return true
+      return true;
     }
 
     function wrapClassMethods(Class: () => any, classType: 'service' | 'component') {
       Object.getOwnPropertyNames(Class.prototype).forEach(propertyName => {
         if (shouldWrapMethod(Class, propertyName)) {
-          wrapMethod(Class, propertyName, classType)
+          wrapMethod(Class, propertyName, classType);
         }
-      })
+      });
     }
 
-    services.forEach(Service => wrapClassMethods(Service, 'service'))
-    components.forEach(Component => wrapClassMethods(Component, 'component'))
+    services.forEach(Service => wrapClassMethods(Service, 'service'));
+    components.forEach(Component => wrapClassMethods(Component, 'component'));
   }
 }

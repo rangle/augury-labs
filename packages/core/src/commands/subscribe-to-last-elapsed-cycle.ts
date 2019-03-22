@@ -1,4 +1,4 @@
-import { Command, CommandRequest, CommandResult } from '../framework/commands'
+import { Command, CommandRequest, CommandResult } from '../framework/commands';
 
 export const subscribeToLastElapsedCycle: Command<
   CommandRequest<{ testParam: string }>,
@@ -7,8 +7,8 @@ export const subscribeToLastElapsedCycle: Command<
   name: 'subscribe-to-last-elapsed-cycle',
   availableToPlugins: true,
   parseReactions(reactionResults) {
-    const { channel } = reactionResults['create-last-elapsed-cycle-channel']
+    const { channel } = reactionResults['create-last-elapsed-cycle-channel'];
 
-    return { success: true, channel }
+    return { success: true, channel };
   },
-}
+};

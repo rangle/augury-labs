@@ -1,5 +1,5 @@
-import { Command, CommandRequest, CommandResult } from '../framework/commands'
-import { Reducer } from '../framework/reducers'
+import { Command, CommandRequest, CommandResult } from '../framework/commands';
+import { Reducer } from '../framework/reducers';
 
 export const requestHistoryScan: Command<
   CommandRequest<any>,
@@ -9,8 +9,8 @@ export const requestHistoryScan: Command<
   methodName: 'scanHistory',
   availableToPlugins: true,
   parseReactions(reactionResults) {
-    const { success = false, result, errors } = reactionResults['scan-history'] || ({} as any)
+    const { success = false, result, errors } = reactionResults['scan-history'] || ({} as any);
 
-    return { success, result, errors }
+    return { success, result, errors };
   },
-}
+};

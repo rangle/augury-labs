@@ -1,3 +1,3 @@
-import { Reaction } from './reaction'
+import { Reaction } from './reaction';
 
-export type ReactionRegistry = Reaction[]
+export type ReactionRegistry = Reaction[];

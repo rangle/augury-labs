@@ -1,18 +1,18 @@
-import { NgModule } from '@angular/core'
-import { GridModule } from '@angular/flex-layout'
-import { FlexModule } from '@angular/flex-layout/flex'
-import { BrowserModule } from '@angular/platform-browser'
-import { TooltipModule } from 'ng2-tooltip-directive'
+import { NgModule } from '@angular/core';
+import { GridModule } from '@angular/flex-layout';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { BrowserModule } from '@angular/platform-browser';
+import { TooltipModule } from 'ng2-tooltip-directive';
 
-import { AppComponent } from './app.component'
-import { BridgeService } from './bridge.service'
-import { CardComponent } from './card'
-import { ChangeDetectionDetailsComponent } from './cd-details'
-import { ExecutionTimelineComponent } from './execution-timeline'
+import { AppComponent } from './app.component';
+import { BridgeService } from './bridge.service';
+import { CardComponent } from './card';
+import { ChangeDetectionDetailsComponent } from './cd-details';
+import { ExecutionTimelineComponent } from './execution-timeline';
 import { FlameGraphComponent } from './flame-graph';
-import { InstabilityDetailsComponent } from './instability-details'
+import { InstabilityDetailsComponent } from './instability-details';
 import { LegendComponent } from './legend';
-import { TaskDetailsComponent } from './task-details'
+import { TaskDetailsComponent } from './task-details';
 
 @NgModule({
   declarations: [
@@ -29,4 +29,4 @@ import { TaskDetailsComponent } from './task-details'
   providers: [BridgeService],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

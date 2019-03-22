@@ -1,74 +1,62 @@
-import { Component, NgZone, ElementRef, ViewChild } from '@angular/core';
-import { } from '@angular/forms';
+import { Component, ElementRef, NgZone, ViewChild } from '@angular/core';
+import {} from '@angular/forms';
 
 const COUNT_INTERVAL = 500;
 
 @Component({
   selector: 'app-run-outside-angular',
   templateUrl: './run-outside-angular.component.html',
-  styleUrls: ['./run-outside-angular.component.css']
+  styleUrls: ['./run-outside-angular.component.css'],
 })
 export class RunOutsideAngularComponent {
+  public currentNum = 0;
+  public outsideAngular = false;
+  public buttonDisabled = false;
 
-  currentNum = 0;
-  outsideAngular = false;
-  buttonDisabled = false;
+  @ViewChild('currentNumInput') public numInputRef: ElementRef;
 
-  @ViewChild('currentNumInput') numInputRef: ElementRef;
+  public numberChildren = 0;
+  public status = 'change me';
 
-  numberChildren = 0;
-  status = 'change me';
+  constructor(private ngZone: NgZone) {}
 
-
-  constructor(private _ngZone: NgZone) { }
-
-  test(x) {
-    console.log(x)
+  public test(x) {
+    console.log(x);
   }
 
-  noop() {
-
+  public noop() {
+    // do nothing
   }
 
-  run() {
-    this.currentNum = 0
-    this.buttonDisabled = true
-    if (!this.outsideAngular)
-      this.doCount()
-    else
-      this._ngZone.runOutsideAngular(() => this.doCount())
+  public run() {
+    this.currentNum = 0;
+    this.buttonDisabled = true;
+    if (!this.outsideAngular) { this.doCount(); }
+    else { this.ngZone.runOutsideAngular(() => this.doCount()); }
   }
 
-  doCount() {
+  public doCount() {
     Array(5)
       .fill(true)
       .map((_, i) => i * COUNT_INTERVAL)
-      .forEach(intervalLength =>
-        setTimeout(
-          () => this.currentNum += 1,
-          intervalLength
-        )
-      )
-    setTimeout(
-      () => this.buttonDisabled = false,
-      COUNT_INTERVAL * 6
-    )
+      .forEach(intervalLength => setTimeout(() => (this.currentNum += 1), intervalLength));
+    setTimeout(() => (this.buttonDisabled = false), COUNT_INTERVAL * 6);
   }
 
-  getInputVal() {
-    return parseInt(this.numInputRef.nativeElement.value || 0)
+  public getInputVal() {
+    return parseInt(this.numInputRef.nativeElement.value || 0, 10);
   }
 
-  onSubmit() {
+  public onSubmit() {
     this.status = 'starting runOutsideAngular(fn)';
-    this._ngZone.runOutsideAngular(() => {
+    this.ngZone.runOutsideAngular(() => {
       const el = document.getElementById('populateChildren');
       clearEl(el);
       addChildrenTo(el, this.numberChildren);
     });
   }
 
-  clearChildren() {
+  public clearChildren() {
     const el = document.getElementById('populateChildren');
     clearEl(el);
     this.status = 'cleared';
@@ -82,7 +70,7 @@ function addChildrenTo(el: Element, count: number) {
     const timeout = Math.ceil(Math.random() * 1000);
     setTimeout(() => {
       addInputTo(el, 'child' + i, text);
-      update_status('child' + i + ' =  ' + text);
+      updateStatus('child' + i + ' =  ' + text);
     }, timeout);
   }
 }
@@ -104,9 +92,9 @@ function addInputTo(el: Element, name: string, value: string) {
   el.appendChild(box);
 }
 
-function update_status(text: string) {
-  const el_status = <HTMLInputElement>document.getElementById('status');
-  el_status.value = text;
+function updateStatus(text: string) {
+  const statusElement = document.getElementById('status') as HTMLInputElement;
+  statusElement.value = text;
 }
 
 function makeString(numCharacters: number) {

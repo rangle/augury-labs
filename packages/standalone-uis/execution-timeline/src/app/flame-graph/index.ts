@@ -1,1 +1,1 @@
-export * from './flame-graph.component'
+export * from './flame-graph.component';

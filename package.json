@@ -22,8 +22,8 @@
     "coverage": "lerna run coverage",
     "lint": "lerna run lint",
     "precommit": "lerna run --concurrency 1 --stream precommit",
-    "pretty:check": "prettier --list-different '**/*.{css,js,json,md,scss,ts}'",
-    "pretty:fix": "prettier --write '**/*.{css,js,json,md,scss,ts}'"
+    "pretty:check": "prettier --list-different \"**/*.{css,js,json,md,scss,ts}\"",
+    "pretty:fix": "prettier --write \"**/*.{css,js,json,md,scss,ts}\""
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",

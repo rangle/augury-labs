@@ -1,18 +1,18 @@
 export class SimpleQueue<ItemType> {
-  private items: ItemType[] = []
+  private items: ItemType[] = [];
 
   public hasItems() {
-    return Boolean(this.items.length)
+    return Boolean(this.items.length);
   }
 
   public enqueue(item: ItemType) {
-    this.items.unshift(item)
+    this.items.unshift(item);
   }
 
   public dequeue() {
     if (!this.hasItems()) {
-      return
+      return;
     }
-    return this.items.pop()
+    return this.items.pop();
   }
 }

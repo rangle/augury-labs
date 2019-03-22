@@ -1,35 +1,35 @@
-import { SyncEventEmitter } from '@augury/core'
-import { active } from 'd3'
+import { SyncEventEmitter } from '@augury/core';
+import { active } from 'd3';
 
 // @todo: this should be shared across plugins
 // @todo: if you open popouts with the same name from 2 different tabs,
 //        i think it'll try to use the same one, causing a bridge conflict
 
-const allControllers: PopoutController[] = []
-window.onunload = window.onbeforeunload = () => allControllers.forEach(c => c.kill())
+const allControllers: PopoutController[] = [];
+window.onunload = window.onbeforeunload = () => allControllers.forEach(c => c.kill());
 
 export function openPopout(name: string) {
-  let popoutWindow: any = open('', name, 'height=800,width=1200,titlebar=yes,location=no')
+  let popoutWindow: any = open('', name, 'height=800,width=1200,titlebar=yes,location=no');
 
   if (!popoutWindow) {
-    throw new Error('please allow popups')
+    throw new Error('please allow popups');
   }
 
   if (popoutWindow.bridge) {
-    popoutWindow.close()
-    popoutWindow = open('', name, 'height=800,width=1200,titlebar=yes,location=no')
+    popoutWindow.close();
+    popoutWindow = open('', name, 'height=800,width=1200,titlebar=yes,location=no');
   }
 
   const bridge = {
     in: new SyncEventEmitter(),
     out: new SyncEventEmitter(),
-  }
+  };
 
-  const controller = new PopoutController(name, popoutWindow, bridge)
+  const controller = new PopoutController(name, popoutWindow, bridge);
 
-  allControllers.push(controller)
+  allControllers.push(controller);
 
-  return controller
+  return controller;
 }
 
 export class PopoutController {
@@ -38,26 +38,26 @@ export class PopoutController {
     public window,
     public bridge, // @todo: type
   ) {
-    this.window.bridge = this.bridge
+    this.window.bridge = this.bridge;
   }
 
   public write(text) {
-    this.window.document.open()
-    this.window.document.write(text)
+    this.window.document.open();
+    this.window.document.write(text);
   }
 
   public injectScript(scriptText: string) {
-    const tag = this.window.document.createElement('script')
-    tag.innerHTML = scriptText
+    const tag = this.window.document.createElement('script');
+    tag.innerHTML = scriptText;
 
-    this.window.document.body.appendChild(tag)
+    this.window.document.body.appendChild(tag);
   }
 
   public function(name, implementation) {
-    this.window[name] = implementation
+    this.window[name] = implementation;
   }
 
   public kill() {
-    this.window.close()
+    this.window.close();
   }
 }

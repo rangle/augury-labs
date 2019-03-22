@@ -1,20 +1,20 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
-import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag'
-import { CurrentCDReducer } from './current-cd'
+import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag';
+import { CurrentCDReducer } from './current-cd';
 
 const initState = () => ({
   result: undefined,
   auxiliary: {
     componentsChecked: [],
   },
-})
+});
 
 export class LastElapsedCDReducer extends Reducer {
   public dependencies = {
     currentCD: new CurrentCDReducer(),
     accumulatedAuguryDrag: new AccumulatedAuguryDragReducer(),
-  }
+  };
 
   public deriveShallowState({
     prevShallowState = initState(),
@@ -24,14 +24,14 @@ export class LastElapsedCDReducer extends Reducer {
     resetDependency,
   }) {
     // @todo: generalize this logic ?
-    const { currentCD: prevCD } = prevDepResults
+    const { currentCD: prevCD } = prevDepResults;
 
-    const { currentCD: nextCD, accumulatedAuguryDrag: drag } = nextDepResults
+    const { currentCD: nextCD, accumulatedAuguryDrag: drag } = nextDepResults;
 
-    const updatedComponentsChecked: any[] = prevShallowState.auxiliary.componentsChecked.concat([]) // copy, so we dont mutate original
+    const updatedComponentsChecked: any[] = prevShallowState.auxiliary.componentsChecked.concat([]); // copy, so we dont mutate original
 
     if (!prevCD && nextCD) {
-      resetDependency('accumulatedAuguryDrag')
+      resetDependency('accumulatedAuguryDrag');
     }
 
     if (
@@ -39,7 +39,7 @@ export class LastElapsedCDReducer extends Reducer {
       nextEvent.name === 'component_lifecycle_hook_invoked' &&
       nextEvent.payload.hook === 'ngDoCheck'
     ) {
-      updatedComponentsChecked.push(nextEvent.payload.componentInstance)
+      updatedComponentsChecked.push(nextEvent.payload.componentInstance);
     }
 
     if (prevCD && !nextCD) {
@@ -53,7 +53,7 @@ export class LastElapsedCDReducer extends Reducer {
           drag,
         },
         auxiliary: initState().auxiliary,
-      }
+      };
     }
 
     return {
@@ -61,6 +61,6 @@ export class LastElapsedCDReducer extends Reducer {
       auxiliary: {
         componentsChecked: updatedComponentsChecked,
       },
-    }
+    };
   }
 }

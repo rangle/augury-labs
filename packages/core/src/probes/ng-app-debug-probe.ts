@@ -1,13 +1,13 @@
-import { Probe } from '../framework/probes/probe'
-import { addUpNodeAndChildrenOffsets } from './shared-helpers/dom/offsets'
+import { Probe } from '../framework/probes/probe';
+import { addUpNodeAndChildrenOffsets } from './shared-helpers/dom/offsets';
 
 // @todo: rename to ng-debug.ts
 
-declare const ng
-declare const getAllAngularRootElements
+declare const ng;
+declare const getAllAngularRootElements;
 
 export class NgDebugProbe extends Probe {
-  private debugRoots: any[] = []
+  private debugRoots: any[] = [];
 
   public getComponentTree() {
     function subtreeFromDebugElement(debugElement) {
@@ -19,18 +19,18 @@ export class NgDebugProbe extends Probe {
         childNodes: debugElement.childNodes
           ? [...debugElement.childNodes.map(cn => subtreeFromDebugElement(cn))]
           : [],
-      }
+      };
     }
-    return this.debugRoots.map(subtreeFromDebugElement)
+    return this.debugRoots.map(subtreeFromDebugElement);
   }
 
   // @todo: i guess we can have multiple root components???
   //        how does that work? (currently not supported)
   public getRootComponent() {
-    return ng.probe(getAllAngularRootElements()[0]).componentInstance
+    return ng.probe(getAllAngularRootElements()[0]).componentInstance;
   }
 
   public afterNgBootstrap() {
-    this.debugRoots = getAllAngularRootElements().map(ng.probe)
+    this.debugRoots = getAllAngularRootElements().map(ng.probe);
   }
 }

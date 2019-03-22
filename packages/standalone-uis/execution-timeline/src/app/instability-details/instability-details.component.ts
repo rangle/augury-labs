@@ -1,45 +1,42 @@
-import { Component, ElementRef, Input, NgZone, ViewChild } from '@angular/core'
+import { Component, ElementRef, Input, NgZone, ViewChild } from '@angular/core';
 
-import { BridgeService } from '../bridge.service'
-import { round2 } from '../misc-utils'
-import { ComponentTreeUI } from './component-tree-ui'
+import { BridgeService } from '../bridge.service';
+import { round2 } from '../misc-utils';
+import { ComponentTreeUI } from './component-tree-ui';
 
 function createHierarchyDataFromNodeArray(nodes = [] as any[]) {
   return nodes.map(node => ({
     name: node.componentInstance.constructor.name,
     change: node.change,
-    children: createHierarchyDataFromNodeArray(node.childNodes)
-  }))
+    children: createHierarchyDataFromNodeArray(node.childNodes),
+  }));
 }
 
 function createHierarchyDataFromTree(tree = [] as any[]) {
-  return createHierarchyDataFromNodeArray(tree)[0]
+  return createHierarchyDataFromNodeArray(tree)[0];
 }
 
 @Component({
   selector: 'ag-instability-details',
   templateUrl: './instability-details.component.html',
-  styleUrls: ['./instability-details.component.css']
+  styleUrls: ['./instability-details.component.css'],
 })
 export class InstabilityDetailsComponent {
-  @Input() public segment: any
-  @ViewChild('componentTreeSvg') public componentTreeSvg: ElementRef
+  @Input() public segment: any;
+  @ViewChild('componentTreeSvg') public componentTreeSvg: ElementRef;
 
-  public didInit = false
-  public componentTreeUI: ComponentTreeUI
+  public didInit = false;
+  public componentTreeUI: ComponentTreeUI;
 
   // template utils
-  public round = round2
-  public consoleLog = console.log
+  public round = round2;
+  public consoleLog = console.log;
 
-  constructor(
-    private bridge: BridgeService,
-    private zone: NgZone
-  ) { }
+  constructor(private bridge: BridgeService, private zone: NgZone) {}
 
   public ngOnChanges({ segment }) {
     if (!this.didInit) {
-      this.init()
+      this.init();
     }
 
     // @todo: get just component trees
@@ -48,39 +45,36 @@ export class InstabilityDetailsComponent {
       this.bridge.send({
         type: 'get_full_cd',
         cdStartEID: segment.currentValue.startEID + 10, // @todo: hack because of above ^
-        cdEndEID: segment.currentValue.finishEID - 10
-      })
+        cdEndEID: segment.currentValue.finishEID - 10,
+      });
     }
-
   }
 
   public init() {
-    this.componentTreeUI = new ComponentTreeUI(this.zone, this.componentTreeSvg.nativeElement)
+    this.componentTreeUI = new ComponentTreeUI(this.zone, this.componentTreeSvg.nativeElement);
     // @todo: unsubscribe on unmounts
     this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
-        console.log(message.data.mergedComponentTree)
+        console.log(message.data.mergedComponentTree);
         this.componentTreeUI.updateData(
-          createHierarchyDataFromTree(message.data.mergedComponentTree) // @todo: mark new/removed nodes
-        )
+          createHierarchyDataFromTree(message.data.mergedComponentTree), // @todo: mark new/removed nodes
+        );
       }
-    })
-    this.didInit = true
+    });
+    this.didInit = true;
   }
 
   public onResizeSVG() {
-    this.componentTreeUI.repaint()
+    this.componentTreeUI.repaint();
   }
 
   public runtime() {
     return round2(
-      this.segment.finishPerformanceStamp
-      - this.segment.startPerformanceStamp
-      - this.segment.drag
-    )
+      this.segment.finishPerformanceStamp - this.segment.startPerformanceStamp - this.segment.drag,
+    );
   }
 
   public drag() {
-    return round2(this.segment.drag)
+    return round2(this.segment.drag);
   }
 }

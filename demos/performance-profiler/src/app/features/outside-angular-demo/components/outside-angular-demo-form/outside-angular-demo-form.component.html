@@ -1,0 +1,15 @@
+<form>
+  <label>
+    Use runOutsideAngular()
+    <input type="checkbox"
+           [value]="runOutsideAngular"
+           (change)="runOutsideAngularChange.emit(!runOutsideAngular)" />
+  </label>
+  <p>
+    <button [disabled]="isRunning"
+            (click)="submitted.emit()">
+      Do Async Count
+    </button>
+  </p>
+</form>
+

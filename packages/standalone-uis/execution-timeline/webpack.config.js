@@ -113,12 +113,12 @@ module.exports = {
   ].concat(
     isProduction
       ? [
-        // ... prod-only pluginss
-      ]
+          // ... prod-only pluginss
+        ]
       : [
-        // ... dev-only plugins
-        // new BundleAnalyzerPlugin(),
-      ],
+          // ... dev-only plugins
+          // new BundleAnalyzerPlugin(),
+        ],
   ),
 
   /*

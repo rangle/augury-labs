@@ -1,1 +1,1 @@
-export * from './instability-details.component'
+export * from './instability-details.component';

@@ -1,3 +1,3 @@
-import { Enhancer } from './enhancer'
+import { Enhancer } from './enhancer';
 
-export type EnhancerRegistry = Enhancer[]
+export type EnhancerRegistry = Enhancer[];

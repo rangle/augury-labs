@@ -1,6 +1,6 @@
-import { AuguryEvent, EventName, EventPayload, EventSource } from './augury-event'
+import { AuguryEvent, EventName, EventPayload, EventSource } from './augury-event';
 
-let nextId = 0
+let nextId = 0;
 
 // @todo: types: type enum + payload type
 export function createEvent(
@@ -14,5 +14,5 @@ export function createEvent(
     id: nextId++,
     payload: payload || {},
     creationAtPerformanceStamp: performance.now(),
-  }
+  };
 }

@@ -1,20 +1,16 @@
-import { Injectable, NgZone } from '@angular/core'
+import { Injectable, NgZone } from '@angular/core';
 
-declare const bridge: any
+declare const bridge: any;
 
 @Injectable()
 export class BridgeService {
-
-  constructor(
-    private ngZone: NgZone
-  ) { }
+  constructor(private ngZone: NgZone) {}
 
   public subscribe(callback) {
-    bridge.in.subscribe(message => this.ngZone.run(() => callback(message)))
+    bridge.in.subscribe(message => this.ngZone.run(() => callback(message)));
   }
 
   public send(message) {
-    bridge.out.emit(message)
+    bridge.out.emit(message);
   }
-
 }

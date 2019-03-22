@@ -1,1 +1,1 @@
-export * from './augury-bootstrap'
+export * from './augury-bootstrap';

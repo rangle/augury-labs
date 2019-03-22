@@ -8,11 +8,11 @@
 }
 
 :host .instability-details-left {
-  padding-right: .5em;
+  padding-right: 0.5em;
 }
 
 :host .instability-details-right {
-  padding-left: .5em;
+  padding-left: 0.5em;
 }
 
 :host .instability-details-right svg {

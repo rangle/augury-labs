@@ -1,5 +1,5 @@
 export class FormatService {
-  sayHello() {
+  public sayHello() {
     console.log('hello');
   }
 }

@@ -1,26 +1,26 @@
-import { DeepState, DependencyResults, DependencyStates, ShallowState } from './state'
+import { DeepState, DependencyResults, DependencyStates, ShallowState } from './state';
 
-import { AuguryEvent, ElapsedAuguryEvent } from '../events'
-import { merge, objToPairs, shallowClone } from '../utils'
+import { AuguryEvent, ElapsedAuguryEvent } from '../events';
+import { merge, objToPairs, shallowClone } from '../utils';
 
 // @todo: these types
 export interface ShallowStateDerivationParams {
-  nextEvent: AuguryEvent
-  nextDepResults: DependencyResults
+  nextEvent: AuguryEvent;
+  nextDepResults: DependencyResults;
 
-  prevEvent?: AuguryEvent
-  prevShallowState: ShallowState
-  prevDepResults: DependencyResults
+  prevEvent?: AuguryEvent;
+  prevShallowState: ShallowState;
+  prevDepResults: DependencyResults;
 
   // @todo: can we do this better?
-  resetDependency: (depName: string) => void
+  resetDependency: (depName: string) => void;
 }
 
 const DEEP_INIT = {
   shallow: undefined,
   deps: {},
   lastEvent: undefined,
-}
+};
 
 // @todo: types!
 //        how to bring in the reducer state shape?
@@ -28,13 +28,13 @@ export abstract class Reducer {
   // @todo: result type
   public static getResultFromState(state: DeepState): any {
     if (!state) {
-      return undefined
+      return undefined;
     }
-    const shallow = state.shallow
+    const shallow = state.shallow;
     if (!shallow) {
-      return undefined
+      return undefined;
     }
-    return shallow.result
+    return shallow.result;
   }
 
   // @todo: rename all Dep to Dependencies
@@ -44,24 +44,24 @@ export abstract class Reducer {
         k: pairDepName,
         v: Reducer.getResultFromState(pairDepState),
       }))
-      .reduce((nextDepState, { k, v }) => merge(nextDepState, { [k]: v }), {})
+      .reduce((nextDepState, { k, v }) => merge(nextDepState, { [k]: v }), {});
   }
 
-  public dependencies = {}
+  public dependencies = {};
 
   // @todo: stuff stops working when apply types..
-  public abstract deriveShallowState(params: any): any
+  public abstract deriveShallowState(params: any): any;
 
   public deriveState(
     prevState: DeepState = DEEP_INIT,
     nextAgEvent: AuguryEvent,
     lastElapsedAgEvent?: ElapsedAuguryEvent,
   ) {
-    const nextDepState = this.deriveDepState(prevState.deps, nextAgEvent, lastElapsedAgEvent)
+    const nextDepState = this.deriveDepState(prevState.deps, nextAgEvent, lastElapsedAgEvent);
 
     // @todo: can we do this better?
     function resetDependency(depName) {
-      nextDepState[depName] = undefined
+      nextDepState[depName] = undefined;
     }
 
     const nextShallowState = this.deriveShallowState({
@@ -71,14 +71,14 @@ export abstract class Reducer {
       prevShallowState: prevState.shallow,
       prevDepResults: Reducer.getDepResults(prevState.deps),
       resetDependency, // @todo: can we do this better?
-    })
+    });
 
-    return { shallow: nextShallowState, deps: nextDepState }
+    return { shallow: nextShallowState, deps: nextDepState };
   }
 
   protected assumption(name: string, assertion) {
     if (!assertion) {
-      throw new Error(`${this.constructor.name} assumption broken: ${name}`)
+      throw new Error(`${this.constructor.name} assumption broken: ${name}`);
     }
   }
 
@@ -96,6 +96,6 @@ export abstract class Reducer {
           lastElapsedAgEvent,
         ),
       }))
-      .reduce((nextDepState, { name, state }) => merge(nextDepState, { [name]: state }), {})
+      .reduce((nextDepState, { name, state }) => merge(nextDepState, { [name]: state }), {});
   }
 }

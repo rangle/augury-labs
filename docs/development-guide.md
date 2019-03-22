@@ -26,7 +26,6 @@ The following commands will run across packages:
 
 - `yarn build`
 - `yarn build:watch`
-- `yarn build`
 - `yarn clean`
 - `yarn test`
 - `yarn test:watch`
@@ -35,16 +34,22 @@ The following commands will run across packages:
 
 ## Running Demo Apps
 
-Demo apps (found in `demos`) must have their dependencies installed separately, as they are not part of the yarn workspace.
+Demo apps (found in `demos`) must have their dependencies installed separately, as they are not
+part of the yarn workspace.
 
 For more info see `demos/README.md` (TLDR: go to demo directory and do `yarn; yarn start:augury` )
 
 ## Referencing local packages from other local projects
 
-If you want to use your local version of the Augury Labs projects in another project that you have locally you can run the `lerna run link` command to run `yarn link` on the public packages of the monorepo. After doing this you can go to the project where you want to use them and run `yarn link` for each package that you want to reference. For example, if you want to reference both the `@augury/core` and `@augury/performance-profiler-plugin` packages:
+If you want to use your local version of the Augury Labs projects in another project that you have
+locally you can run the `lerna run link` command to run `yarn link` on the public packages of the
+monorepo. After doing this you can go to the project where you want to use them and run `yarn link`
+for each package that you want to reference. For example, if you want to reference both the
+`@augury/core` and `@augury/performance-profiler-plugin` packages:
 
 ```sh
 # In the Augury Labs root:
+yarn build
 lerna run link
 
 # In the root of your local Angular app:

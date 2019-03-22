@@ -1,1 +1,1 @@
-export * from './cd-details.component'
+export * from './cd-details.component';

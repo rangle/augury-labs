@@ -1,31 +1,31 @@
-import { Reaction } from '../framework/reactions'
-import { Scanner } from '../framework/scanner'
+import { Reaction } from '../framework/reactions';
+import { Scanner } from '../framework/scanner';
 
 export const createLiveChannel: Reaction = {
   name: 'create-live-channel',
   react({ event, channels, dispatcherEvents, history }) {
     if (event.name === 'request-live-channel') {
-      const { reducer, startFromEID, untilEID } = event.payload
+      const { reducer, startFromEID, untilEID } = event.payload;
 
       if (!reducer) {
-        return { success: false, errors: ['reducer not given'] }
+        return { success: false, errors: ['reducer not given'] };
       }
 
       // @todo: currently not handling "start and until" because we dont have a history
       if (startFromEID || untilEID) {
-        return { success: false, errors: ['historical data not yet supported'] }
+        return { success: false, errors: ['historical data not yet supported'] };
       }
 
-      const scanner = new Scanner(reducer, history)
+      const scanner = new Scanner(reducer, history);
 
-      scanner.scan(dispatcherEvents)
+      scanner.scan(dispatcherEvents);
 
-      const channel = channels.createFromScanner(scanner)
+      const channel = channels.createFromScanner(scanner);
 
       return {
         success: true,
         channel,
-      }
+      };
     }
   },
-}
+};

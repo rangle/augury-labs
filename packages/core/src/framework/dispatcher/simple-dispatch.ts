@@ -9,4 +9,4 @@
 */
 
 // @todo: eventName enum
-export type SimpleDispatch = (eventName: string, eventPayload: any) => void
+export type SimpleDispatch = (eventName: string, eventPayload: any) => void;

@@ -1,1 +1,1 @@
-export { ExecutionTimelineComponent, ExtendableSegment } from './execution-timeline.component'
+export { ExecutionTimelineComponent, ExtendableSegment } from './execution-timeline.component';

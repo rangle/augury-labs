@@ -1,11 +1,9 @@
-export type EmitFn = (eventType: string, eventPayload?: any) => void // @todo: how to type event payload here?
+import { EmitFunction } from './emit-function.type';
 
 export abstract class Probe {
-  constructor(
-    public emit: EmitFn, // @note: public because we need to call it from the targets
-  ) {}
+  constructor(public emit: EmitFunction) {}
 
   // @todo: how are we handling / exposing errors during attachment?
-  public beforeNgBootstrap?(preBootstrapTargets: any): void
-  public afterNgBootstrap?(ngModuleRef: any): void
+  public beforeNgBootstrap?(preBootstrapTargets: any): void;
+  public afterNgBootstrap?(ngModuleRef: any): void;
 }

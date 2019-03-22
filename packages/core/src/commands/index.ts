@@ -1,2 +1,2 @@
-export * from './registry'
-export * from './subscribe-to-last-elapsed-cycle'
+export * from './registry';
+export * from './subscribe-to-last-elapsed-cycle';

@@ -1,4 +1,4 @@
-:host ::ng-deep g[name="__HIDDEN__"] {
+:host ::ng-deep g[name='__HIDDEN__'] {
   visibility: hidden;
 }
 
@@ -6,7 +6,8 @@
   width: 100%;
 }
 
-:host .container, :host .container svg {
+:host .container,
+:host .container svg {
   width: 100%;
 }
 

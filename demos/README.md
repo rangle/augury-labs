@@ -2,15 +2,15 @@
 
 ## Instructions
 
-1. build Augury Labs workspace (from the repository root)
+1. Build Augury Labs workspace (from the repository root)
 
-- `yarn` (from repo root)
-- `yarn build` or `yarn build:watch` (from repo root)
+- `yarn`
+- `yarn build` or `yarn build:watch`
 
-2. serve specific demo project (from the specific demo directory)
+2. Serve specific demo project (from the specific demo directory)
 
-- `yarn` (from demo dir)
-- `yarn start:augury` or `yarn start` (from demo dir)
+- `yarn`
+- `yarn start:augury` or `yarn start`
 
 ## Configuration patterns of Augury Labs demos
 
@@ -23,12 +23,18 @@ Some Examples:
 - Demos might want to showcase Augury's compatibility with particular versions of Angular.
 - Projects built using the standard `@angular/cli` do not play nice with lerna/yarn workspaces.
 
-As such, they have their dependencies installed separately. Dependencies are kept in the demo's own `node_modules` folder.
+As such, they have their dependencies installed separately. Dependencies are kept in the demo's own
+`node_modules` folder.
 
 ### Demos do not declare `@augury/*` packages in their package.json
 
-Since they are installed independently, in order for the demos to use the `@augury/*` modules directly from `packages/*`, they do not declare these dependencies, as doing so would result in the `@augury/*` packages being fetched from the npm registry.
+Since they are installed independently, in order for the demos to use the `@augury/*` modules
+directly from `packages/*`, they do not declare these dependencies, as doing so would result in
+the `@augury/*` packages being fetched from the npm registry.
 
-To accomplish this, the demo projects rely on the workspace to have been built a priori. The undeclared packages are then found by the node module resolver in the `node_modules` folder at the repository root.
+To accomplish this, the demo projects rely on the workspace to have been built a priori. The
+undeclared packages are then found by the node module resolver in the `node_modules` folder at
+the repository root.
 
-This allows us to run watchers on the workspace as well as individual demo projects, triggering reloads on changes to either workspace or demo code.
+This allows us to run watchers on the workspace as well as individual demo projects, triggering
+reloads on changes to either workspace or demo code.

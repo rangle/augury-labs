@@ -1,10 +1,8 @@
 export class TodoModel {
-  status: String = 'started';
-  constructor(
-    public title: String = ''
-  ) { }
+  public status = 'started';
+  constructor(public title = '') {}
 
-  toggle() {
+  public toggle() {
     if (this.status === 'started') {
       this.status = 'completed';
     } else {

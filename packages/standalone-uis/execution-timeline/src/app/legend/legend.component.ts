@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'Legend',
   templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.css']
+  styleUrls: ['./legend.component.css'],
 })
-export class LegendComponent { }
+export class LegendComponent {}

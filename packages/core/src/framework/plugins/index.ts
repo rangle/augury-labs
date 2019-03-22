@@ -1,2 +1,2 @@
-export * from './plugin'
-export * from './plugin-service'
+export * from './plugin';
+export * from './plugin-service';

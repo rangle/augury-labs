@@ -1,16 +1,16 @@
-import { ChannelService } from '../channels'
-import { Dispatch, DispatcherEvents, SimpleDispatch } from '../dispatcher'
-import { AuguryEvent, createEvent } from '../events'
-import { HistoryService } from '../history'
-import { ProbeService } from '../probes'
-import { ReactionRegistry } from './reaction-registry'
-import { ReactionResults } from './reaction-results'
+import { ChannelService } from '../channels';
+import { Dispatch, DispatcherEvents, SimpleDispatch } from '../dispatcher';
+import { AuguryEvent, createEvent } from '../events';
+import { HistoryService } from '../history';
+import { ProbeService } from '../probes';
+import { ReactionRegistry } from './reaction-registry';
+import { ReactionResults } from './reaction-results';
 
-import { merge } from '../utils'
+import { merge } from '../utils';
 
 export class ReactionService {
   constructor(
-    private probes: ProbeService,
+    private probeService: ProbeService,
     private channels: ChannelService,
     private registry: ReactionRegistry,
     private history: HistoryService,
@@ -24,7 +24,7 @@ export class ReactionService {
     const createSimpleDispatch = (reactionName: string): SimpleDispatch => (
       eventName,
       eventPayload,
-    ) => dispatch(createEvent({ type: 'reaction', name: reactionName }, eventName, eventPayload))
+    ) => dispatch(createEvent({ type: 'reaction', name: reactionName }, eventName, eventPayload));
 
     return this.registry
       .map(reaction => ({
@@ -34,7 +34,7 @@ export class ReactionService {
           dispatch: createSimpleDispatch(reaction.name),
           dispatcherEvents,
           channels: this.channels,
-          probes: this.probes,
+          probes: this.probeService,
           history: this.history,
         }),
       }))
@@ -42,6 +42,6 @@ export class ReactionService {
         (mergedResults: ReactionResults, next) =>
           next.result ? merge(mergedResults, { [next.reactionName]: next.result }) : mergedResults,
         {},
-      )
+      );
   }
 }

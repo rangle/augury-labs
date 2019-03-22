@@ -1,18 +1,18 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
 const INIT_STATE = {
   result: 0,
-}
+};
 
 // @todo: rename to CurrentNgZoneTaskReducer (because this is public api, should be clear)
 export class AccumulatedAuguryDragReducer extends Reducer {
   public deriveShallowState({ prevShallowState = INIT_STATE, lastElapsedEvent }) {
-    const { result: prevResult } = prevShallowState
+    const { result: prevResult } = prevShallowState;
 
     if (!lastElapsedEvent) {
-      return prevShallowState
+      return prevShallowState;
     }
 
-    return { result: prevResult + lastElapsedEvent.auguryDrag }
+    return { result: prevResult + lastElapsedEvent.auguryDrag };
   }
 }

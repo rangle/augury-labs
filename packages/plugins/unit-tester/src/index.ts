@@ -1,47 +1,47 @@
-import { LastElapsedCDReducer, Plugin } from '@augury/core'
+import { LastElapsedCDReducer, Plugin } from '@augury/core';
 
-declare const window
+declare const window;
 
 export class UnitTesterPlugin extends Plugin {
   // @todo: do we still need these "names" ?
   //        can we get rid of this? (we could use the class's .name)
   public name() {
-    return 'UnitTester'
+    return 'UnitTester';
   }
 
   public onInit() {
-    window.auguryUT = {}
+    window.auguryUT = {};
 
-    let cdChannel: any
-    let cdRuns: any = []
+    let cdChannel: any;
+    let cdRuns: any = [];
 
     window.auguryUT.startMonitoringChangeDetection = () => {
       const result = this.api!.createLiveChannel({
         reducer: new LastElapsedCDReducer(),
-      })
+      });
 
-      cdChannel = result.channel
+      cdChannel = result.channel;
 
       cdChannel.events.subscribe(lastElapsedCD => {
-        cdRuns.push(lastElapsedCD)
-      })
-    }
+        cdRuns.push(lastElapsedCD);
+      });
+    };
 
     window.auguryUT.finishMonitoringChangeDetection = () => {
-      console.log(cdRuns)
+      console.log(cdRuns);
 
       const result = {
         cdRuns: cdRuns.map(cdRun => ({
           // @todo: rename drag to auguryDrag
           runtime: cdRun.finishPerformanceStamp - cdRun.startPerformanceStamp - cdRun.drag,
         })),
-      }
+      };
 
-      cdChannel.kill()
-      cdChannel = undefined
-      cdRuns = []
+      cdChannel.kill();
+      cdChannel = undefined;
+      cdRuns = [];
 
-      return result
-    }
+      return result;
+    };
   }
 }

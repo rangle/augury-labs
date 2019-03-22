@@ -1,4 +1,4 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
 export class SingleCDRunFull extends Reducer {
   public static initState() {
@@ -9,17 +9,17 @@ export class SingleCDRunFull extends Reducer {
         nextComponentTree: undefined,
         lifecycleHooksTriggered: [] as any[],
       },
-    }
+    };
   }
 
   constructor(private cdStartEID: number, private cdEndEID: number) {
-    super()
+    super();
   }
 
   public deriveShallowState({ nextEvent, prevShallowState = SingleCDRunFull.initState() }) {
     // we're only interested in a single CD run
     if (prevShallowState.result) {
-      return prevShallowState
+      return prevShallowState;
     }
 
     // grab the last component tree before CD
@@ -31,7 +31,7 @@ export class SingleCDRunFull extends Reducer {
           nextComponentTree: prevShallowState.auxiliary.nextComponentTree,
           lifecycleHooksTriggered: prevShallowState.auxiliary.lifecycleHooksTriggered,
         },
-      }
+      };
     }
 
     // grab every lifecycle trigger event within the start/end eids
@@ -49,7 +49,7 @@ export class SingleCDRunFull extends Reducer {
             nextEvent,
           ]),
         },
-      }
+      };
     }
 
     // grab the first component tree after CD, and we're done
@@ -65,9 +65,9 @@ export class SingleCDRunFull extends Reducer {
           lifecycleHooksTriggered: prevShallowState.auxiliary.lifecycleHooksTriggered,
         },
         auxiliary: SingleCDRunFull.initState().auxiliary,
-      }
+      };
     }
 
-    return prevShallowState
+    return prevShallowState;
   }
 }

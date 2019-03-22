@@ -6,12 +6,12 @@
   display: block;
   font-family: Helvetica;
   font-size: 10px;
-  color: #4A4A4A;
+  color: #4a4a4a;
 }
 
 :host ul {
   position: relative;
-	line-height: 1.5em;
+  line-height: 1.5em;
   padding: 0;
   margin: 0;
   list-style-type: none;
@@ -31,7 +31,7 @@
 }
 
 :host li.bullet::before {
-  content: "";
+  content: '';
   position: absolute;
   border-radius: 3px;
   left: 0;
@@ -41,21 +41,22 @@
 }
 
 :host li.bullet.ng-zone-task::before {
-  background: #95BCDA;
+  background: #95bcda;
 }
 
 :host li.bullet.root-zone-task::before {
-  background:purple;
+  background: purple;
 }
 
 :host li.angular-instability::before {
-  background: #D34627;
+  background: #d34627;
 }
 
 :host li.change-detection::before {
-  background: #9B9B9B;
+  background: #9b9b9b;
 }
 
-:host li.change-detection, :host li.angular-instability {
-  margin-top: .5em;
+:host li.change-detection,
+:host li.angular-instability {
+  margin-top: 0.5em;
 }

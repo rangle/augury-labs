@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { LeakyFaucetComponent } from './leaky-faucet.component';
 
 describe('LeakyFaucetComponent', () => {
@@ -7,9 +8,8 @@ describe('LeakyFaucetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LeakyFaucetComponent ]
-    })
-    .compileComponents();
+      declarations: [LeakyFaucetComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

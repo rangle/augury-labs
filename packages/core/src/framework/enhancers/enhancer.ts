@@ -1,4 +1,4 @@
-import { AuguryEvent } from '../events'
-import { ProbeService } from '../probes'
+import { AuguryEvent } from '../events';
+import { ProbeService } from '../probes';
 
-export type Enhancer = (event: AuguryEvent, probes: ProbeService) => AuguryEvent
+export type Enhancer = (event: AuguryEvent, probes: ProbeService) => AuguryEvent;
