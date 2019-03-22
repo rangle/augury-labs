@@ -5,7 +5,7 @@ import { NgDebugProbe } from '../probes';
 const COMPONENT_HOOK_EVENT = 'component_lifecycle_hook_invoked';
 
 export const addRootComponent: Enhancer = (e: AuguryEvent, probes: ProbeService) => {
-  const ngDebugProbe = probes.get(NgDebugProbe);
+  const ngDebugProbe = probes.get(NgDebugProbe) as NgDebugProbe;
 
   // @todo: event names registry / enum
   if (ngDebugProbe && e.name === COMPONENT_HOOK_EVENT) {

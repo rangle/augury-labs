@@ -13,6 +13,7 @@ export class SimpleQueue<ItemType> {
     if (!this.hasItems()) {
       return;
     }
+
     return this.items.pop();
   }
 }

@@ -26,12 +26,12 @@ export class AuguryCore {
   private readonly history: HistoryService;
 
   constructor(
-    probeRegistry: ProbeConstructor[],
+    probeConstructors: ProbeConstructor[],
     enhancerRegistry: EnhancerRegistry,
     reactionRegistry: ReactionRegistry,
     commandRegistry: CommandRegistry,
   ) {
-    this.probes = new ProbeService(probeRegistry);
+    this.probes = new ProbeService(probeConstructors);
     this.enhancers = new EnhancerService(this.probes, enhancerRegistry);
     this.channels = new ChannelService();
     this.history = new HistoryService();

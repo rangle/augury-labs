@@ -7,17 +7,15 @@ import { ProbeConstructor } from './probe-constructor.interface';
 export class ProbeService {
   public probeEvents = new SyncEventEmitter<AuguryEvent>();
 
-  private probes: Probe[];
+  private readonly probes: Map<string, Probe>;
 
-  constructor(registry: ProbeConstructor[]) {
-    this.probes = this.instantiateProbes(registry);
+  constructor(constructors: ProbeConstructor[]) {
+    this.probes = this.instantiateProbes(constructors);
   }
 
-  // @todo: typing.. Argument of type 'typeof NgDebugProbe' is not assignable to parameter of type
-  //  'typeof Probe'. had to make it type "any"
   // @todo: Return the probe instance type that is passed in as a class
-  public get(ProbeClass: any): any {
-    return this.probes.find(probe => probe.constructor === ProbeClass);
+  public get(constructor: ProbeConstructor): Probe | undefined {
+    return this.probes.get(constructor.name);
   }
 
   public beforeNgBootstrapHook(preBootstrapTargets: any) {
@@ -30,14 +28,18 @@ export class ProbeService {
     this.probes.forEach(probe => probe.afterNgBootstrap && probe.afterNgBootstrap(ngModuleRef));
   }
 
-  private instantiateProbes(constructors: ProbeConstructor[]): Probe[] {
-    return constructors.map(
-      constructor =>
+  private instantiateProbes(constructors: ProbeConstructor[]): Map<string, Probe> {
+    return constructors.reduce((probes, constructor) => {
+      probes.set(
+        constructor.name,
         new constructor((eventName: string, eventPayload?: any) =>
           this.probeEvents.emit(
             createEvent({ type: 'probe', name: constructor.name }, eventName, eventPayload),
           ),
         ),
-    );
+      );
+
+      return probes;
+    }, new Map<string, Probe>());
   }
 }
