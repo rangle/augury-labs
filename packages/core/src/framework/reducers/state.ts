@@ -17,7 +17,7 @@ export interface DependencyResults {
   [dependencyName: string]: any;
 }
 
-export type DeepState /*<ResultType>*/ =
+export type DeepState =
   | undefined
   | {
       shallow?: ShallowState;

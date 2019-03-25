@@ -1,3 +1,3 @@
-export * from './enhancer';
-export * from './enhancer-service';
-export * from './enhancer-registry';
+export * from './enhancer.type';
+export * from './enhancer-service.class';
+export * from './enhancer-registry.type';

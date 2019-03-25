@@ -30,16 +30,13 @@ export abstract class Reducer {
     if (!state) {
       return undefined;
     }
-    const shallow = state.shallow;
-    if (!shallow) {
-      return undefined;
-    }
-    return shallow.result;
+
+    return state.shallow ? state.shallow.result : undefined;
   }
 
   // @todo: rename all Dep to Dependencies
-  public static getDepResults(depState: DependencyStates): DependencyResults {
-    return objToPairs(depState)
+  public static getDepResults(dependencyStates: DependencyStates): DependencyResults {
+    return objToPairs(dependencyStates)
       .map(({ k: pairDepName, v: pairDepState }) => ({
         k: pairDepName,
         v: Reducer.getResultFromState(pairDepState),
@@ -54,10 +51,10 @@ export abstract class Reducer {
 
   public deriveState(
     prevState: DeepState = DEEP_INIT,
-    nextAgEvent: AuguryEvent,
+    nextEvent: AuguryEvent,
     lastElapsedAgEvent?: ElapsedAuguryEvent,
   ) {
-    const nextDepState = this.deriveDepState(prevState.deps, nextAgEvent, lastElapsedAgEvent);
+    const nextDepState = this.deriveDepState(prevState.deps, nextEvent, lastElapsedAgEvent);
 
     // @todo: can we do this better?
     function resetDependency(depName) {
@@ -65,7 +62,7 @@ export abstract class Reducer {
     }
 
     const nextShallowState = this.deriveShallowState({
-      nextEvent: nextAgEvent,
+      nextEvent,
       nextDepResults: Reducer.getDepResults(shallowClone(nextDepState)),
       lastElapsedEvent: lastElapsedAgEvent,
       prevShallowState: prevState.shallow,

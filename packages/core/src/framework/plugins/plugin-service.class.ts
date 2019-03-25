@@ -1,6 +1,6 @@
 import { CallableAPIConstructor, CommandService } from '../commands';
 import { EventSource } from '../events';
-import { Plugin } from './plugin';
+import { Plugin } from './plugin.class';
 
 // @todo: add plugin hooks
 

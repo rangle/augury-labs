@@ -1,6 +1,6 @@
 import { ProcessedReaction } from './processed-reaction.interface';
 import { ReactionContext } from './reaction-context.interface';
-import { ReactionResult } from './reaction-result';
+import { ReactionResult } from './reaction-result.interface';
 
 export abstract class Reaction {
   protected constructor(private name: string) {}

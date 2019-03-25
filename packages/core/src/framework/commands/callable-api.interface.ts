@@ -1,5 +1,5 @@
 import { EventSource } from '../events';
-import { CommandResult } from './command-result';
+import { CommandResult } from './command-result.interface';
 
 export interface CallableAPI {
   // @todo: (types)command-specific args and result

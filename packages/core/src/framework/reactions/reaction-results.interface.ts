@@ -1,4 +1,4 @@
-import { ReactionResult } from './reaction-result';
+import { ReactionResult } from './reaction-result.interface';
 
 // @todo: how to type this well?
 //        it should map each reaction name to its appropriate result type (or null)

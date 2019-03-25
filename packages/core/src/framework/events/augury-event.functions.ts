@@ -6,13 +6,13 @@ let nextId = 0;
 export function createEvent(
   source: EventSource,
   name: EventName,
-  payload?: EventPayload,
+  payload: EventPayload = {},
 ): AuguryEvent {
   return {
     name,
     source,
     id: nextId++,
-    payload: payload || {},
+    payload,
     creationAtPerformanceStamp: performance.now(),
   };
 }

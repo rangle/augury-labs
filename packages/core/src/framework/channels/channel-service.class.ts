@@ -1,7 +1,7 @@
 import { Scanner } from '../scanner';
-import { Channel } from './channel';
-import { ChannelDelegate } from './channel-delegate';
-import { ScannerChannel } from './scanner-channel';
+import { ChannelDelegate } from './channel-delegate.interface';
+import { Channel } from './channel.class';
+import { ScannerChannel } from './scanner-channel.class';
 
 export class ChannelService {
   private channels: Channel[] = [];

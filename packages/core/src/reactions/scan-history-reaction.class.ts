@@ -17,9 +17,7 @@ export class ScanHistoryReaction extends Reaction {
 
       const scanner = new Scanner(reducer, context.history);
 
-      // @todo: SimpleEventEmitter.scan() should only require "subscribe()"
-      //        so we dont need <any> here
-      scanner.scan(context.history.emitter() as any);
+      scanner.scan(context.history.createEventEmitter());
 
       return {
         success: true,

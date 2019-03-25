@@ -4,7 +4,7 @@ import { EventDispatcher } from './dispatcher';
 import { EnhancerRegistry, EnhancerService } from './enhancers';
 import { HistoryService } from './history';
 import { Plugin, PluginService } from './plugins';
-import { ProbeConstructor, ProbeService } from './probes';
+import { Probe, ProbeService } from './probes';
 import { ReactionRegistry, ReactionService } from './reactions';
 
 export interface BootstrapParams {
@@ -16,7 +16,6 @@ export interface BootstrapParams {
 
 export class AuguryCore {
   private readonly dispatcher: EventDispatcher;
-
   private readonly probes: ProbeService;
   private readonly enhancers: EnhancerService;
   private readonly channels: ChannelService;
@@ -26,12 +25,12 @@ export class AuguryCore {
   private readonly history: HistoryService;
 
   constructor(
-    probeConstructors: ProbeConstructor[],
+    probes: Probe[],
     enhancerRegistry: EnhancerRegistry,
     reactionRegistry: ReactionRegistry,
     commandRegistry: CommandRegistry,
   ) {
-    this.probes = new ProbeService(probeConstructors);
+    this.probes = new ProbeService(probes);
     this.enhancers = new EnhancerService(this.probes, enhancerRegistry);
     this.channels = new ChannelService();
     this.history = new HistoryService();
@@ -41,11 +40,14 @@ export class AuguryCore {
       reactionRegistry,
       this.history,
     );
-    this.dispatcher = new EventDispatcher(this.enhancers, this.reactions, this.history);
+    this.dispatcher = new EventDispatcher(
+      this.probes,
+      this.enhancers,
+      this.reactions,
+      this.history,
+    );
     this.commands = new CommandService(this.dispatcher, commandRegistry);
     this.plugins = new PluginService(this.commands);
-
-    this.dispatcher.subscribeTo(this.probes.probeEvents);
   }
 
   public bootstrap({ platform, ngModule, NgZone, plugins }: BootstrapParams): Promise<any> {

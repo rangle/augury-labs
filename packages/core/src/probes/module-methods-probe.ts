@@ -1,4 +1,4 @@
-import { Probe } from '../framework/probes/probe';
+import { Probe } from '../framework/probes/probe.class';
 import * as helpers from './shared-helpers/ng-module';
 
 export class ModuleMethodsProbe extends Probe {

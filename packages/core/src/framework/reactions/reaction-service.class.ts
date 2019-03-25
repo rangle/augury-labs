@@ -3,8 +3,8 @@ import { EventDispatcher } from '../dispatcher';
 import { AuguryEvent } from '../events';
 import { HistoryService } from '../history';
 import { ProbeService } from '../probes';
-import { ReactionRegistry } from './reaction-registry';
-import { ReactionResults } from './reaction-results';
+import { ReactionRegistry } from './reaction-registry.type';
+import { ReactionResults } from './reaction-results.interface';
 
 import { ProcessedReaction } from './processed-reaction.interface';
 

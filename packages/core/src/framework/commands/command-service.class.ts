@@ -1,8 +1,8 @@
-import { CallableAPIConstructor } from './callable-api';
-import { Command } from './command';
-import { CommandRegistry } from './command-registry';
-import { CommandRequest } from './command-request';
-import { CommandResult } from './command-result';
+import { CallableAPIConstructor } from './callable-api.interface';
+import { CommandRegistry } from './command-registry.type';
+import { CommandRequest } from './command-request.interface';
+import { CommandResult } from './command-result.interface';
+import { Command } from './command.interface';
 
 import { EventDispatcher } from '../dispatcher';
 import { createEvent } from '../events';

@@ -1,7 +1,7 @@
-import { Channel } from './channel';
+import { Channel } from './channel.class';
 
+import { SyncEventEmitter } from '../event-emitters';
 import { Scanner } from '../scanner';
-import { SyncEventEmitter } from '../utils';
 
 export class ScannerChannel extends Channel {
   public type = 'scanner';

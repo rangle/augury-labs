@@ -1,11 +1,19 @@
+import { SyncEventEmitter } from '../event-emitters';
 import { AuguryEvent, createEvent } from '../events';
-import { SyncEventEmitter } from '../utils';
 
 export abstract class Probe {
-  constructor(private probeEvents: SyncEventEmitter<AuguryEvent>) {}
+  private eventEmitter: SyncEventEmitter<AuguryEvent> | null = null;
+
+  public initialize(eventEmitter: SyncEventEmitter<AuguryEvent>) {
+    this.eventEmitter = eventEmitter;
+  }
 
   public emit(eventName: string, eventPayload?: any) {
-    this.probeEvents.emit(
+    if (!this.eventEmitter) {
+      throw new ReferenceError('Probe Event Emitter has not been initialized.');
+    }
+
+    this.eventEmitter.emit(
       createEvent({ type: 'probe', name: this.constructor.name }, eventName, eventPayload),
     );
   }

@@ -1,7 +1,7 @@
+import { Subscribable, SyncEventEmitter } from '../event-emitters';
 import { AuguryEvent } from '../events';
 import { HistoryService } from '../history';
 import { Reducer } from '../reducers';
-import { SyncEventEmitter } from '../utils';
 
 export class Scanner {
   // @todo: types, how do we get the reducer types in here?
@@ -12,11 +12,11 @@ export class Scanner {
 
   constructor(private reducer: Reducer, private history: HistoryService) {}
 
-  public scan(emitter: SyncEventEmitter<AuguryEvent>) {
-    this.subscription = emitter.subscribe(ae => {
+  public scan(subscribable: Subscribable<AuguryEvent>) {
+    this.subscription = subscribable.subscribe(event => {
       const nextReducerState = this.reducer.deriveState(
         this.lastReducerState,
-        ae,
+        event,
         this.history.getLastElapsedEvent(),
       );
       const nextResult = Reducer.getResultFromState(nextReducerState);

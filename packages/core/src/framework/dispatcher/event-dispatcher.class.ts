@@ -1,21 +1,25 @@
 import { EnhancerService } from '../enhancers';
+import { SyncEventEmitter } from '../event-emitters';
 import { AuguryEvent, ProcessedAuguryEvent } from '../events';
 import { HistoryService } from '../history';
+import { ProbeService } from '../probes';
 import { ReactionService } from '../reactions';
-import { SimpleEventEmitter, SimpleQueue, SyncEventEmitter } from '../utils';
-import { DispatcherEvents } from './dispatcher-event';
+import { SimpleQueue } from '../utils';
 
 export class EventDispatcher {
-  public emitter: DispatcherEvents = new SyncEventEmitter<AuguryEvent>();
+  public emitter = new SyncEventEmitter<AuguryEvent>();
 
   private queue = new SimpleQueue<AuguryEvent>();
   private releasing = false;
 
   constructor(
+    private probes: ProbeService,
     private enhancers: EnhancerService,
     private reactions: ReactionService,
     private history: HistoryService,
-  ) {}
+  ) {
+    probes.eventEmitter.subscribe(event => this.dispatch(event));
+  }
 
   public dispatch(event: AuguryEvent) {
     this.queue.enqueue(event);
@@ -35,10 +39,6 @@ export class EventDispatcher {
     this.releaseAll();
 
     return processedEvent;
-  }
-
-  public subscribeTo(emitter: SimpleEventEmitter<AuguryEvent>) {
-    emitter.subscribe(event => this.dispatch(event));
   }
 
   private processEvent(event: AuguryEvent): ProcessedAuguryEvent {

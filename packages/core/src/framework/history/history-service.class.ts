@@ -1,16 +1,16 @@
+import { LoadedEventEmitter, Subscribable } from '../event-emitters';
 import { ElapsedAuguryEvent, ProcessedAuguryEvent } from '../events';
-import { LoadedEventEmitter } from '../utils';
 
 export class HistoryService {
   private elapsedEvents: ElapsedAuguryEvent[] = [];
 
   public addEvent(processedEvent: ProcessedAuguryEvent) {
-    const currentPerfStamp = performance.now();
+    const currentPerformanceStamp = performance.now();
 
     this.elapsedEvents.push({
       ...processedEvent,
-      auguryHandlingCompletionPerformanceStamp: currentPerfStamp,
-      auguryDrag: currentPerfStamp - processedEvent.creationAtPerformanceStamp,
+      auguryHandlingCompletionPerformanceStamp: currentPerformanceStamp,
+      auguryDrag: currentPerformanceStamp - processedEvent.creationAtPerformanceStamp,
     });
   }
 
@@ -29,12 +29,12 @@ export class HistoryService {
     );
   }
 
-  public getLastElapsedEvent() {
+  public getLastElapsedEvent(): ElapsedAuguryEvent {
     return this.elapsedEvents[this.elapsedEvents.length - 1];
   }
 
   // @todo: startEventId / endEventId arguments
-  public emitter() {
-    return new LoadedEventEmitter(this.elapsedEvents);
+  public createEventEmitter(): Subscribable<ElapsedAuguryEvent> {
+    return new LoadedEventEmitter<ElapsedAuguryEvent>(this.elapsedEvents);
   }
 }
