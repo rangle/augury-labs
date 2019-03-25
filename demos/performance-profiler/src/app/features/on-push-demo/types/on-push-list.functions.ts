@@ -5,8 +5,7 @@ const NumberOfItems = 10;
 let nextListId = 0;
 
 export function createDefaultOnPushLists(): OnPushList[] {
-  return Array.apply(null, {length: NumberOfItems})
-    .reduce(lists => addOnPushList(lists), []);
+  return Array.apply(null, { length: NumberOfItems }).reduce(lists => addOnPushList(lists), []);
 }
 
 export function addOnPushList(lists: OnPushList[]): OnPushList[] {

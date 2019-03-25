@@ -7,7 +7,7 @@ export function createDefaultTrackByData() {
       id: i,
       recentlyUpdated: false,
       content: createRandomString(),
-    }))
+    }));
 }
 
 export function updateTrackByData(data: TrackByDatum[], target: string, replacement: string) {

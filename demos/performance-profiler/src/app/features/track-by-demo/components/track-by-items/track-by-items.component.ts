@@ -4,7 +4,7 @@ import { TrackByDatum } from '../../types/track-by-datum.interface';
 
 @Component({
   selector: 'al-track-by-items',
-  templateUrl: './track-by-items.component.html'
+  templateUrl: './track-by-items.component.html',
 })
 export class TrackByItemsComponent {
   @Input()

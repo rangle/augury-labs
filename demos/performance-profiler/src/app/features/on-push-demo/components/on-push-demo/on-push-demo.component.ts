@@ -2,12 +2,16 @@ import { Component } from '@angular/core';
 
 import { OnPushListItemRemovedEvent } from '../../types/on-push-list-item-removed-event.interface';
 import { addOnPushListItem, removeOnPushListItem } from '../../types/on-push-list-item.functions';
-import { addOnPushList, createDefaultOnPushLists, removeOnPushList } from '../../types/on-push-list.functions';
+import {
+  addOnPushList,
+  createDefaultOnPushLists,
+  removeOnPushList,
+} from '../../types/on-push-list.functions';
 import { OnPushList } from '../../types/on-push-list.interface';
 
 @Component({
   selector: 'al-on-push-demo',
-  templateUrl: './on-push-demo.component.html'
+  templateUrl: './on-push-demo.component.html',
 })
 export class OnPushDemoComponent {
   public useOnPush = false;

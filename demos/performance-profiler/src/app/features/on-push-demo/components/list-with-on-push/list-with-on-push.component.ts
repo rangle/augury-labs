@@ -7,7 +7,7 @@ import { OnPushList } from '../../types/on-push-list.interface';
 @Component({
   selector: 'al-list-with-on-push',
   templateUrl: './list-with-on-push.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListWithOnPushComponent {
   @Input()

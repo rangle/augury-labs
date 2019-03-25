@@ -12,11 +12,7 @@ import { OutsideAngularDemoModule } from './features/outside-angular-demo/outsid
 import { TrackByDemoModule } from './features/track-by-demo/track-by-demo.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MainContentComponent,
-    NavigationComponent
-  ],
+  declarations: [AppComponent, MainContentComponent, NavigationComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -27,8 +23,8 @@ import { TrackByDemoModule } from './features/track-by-demo/track-by-demo.module
     HoverDemoModule,
     OnPushDemoModule,
     OutsideAngularDemoModule,
-    TrackByDemoModule
+    TrackByDemoModule,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

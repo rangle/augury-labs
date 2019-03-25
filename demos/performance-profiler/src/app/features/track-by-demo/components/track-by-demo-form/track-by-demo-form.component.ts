@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'al-track-by-demo-form',
-  templateUrl: './track-by-demo-form.component.html'
+  templateUrl: './track-by-demo-form.component.html',
 })
 export class TrackByDemoFormComponent implements OnInit {
   @Output()
@@ -15,7 +15,7 @@ export class TrackByDemoFormComponent implements OnInit {
     this.formGroup = new FormBuilder().group({
       useTrackBy: [false],
       target: [''],
-      replacement: ['']
+      replacement: [''],
     });
   }
 }

@@ -7,20 +7,18 @@ import {
   HoverDemoMouseListenerComponent,
   HoverDemoValueComponent,
   HoverDemoWithOnPushComponent,
-  HoverDemoWithOutOnPushComponent
+  HoverDemoWithOutOnPushComponent,
 } from './components';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   declarations: [
     HoverDemoComponent,
     HoverDemoFormComponent,
     HoverDemoMouseListenerComponent,
     HoverDemoValueComponent,
     HoverDemoWithOnPushComponent,
-    HoverDemoWithOutOnPushComponent
-  ]
+    HoverDemoWithOutOnPushComponent,
+  ],
 })
 export class HoverDemoModule {}

@@ -1,4 +1,4 @@
-import { AuguryEvent, createEvent } from '../events';
+import { AuguryEvent } from '../events';
 import { SyncEventEmitter } from '../utils';
 
 import { Probe } from './probe';
@@ -30,14 +30,7 @@ export class ProbeService {
 
   private instantiateProbes(constructors: ProbeConstructor[]): Map<string, Probe> {
     return constructors.reduce((probes, constructor) => {
-      probes.set(
-        constructor.name,
-        new constructor((eventName: string, eventPayload?: any) =>
-          this.probeEvents.emit(
-            createEvent({ type: 'probe', name: constructor.name }, eventName, eventPayload),
-          ),
-        ),
-      );
+      probes.set(constructor.name, new constructor(this.probeEvents));
 
       return probes;
     }, new Map<string, Probe>());

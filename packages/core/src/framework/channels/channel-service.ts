@@ -13,7 +13,7 @@ export class ChannelService {
     return channel.createDelegate(() => this.releaseDeadChannel(channel));
   }
 
-  private releaseDeadChannel(channel: Channel) {
-    this.channels = this.channels.filter(c => c !== channel);
+  private releaseDeadChannel(channelToRelease: Channel) {
+    this.channels = this.channels.filter(channel => channel !== channelToRelease);
   }
 }

@@ -5,10 +5,9 @@ import { OnPushList } from '../../types/on-push-list.interface';
 
 @Component({
   selector: 'al-on-push-demo-lists',
-  templateUrl: './on-push-demo-lists.component.html'
+  templateUrl: './on-push-demo-lists.component.html',
 })
 export class OnPushDemoListsComponent {
-
   @Input()
   public lists;
 
@@ -27,5 +26,4 @@ export class OnPushDemoListsComponent {
   public trackByList(index, list: OnPushList) {
     return list ? list.id : null;
   }
-
 }

@@ -4,8 +4,10 @@ import { OnPushList } from './on-push-list.interface';
 let nextId = 0;
 
 export function createDefaultOnPushListItems(NumberOfItems: number): OnPushListItem[] {
-  return Array.apply(null, {length: NumberOfItems})
-    .reduce(items => [{ id: nextId++ }].concat(items), []);
+  return Array.apply(null, { length: NumberOfItems }).reduce(
+    items => [{ id: nextId++ }].concat(items),
+    [],
+  );
 }
 
 export function addOnPushListItem(list: OnPushList) {

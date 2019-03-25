@@ -1,6 +1,7 @@
-import { EmitFunction } from './emit-function.type';
+import { AuguryEvent } from '../events';
+import { SyncEventEmitter } from '../utils';
 import { Probe } from './probe';
 
 export interface ProbeConstructor {
-  new (emit: EmitFunction): Probe;
+  new (probeEvents: SyncEventEmitter<AuguryEvent>): Probe;
 }

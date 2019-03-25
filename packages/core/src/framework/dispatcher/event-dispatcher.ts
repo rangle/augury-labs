@@ -1,5 +1,5 @@
 import { EnhancerService } from '../enhancers';
-import { AuguryEvent, ElapsedAuguryEvent, ProcessedAuguryEvent } from '../events';
+import { AuguryEvent, ProcessedAuguryEvent } from '../events';
 import { HistoryService } from '../history';
 import { ReactionService } from '../reactions';
 import { SimpleEventEmitter, SimpleQueue, SyncEventEmitter } from '../utils';
@@ -44,25 +44,12 @@ export class EventDispatcher {
   private processEvent(event: AuguryEvent): ProcessedAuguryEvent {
     this.releasing = true;
 
-    const enhancedEvent = this.enhancers.enhanceEvent(event);
-    const reactionResults = this.reactions.reactTo(event, this.emitter, e => this.dispatch(e));
-    const processedEvent: ProcessedAuguryEvent = {
-      ...enhancedEvent,
-      ...{ reactionResults },
-    };
+    const processedEvent = this.createProcessedEvent(event);
 
     this.emitter.emit(processedEvent);
-
     this.releasing = false;
 
-    const currentPerfStamp = performance.now();
-    const elapsedEvent: ElapsedAuguryEvent = {
-      ...processedEvent,
-      auguryHandlingCompletionPerformanceStamp: currentPerfStamp,
-      auguryDrag: currentPerfStamp - processedEvent.creationAtPerformanceStamp,
-    };
-
-    this.history.storeElapsedEvent(elapsedEvent);
+    this.history.addEvent(processedEvent);
 
     return processedEvent;
   }
@@ -71,5 +58,12 @@ export class EventDispatcher {
     while (this.queue.hasItems()) {
       this.processEvent(this.queue.dequeue()!);
     }
+  }
+
+  private createProcessedEvent(event: AuguryEvent): ProcessedAuguryEvent {
+    return {
+      ...this.enhancers.enhanceEvent(event),
+      reactionResults: this.reactions.reactTo(event, this),
+    };
   }
 }

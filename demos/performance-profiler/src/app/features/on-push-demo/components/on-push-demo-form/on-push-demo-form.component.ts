@@ -2,10 +2,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'al-on-push-demo-form',
-  templateUrl: './on-push-demo-form.component.html'
+  templateUrl: './on-push-demo-form.component.html',
 })
 export class OnPushDemoFormComponent {
-
   @Input()
   public counter: number;
 
@@ -20,5 +19,4 @@ export class OnPushDemoFormComponent {
 
   @Output()
   public listAdded = new EventEmitter<void>();
-
 }

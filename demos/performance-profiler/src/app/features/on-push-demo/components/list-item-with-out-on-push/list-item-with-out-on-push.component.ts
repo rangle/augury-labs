@@ -5,7 +5,7 @@ import { OnPushListItem } from '../../types/on-push-list-item.interface';
 @Component({
   selector: 'al-list-item-with-out-on-push',
   templateUrl: './list-item-with-out-on-push.component.html',
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ListItemWithOutOnPushComponent {
   @Input()

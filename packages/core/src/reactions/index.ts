@@ -1,3 +1,3 @@
-export * from './registry';
-export * from './create-live-channel';
-export * from './scan-history';
+export * from './reaction-registry.constant';
+export * from './create-live-channel-reaction.class';
+export * from './scan-history-reaction.class';

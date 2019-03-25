@@ -6,7 +6,7 @@ import { OnPushList } from '../../types/on-push-list.interface';
 @Component({
   selector: 'al-list-with-out-on-push',
   templateUrl: './list-with-out-on-push.component.html',
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ListWithOutOnPushComponent {
   @Input()
@@ -16,7 +16,7 @@ export class ListWithOutOnPushComponent {
   public listItemAdded = new EventEmitter<OnPushList>();
 
   @Output()
-  public listItemRemoved = new EventEmitter<{ list: OnPushList, item: OnPushListItem }>();
+  public listItemRemoved = new EventEmitter<{ list: OnPushList; item: OnPushListItem }>();
 
   public trackByOnPushListItem(index, item: OnPushListItem) {
     return item ? item.id : null;

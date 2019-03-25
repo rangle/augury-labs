@@ -1,22 +1,28 @@
-import { ElapsedAuguryEvent } from '../events';
+import { ElapsedAuguryEvent, ProcessedAuguryEvent } from '../events';
 import { LoadedEventEmitter } from '../utils';
 
 export class HistoryService {
   private elapsedEvents: ElapsedAuguryEvent[] = [];
 
-  public storeElapsedEvent(e: ElapsedAuguryEvent) {
-    this.elapsedEvents.push(e);
+  public addEvent(processedEvent: ProcessedAuguryEvent) {
+    const currentPerfStamp = performance.now();
+
+    this.elapsedEvents.push({
+      ...processedEvent,
+      auguryHandlingCompletionPerformanceStamp: currentPerfStamp,
+      auguryDrag: currentPerfStamp - processedEvent.creationAtPerformanceStamp,
+    });
   }
 
   public wipeOut() {
     this.elapsedEvents = [];
   }
 
-  // @todo: ensure startEID and endEID are valid
-  public getTotalAuguryDrag(startEID, endEID) {
+  // @todo: ensure startEventId and endEventId are valid
+  public getTotalAuguryDrag(startEventId: number, endEventId: number) {
     return this.elapsedEvents.reduce(
       (totalDrag, elapsedEvent) =>
-        startEID <= elapsedEvent.id && endEID >= elapsedEvent.id
+        startEventId <= elapsedEvent.id && endEventId >= elapsedEvent.id
           ? totalDrag + elapsedEvent.auguryDrag
           : totalDrag,
       0,
@@ -27,7 +33,7 @@ export class HistoryService {
     return this.elapsedEvents[this.elapsedEvents.length - 1];
   }
 
-  // @todo: startEID / endEID args
+  // @todo: startEventId / endEventId arguments
   public emitter() {
     return new LoadedEventEmitter(this.elapsedEvents);
   }

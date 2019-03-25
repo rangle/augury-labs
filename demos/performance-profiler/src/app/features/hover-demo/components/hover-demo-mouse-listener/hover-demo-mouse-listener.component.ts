@@ -5,7 +5,7 @@ import { Point } from '../../types/point.interface';
 @Component({
   selector: 'al-hover-demo-mouse-listener',
   templateUrl: './hover-demo-mouse-listener.component.html',
-  styleUrls: ['./hover-demo-mouse-listener.component.scss']
+  styleUrls: ['./hover-demo-mouse-listener.component.scss'],
 })
 export class HoverDemoMouseListenerComponent {
   @Input()
@@ -17,7 +17,7 @@ export class HoverDemoMouseListenerComponent {
   public onMouseMove(event: MouseEvent) {
     this.pointChange.emit({
       x: event.x,
-      y: event.y
+      y: event.y,
     });
   }
 }

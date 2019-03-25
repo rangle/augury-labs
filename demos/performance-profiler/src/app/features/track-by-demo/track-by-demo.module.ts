@@ -6,20 +6,16 @@ import {
   TrackByDemoComponent,
   TrackByDemoFormComponent,
   TrackByItemsComponent,
-  TrackByItemComponent
+  TrackByItemComponent,
 } from './components';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   declarations: [
     TrackByDemoComponent,
     TrackByDemoFormComponent,
     TrackByItemComponent,
-    TrackByItemsComponent
-  ]
+    TrackByItemsComponent,
+  ],
 })
 export class TrackByDemoModule {}

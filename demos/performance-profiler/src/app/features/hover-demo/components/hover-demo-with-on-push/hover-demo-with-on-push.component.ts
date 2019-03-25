@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'al-hover-demo-with-on-push',
   templateUrl: './hover-demo-with-on-push.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HoverDemoWithOnPushComponent {
   public compute() {

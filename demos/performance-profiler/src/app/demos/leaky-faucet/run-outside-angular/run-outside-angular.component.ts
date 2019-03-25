@@ -31,8 +31,11 @@ export class RunOutsideAngularComponent {
   public run() {
     this.currentNum = 0;
     this.buttonDisabled = true;
-    if (!this.outsideAngular) { this.doCount(); }
-    else { this.ngZone.runOutsideAngular(() => this.doCount()); }
+    if (!this.outsideAngular) {
+      this.doCount();
+    } else {
+      this.ngZone.runOutsideAngular(() => this.doCount());
+    }
   }
 
   public doCount() {

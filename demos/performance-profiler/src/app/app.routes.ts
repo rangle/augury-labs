@@ -10,11 +10,11 @@ export const appRoutes: Routes = [
   {
     pathMatch: 'full',
     path: '',
-    redirectTo: 'home'
+    redirectTo: 'home',
   },
   ...homeRoutes,
   ...hoverDemoRoutes,
   ...onPushDemoRoutes,
   ...outsideAngularDemoRoutes,
-  ...trackByDemoRoutes
+  ...trackByDemoRoutes,
 ];

@@ -1,4 +1,4 @@
-import { Probe } from '../framework/probes/probe';
+import { Probe } from '../framework/probes';
 
 export class NgZoneProbe extends Probe {
   // commands
@@ -40,8 +40,8 @@ export class NgZoneProbe extends Probe {
       },
     });
 
-    ngZone.onStable.subscribe(_ => this.emit('onStable'));
-    ngZone.onUnstable.subscribe(_ => this.emit('onUnstable'));
+    ngZone.onStable.subscribe(() => this.emit('onStable'));
+    ngZone.onUnstable.subscribe(() => this.emit('onUnstable'));
     ngZone._augury_instrumented_ = true;
 
     this.ngZone = ngZone;

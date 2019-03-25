@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'al-hover-demo-form',
-  templateUrl: './hover-demo-form.component.html'
+  templateUrl: './hover-demo-form.component.html',
 })
 export class HoverDemoFormComponent {
   @Input()

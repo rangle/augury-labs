@@ -2,7 +2,7 @@ import { Component, NgZone } from '@angular/core';
 
 @Component({
   selector: 'al-outside-angular-demo',
-  templateUrl: './outside-angular-demo.component.html'
+  templateUrl: './outside-angular-demo.component.html',
 })
 export class OutsideAngularDemoComponent {
   private static readonly Interval = 100;
@@ -33,8 +33,10 @@ export class OutsideAngularDemoComponent {
       .fill(true)
       .map((_, i) => i * OutsideAngularDemoComponent.Interval);
 
-    intervalLengths.forEach(intervalLength => setTimeout(() => this.currentNumber += 1, intervalLength));
+    intervalLengths.forEach(intervalLength =>
+      setTimeout(() => (this.currentNumber += 1), intervalLength),
+    );
 
-    setTimeout(() => this.isRunning = false, OutsideAngularDemoComponent.Interval * 6);
+    setTimeout(() => (this.isRunning = false), OutsideAngularDemoComponent.Interval * 6);
   }
 }

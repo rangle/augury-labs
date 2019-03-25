@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'al-outside-angular-demo-form',
-  templateUrl: './outside-angular-demo-form.component.html'
+  templateUrl: './outside-angular-demo-form.component.html',
 })
 export class OutsideAngularDemoFormComponent {
   @Input()

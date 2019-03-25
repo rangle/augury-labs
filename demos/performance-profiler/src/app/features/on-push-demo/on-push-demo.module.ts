@@ -10,16 +10,12 @@ import {
   ListWithOutOnPushComponent,
   OnPushDemoComponent,
   OnPushDemoFormComponent,
-  OnPushDemoListsComponent
+  OnPushDemoListsComponent,
 } from './components';
 import { onPushDemoRoutes } from './on-push-demo.routes';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule.forChild(onPushDemoRoutes)
-  ],
+  imports: [CommonModule, FormsModule, RouterModule.forChild(onPushDemoRoutes)],
   declarations: [
     ListItemWithOnPushComponent,
     ListItemWithOutOnPushComponent,
@@ -27,7 +23,7 @@ import { onPushDemoRoutes } from './on-push-demo.routes';
     ListWithOutOnPushComponent,
     OnPushDemoComponent,
     OnPushDemoFormComponent,
-    OnPushDemoListsComponent
-  ]
+    OnPushDemoListsComponent,
+  ],
 })
 export class OnPushDemoModule {}

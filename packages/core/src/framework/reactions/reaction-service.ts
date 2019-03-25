@@ -1,47 +1,48 @@
 import { ChannelService } from '../channels';
-import { Dispatch, DispatcherEvents, SimpleDispatch } from '../dispatcher';
-import { AuguryEvent, createEvent } from '../events';
+import { EventDispatcher } from '../dispatcher';
+import { AuguryEvent } from '../events';
 import { HistoryService } from '../history';
 import { ProbeService } from '../probes';
 import { ReactionRegistry } from './reaction-registry';
 import { ReactionResults } from './reaction-results';
 
-import { merge } from '../utils';
+import { ProcessedReaction } from './processed-reaction.interface';
 
 export class ReactionService {
   constructor(
     private probeService: ProbeService,
     private channels: ChannelService,
-    private registry: ReactionRegistry,
+    private reactions: ReactionRegistry,
     private history: HistoryService,
   ) {}
 
-  public reactTo(
-    event: AuguryEvent,
-    dispatcherEvents: DispatcherEvents,
-    dispatch: Dispatch,
-  ): ReactionResults {
-    const createSimpleDispatch = (reactionName: string): SimpleDispatch => (
-      eventName,
-      eventPayload,
-    ) => dispatch(createEvent({ type: 'reaction', name: reactionName }, eventName, eventPayload));
-
-    return this.registry
-      .map(reaction => ({
-        reactionName: reaction.name,
-        result: reaction.react({
+  public reactTo(event: AuguryEvent, eventDispatcher: EventDispatcher): ReactionResults {
+    return this.reactions
+      .map(reaction =>
+        reaction.react({
           event,
-          dispatch: createSimpleDispatch(reaction.name),
-          dispatcherEvents,
+          eventDispatcher,
           channels: this.channels,
           probes: this.probeService,
           history: this.history,
         }),
-      }))
+      )
       .reduce(
-        (mergedResults: ReactionResults, next) =>
-          next.result ? merge(mergedResults, { [next.reactionName]: next.result }) : mergedResults,
-        {},
+        (reactionResults, processedReaction) =>
+          this.addToReactionResults(reactionResults, processedReaction),
+        {} as ReactionResults,
       );
+  }
+
+  private addToReactionResults(
+    reactionResults: ReactionResults,
+    processedReaction: ProcessedReaction,
+  ) {
+    return processedReaction.result
+      ? {
+          ...reactionResults,
+          [processedReaction.reactionName]: processedReaction.result,
+        }
+      : reactionResults;
   }
 }

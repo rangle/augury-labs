@@ -1,4 +1,4 @@
-import { Probe } from '../framework/probes/probe';
+import { Probe } from '../framework/probes';
 
 declare const Zone;
 
@@ -11,9 +11,11 @@ export class RootZoneProbe extends Probe {
     const ZoneDelegate = rootZone._zoneDelegate.constructor;
 
     const probe = this;
-    const watchedRootDelegate = new ZoneDelegate(rootZone, rootZone._zoneDelegate, {
+
+    rootZone._zoneDelegate = new ZoneDelegate(rootZone, rootZone._zoneDelegate, {
       onInvokeTask(delegate, current, target, task, applyThis, applyArgs) {
         probe.emit('root_task_executing', { task });
+
         try {
           return delegate.invokeTask(target, task, applyThis, applyArgs);
         } finally {
@@ -22,7 +24,6 @@ export class RootZoneProbe extends Probe {
       },
     });
 
-    rootZone._zoneDelegate = watchedRootDelegate;
     this.rootZone = rootZone;
   }
 }

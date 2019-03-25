@@ -1,21 +1,16 @@
-import { ChannelService } from '../channels';
-import { SimpleDispatch } from '../dispatcher';
-import { AuguryEvent } from '../events';
-import { HistoryService } from '../history';
-import { ProbeService } from '../probes';
-import { SimpleEventEmitter, SyncEventEmitter } from '../utils';
+import { ProcessedReaction } from './processed-reaction.interface';
+import { ReactionContext } from './reaction-context.interface';
 import { ReactionResult } from './reaction-result';
 
-export interface Reaction {
-  name: string;
-  react: (
-    reaction: {
-      event: AuguryEvent;
-      dispatch: SimpleDispatch;
-      dispatcherEvents: SyncEventEmitter<AuguryEvent>;
-      channels: ChannelService;
-      probes: ProbeService;
-      history: HistoryService;
-    },
-  ) => ReactionResult | undefined;
+export abstract class Reaction {
+  protected constructor(private name: string) {}
+
+  public react(context: ReactionContext): ProcessedReaction {
+    return {
+      reactionName: this.name,
+      result: this.doReact(context),
+    };
+  }
+
+  public abstract doReact(context: ReactionContext): ReactionResult | undefined;
 }

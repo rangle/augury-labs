@@ -5,7 +5,7 @@ import { TrackByDemoForm } from '../../types/track-by-demo-form.interface';
 
 @Component({
   selector: 'al-track-by-demo',
-  templateUrl: './track-by-demo.component.html'
+  templateUrl: './track-by-demo.component.html',
 })
 export class TrackByDemoComponent {
   public useTrackBy: boolean;
