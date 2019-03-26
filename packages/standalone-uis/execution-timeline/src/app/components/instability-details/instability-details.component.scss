@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+
+  ag-card {
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    #componentTreeSvg {
+      height: 250px;
+      margin: 0 auto;
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<ng-container [ngSwitch]="segment.originalMessage.type">
+  <ag-task-details *ngSwitchCase="'task'"
+                   [segment]="segment.originalMessage.lastElapsedTask">
+  </ag-task-details>
+
+  <ag-instability-details *ngSwitchCase="'cycle'"
+                          [segment]="segment.originalMessage.lastElapsedCycle">
+  </ag-instability-details>
+
+  <ag-change-detection-details *ngSwitchCase="'cd'"
+                               [segment]="segment.originalMessage.lastElapsedCD">
+  </ag-change-detection-details>
+</ng-container>

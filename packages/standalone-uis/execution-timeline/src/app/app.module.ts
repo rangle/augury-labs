@@ -4,28 +4,43 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { BrowserModule } from '@angular/platform-browser';
 import { TooltipModule } from 'ng2-tooltip-directive';
 
-import { AppComponent } from './app.component';
-import { BridgeService } from './bridge.service';
-import { CardComponent } from './card';
-import { ChangeDetectionDetailsComponent } from './cd-details';
-import { ExecutionTimelineComponent } from './execution-timeline';
-import { FlameGraphComponent } from './flame-graph';
-import { InstabilityDetailsComponent } from './instability-details';
-import { LegendComponent } from './legend';
-import { TaskDetailsComponent } from './task-details';
+import {
+  AppComponent,
+  ChangeDetectionDetailsComponent,
+  ExecutionTimelineComponent,
+  FlameGraphComponent,
+  FooterComponent,
+  HeaderComponent,
+  HeaderControlsComponent,
+  HeaderLogoComponent,
+  InstabilityDetailsComponent,
+  LegendComponent,
+  LogoComponent,
+  MainComponent,
+  SegmentDetailsComponent,
+  TaskDetailsComponent,
+} from './components';
+import { UiLibraryModule } from './modules/ui-library/ui-library.module';
+import { BridgeService } from './services/bridge.service';
 
 @NgModule({
+  imports: [BrowserModule, TooltipModule, FlexModule, GridModule, UiLibraryModule],
   declarations: [
     AppComponent,
-    ExecutionTimelineComponent,
-    TaskDetailsComponent,
-    InstabilityDetailsComponent,
     ChangeDetectionDetailsComponent,
-    CardComponent,
-    LegendComponent,
+    ExecutionTimelineComponent,
     FlameGraphComponent,
+    FooterComponent,
+    HeaderComponent,
+    HeaderControlsComponent,
+    HeaderLogoComponent,
+    InstabilityDetailsComponent,
+    LegendComponent,
+    LogoComponent,
+    MainComponent,
+    SegmentDetailsComponent,
+    TaskDetailsComponent,
   ],
-  imports: [BrowserModule, TooltipModule, FlexModule, GridModule],
   providers: [BridgeService],
   bootstrap: [AppComponent],
 })

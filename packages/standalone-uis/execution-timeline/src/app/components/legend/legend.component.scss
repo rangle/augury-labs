@@ -1,0 +1,51 @@
+:host {
+  display: block;
+  color: #4a4a4a;
+  font-size: 10px;
+  margin-bottom: 0.5rem;
+
+  ul {
+    display: flex;
+    line-height: 1.5em;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+
+    li {
+      color: #999999;
+      font-weight: 200;
+      padding-left: 1rem;
+      position: relative;
+
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+
+      &::before {
+        border-radius: 3px;
+        content: '';
+        height: 10px;
+        left: 0;
+        position: absolute;
+        top: 2px;
+        width: 10px;
+      }
+
+      &.ng-zone-task::before {
+        background: #95bcda;
+      }
+
+      &.root-zone-task::before {
+        background: purple;
+      }
+
+      &.angular-instability::before {
+        background: #d34627;
+      }
+
+      &.change-detection::before {
+        background: #9b9b9b;
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  margin-right: 1rem;
+  width: 65%;
+
+  ag-card {
+    margin-bottom: 1rem;
+  }
+
+  #focus-chart,
+  #focus-chart g {
+    width: 100%;
+  }
+
+  ::ng-deep {
+    .brush {
+      > .selection {
+        fill: none;
+        stroke: #e1e9ee;
+        box-shadow: 0 2px 4px 0 #e5e9f2;
+        stroke-width: 5;
+      }
+
+      .overlay {
+        fill: rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .tick {
+      line {
+        visibility: hidden;
+      }
+
+      text {
+        fill: #888888;
+      }
+
+      .segment {
+        margin-top: 10px;
+      }
+
+      .domain {
+        stroke: #d8d8d8;
+      }
+    }
+  }
+}

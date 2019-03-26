@@ -34,7 +34,7 @@ export class HistoryService {
   }
 
   // @todo: startEventId / endEventId arguments
-  public createEventEmitter(): Subscribable<ElapsedAuguryEvent> {
+  public createSubscribable(): Subscribable<ElapsedAuguryEvent> {
     return new LoadedEventEmitter<ElapsedAuguryEvent>(this.elapsedEvents);
   }
 }

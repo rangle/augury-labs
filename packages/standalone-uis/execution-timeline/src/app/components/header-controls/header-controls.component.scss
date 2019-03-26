@@ -1,0 +1,7 @@
+:host {
+  display: flex;
+
+  ag-button:not(:last-child) {
+    margin-right: 1rem;
+  }
+}

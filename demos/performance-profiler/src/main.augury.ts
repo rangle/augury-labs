@@ -1,4 +1,4 @@
-import { enableProdMode, NgZone, ViewContainerRef } from '@angular/core';
+import { NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { auguryBootstrap } from '@augury/core';
 import { PerformanceProfilerPlugin } from '@augury/performance-profiler-plugin';

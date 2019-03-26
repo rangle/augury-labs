@@ -6,15 +6,12 @@ const COUNT_INTERVAL = 500;
 @Component({
   selector: 'app-run-outside-angular',
   templateUrl: './run-outside-angular.component.html',
-  styleUrls: ['./run-outside-angular.component.css'],
+  styleUrls: ['./run-outside-angular.component.scss'],
 })
 export class RunOutsideAngularComponent {
   public currentNum = 0;
   public outsideAngular = false;
   public buttonDisabled = false;
-
-  @ViewChild('currentNumInput') public numInputRef: ElementRef;
-
   public numberChildren = 0;
   public status = 'change me';
 
@@ -44,10 +41,6 @@ export class RunOutsideAngularComponent {
       .map((_, i) => i * COUNT_INTERVAL)
       .forEach(intervalLength => setTimeout(() => (this.currentNum += 1), intervalLength));
     setTimeout(() => (this.buttonDisabled = false), COUNT_INTERVAL * 6);
-  }
-
-  public getInputVal() {
-    return parseInt(this.numInputRef.nativeElement.value || 0, 10);
   }
 
   public onSubmit() {

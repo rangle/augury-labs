@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'input-output',
   templateUrl: './input-output.component.html',
-  styleUrls: ['./input-output.component.css'],
+  styleUrls: ['./input-output.component.scss'],
 })
 export class InputOutputComponent {
   public message: string;

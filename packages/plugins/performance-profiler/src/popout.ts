@@ -9,7 +9,9 @@ const allControllers: PopoutController[] = [];
 window.onunload = window.onbeforeunload = () => allControllers.forEach(c => c.kill());
 
 export function openPopout(name: string) {
-  let popoutWindow: any = open('', name, 'height=800,width=1200,titlebar=yes,location=no');
+  const parameters = ['titlebar=yes', 'location=no'].join(',');
+
+  let popoutWindow: any = open('', name, parameters);
 
   if (!popoutWindow) {
     throw new Error('please allow popups');
@@ -17,8 +19,11 @@ export function openPopout(name: string) {
 
   if (popoutWindow.bridge) {
     popoutWindow.close();
-    popoutWindow = open('', name, 'height=800,width=1200,titlebar=yes,location=no');
+    popoutWindow = open('', name, parameters);
   }
+
+  popoutWindow.moveTo(0, 0);
+  popoutWindow.resizeTo(screen.width, screen.height);
 
   const bridge = {
     in: new SyncEventEmitter(),

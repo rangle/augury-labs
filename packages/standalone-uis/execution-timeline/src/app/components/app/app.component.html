@@ -1,0 +1,19 @@
+<ag-header [recording]="recording"
+           (cleared)="clear()"
+           (started)="start()"
+           (stopped)="stop()">
+</ag-header>
+
+<ag-main>
+  <ag-execution-timeline [segments]="timelineSegments"
+                         [augurySegments]="dragSegments"
+                         [selectedSegment]="selectedSegment"
+                         (onSegmentClick)="selectSegment($event)">
+  </ag-execution-timeline>
+
+  <ag-segment-details *ngIf="selectedSegment"
+                      [segment]="selectedSegment">
+  </ag-segment-details>
+</ag-main>
+
+<ag-footer></ag-footer>

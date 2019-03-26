@@ -72,6 +72,10 @@ module.exports = {
         use: ['to-string-loader', 'css-loader'],
       },
       {
+        test: /\.scss$/,
+        use: ['to-string-loader', 'css-loader', 'sass-loader'],
+      },
+      {
         test: /\.png$/,
         use: 'url-loader?mimetype=image/png',
       },
@@ -106,7 +110,7 @@ module.exports = {
         to: 'index.html',
       },
       {
-        from: './src/rangle-font.woff2',
+        from: './src/assets/fonts/rangle-font.woff2',
         to: 'rangle-font.woff2',
       },
     ]),

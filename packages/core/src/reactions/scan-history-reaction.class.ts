@@ -17,7 +17,7 @@ export class ScanHistoryReaction extends Reaction {
 
       const scanner = new Scanner(reducer, context.history);
 
-      scanner.scan(context.history.createEventEmitter());
+      scanner.scan(context.history.createSubscribable());
 
       return {
         success: true,

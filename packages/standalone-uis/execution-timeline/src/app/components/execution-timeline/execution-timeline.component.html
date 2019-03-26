@@ -1,0 +1,41 @@
+<ag-card>
+  <ag-section-heading>Timeline Overview</ag-section-heading>
+  <div #contextOuterContainer>
+    <svg #contextContainer
+         height="120"
+         width="100%"
+         (window:resize)="onResizeSVG()">
+      <defs>
+        <mask id="selectionMask" x="0" y="0">
+          <rect id="selectionMaskCutout" fill="white"></rect>
+          <rect id="selectionMaskBackground"
+                x="100"
+                y="0"
+                width="100"
+                height="100%"
+                fill="black"></rect>
+        </mask>
+      </defs>
+      <g #contextContent></g>
+      <g #contextAxis></g>
+      <g #contextBrush class="brush"></g>
+    </svg>
+  </div>
+</ag-card>
+
+<ag-card>
+  <ag-section-heading>Timeline Detail View</ag-section-heading>
+  <ag-legend></ag-legend>
+  <div #focusOuterContainer>
+    <svg #focusContainer
+         height="160"
+         width="100%"
+         (window:resize)="onResizeSVG()">
+      <g #focusContent id="focus-chart">
+        <g #focusMainContent></g>
+        <g #focusAuguryContent></g>
+      </g>
+      <g #focusAxis></g>
+    </svg>
+  </div>
+</ag-card>
