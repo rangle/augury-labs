@@ -44,10 +44,17 @@ export interface Segment {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExecutionTimelineComponent implements OnChanges {
-  @Input() public segments: ExtendableSegment[];
-  @Input() public augurySegments: ExtendableSegment[];
-  @Input() public selectedSegment: ExtendableSegment = null;
-  @Output() public onSegmentClick = new EventEmitter<ExtendableSegment>();
+  @Input()
+  public segments: ExtendableSegment[];
+
+  @Input()
+  public augurySegments: ExtendableSegment[];
+
+  @Input()
+  public selectedSegment: ExtendableSegment = null;
+
+  @Output()
+  public segmentSelected = new EventEmitter<ExtendableSegment>();
 
   @ViewChild('contextOuterContainer') public contextOuterContainerElement: ElementRef;
   @ViewChild('contextContainer') public contextContainerSVGElement: ElementRef;
@@ -64,79 +71,60 @@ export class ExecutionTimelineComponent implements OnChanges {
 
   public rows = ['zone task', 'angular instability', 'change detection'];
 
-  public legend = [
-    {
-      label: 'ng zone tasks',
-      color: '#1f77b4',
-      desc: `Zone tasks represent synchronous JS
-      execution runs detected by ZoneJS.`,
-    },
-    {
-      label: 'root zone task',
-      color: '#5a1eae',
-      desc: `Zone tasks represent synchronous JS
-      execution runs detected by ZoneJS.`,
-    },
-    {
-      label: 'angular instability',
-      color: 'orange',
-      desc: `Angular defines instability as the period
-        after some JS activity occurred within ngZone,
-        but before change detection has reconciled the view.`,
-    },
-    {
-      label: 'change detection',
-      color: 'green',
-      desc: `Change detection occurs at least once for each instability period.`,
-    },
-  ];
-
   private primaryHighlights: Segment[] = [];
 
   private rowColor: (row: string) => string;
   private lastPosition: [number, number];
+  private isReady: boolean;
+  private lastPaintedTimestamp = performance.now();
 
   constructor(private zone: NgZone) {}
 
   public ngOnChanges(changes) {
-    if (changes.segments || changes.augurySegments) {
-      this.paint();
-    }
-    if (changes.hasOwnProperty('selectedSegment')) {
+    this.isReady =
+      performance.now() - this.lastPaintedTimestamp > 500
+        ? Boolean(this.segments) && Boolean(this.augurySegments)
+        : false;
+
+    this.repaint();
+
+    if (this.selectedSegment) {
       this.highlightPrimary(this.selectedSegment);
     }
   }
 
-  public onResizeSVG() {
-    if (this.isReady()) {
+  public repaint(isWindowResize = false) {
+    if (this.isReady || isWindowResize) {
+      this.lastPaintedTimestamp = performance.now();
       this.paint();
     }
   }
 
   public highlightPrimary(segment: Segment) {
     this.primaryHighlights = segment ? [segment] : [];
+
     d3.select(this.focusContentGElement.nativeElement)
       .selectAll('.segment')
       .style('fill', (d: Segment) => this.colorForSegment(d));
+
     d3.select(this.contextContentGElement.nativeElement)
       .selectAll('.segment')
       .style('fill', (d: Segment) => this.colorForSegment(d));
-  }
-
-  public isReady() {
-    return this.segments && this.augurySegments;
   }
 
   private paint() {
     d3.select(this.contextContentGElement.nativeElement)
       .selectAll('*')
       .remove();
+
     d3.select(this.focusContentAuguryGElement.nativeElement)
       .selectAll('*')
       .remove();
+
     d3.select(this.focusContentMainGElement.nativeElement)
       .selectAll('*')
       .remove();
+
     this._paint();
   }
 
@@ -155,13 +143,12 @@ export class ExecutionTimelineComponent implements OnChanges {
     );
     const widthFocus = this.focusOuterContainerElement.nativeElement.clientWidth;
     const widthContext = this.contextOuterContainerElement.nativeElement.clientWidth;
-    const contextWidthOverFocusWidth = widthContext / widthFocus;
-    const focusWidthOverContextWidth = widthFocus / widthContext;
 
-    if (widthFocus < 0) {
+    if (widthFocus <= 0 || widthContext <= 0) {
       return;
     }
 
+    const focusWidthOverContextWidth = widthFocus / widthContext;
     const minStart = d3.min(this.segments, d => d.start);
     const maxEnd = d3.max(this.segments, d => d.end);
 
@@ -292,7 +279,7 @@ export class ExecutionTimelineComponent implements OnChanges {
       .attr('y', d => scaleYFocus(d.row))
       .attr('width', d => scaleXFocus(d.end - minStart) - scaleXFocus(d.start - minStart))
       .attr('height', Math.max(0, heightFocus / this.rows.length - spacingFocus.paddingInner))
-      .on('click', d => this.zone.run(() => this.onSegmentClick.emit(d)))
+      .on('click', segment => this.zone.run(() => this.segmentSelected.emit(segment)))
       .on('mouseover', d => {
         d3.select(this.focusContentMainGElement.nativeElement)
           .selectAll('rect')
@@ -421,6 +408,7 @@ export class ExecutionTimelineComponent implements OnChanges {
     if (this.primaryHighlights.indexOf(s) > -1) {
       return this.colorForSegment(s);
     }
+
     return darkenColor(this.colorForSegment(s), 0.3);
   }
 }

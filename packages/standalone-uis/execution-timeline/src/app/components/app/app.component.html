@@ -8,7 +8,7 @@
   <ag-execution-timeline [segments]="timelineSegments"
                          [augurySegments]="dragSegments"
                          [selectedSegment]="selectedSegment"
-                         (onSegmentClick)="selectSegment($event)">
+                         (segmentSelected)="selectSegment($event)">
   </ag-execution-timeline>
 
   <ag-segment-details *ngIf="selectedSegment"
