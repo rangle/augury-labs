@@ -20,16 +20,18 @@ export class ComponentTreeUI {
 
   public repaint() {
     this.containerEl.innerHTML = '';
-    setTimeout(() => this.zone.run(() => this.paint()), 500);
+    this.paint();
   }
 
   private paint() {
     if (!this.data) {
       throw new Error('no data provided');
     }
+
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };
     const width = this.containerEl.clientWidth - margin.left - margin.right;
     const height = this.containerEl.clientHeight - margin.top - margin.bottom;
+
     const svg = d3.select(this.containerEl);
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);

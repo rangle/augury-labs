@@ -12,36 +12,34 @@
     width: 100%;
   }
 
-  ::ng-deep {
-    .brush {
-      > .selection {
-        fill: none;
-        stroke: #e1e9ee;
-        box-shadow: 0 2px 4px 0 #e5e9f2;
-        stroke-width: 5;
-      }
-
-      .overlay {
-        fill: rgba(255, 255, 255, 0.5);
-      }
+  ::ng-deep .brush {
+    > .selection {
+      fill: none;
+      stroke: #e1e9ee;
+      box-shadow: 0 2px 4px 0 #e5e9f2;
+      stroke-width: 5;
     }
 
-    .tick {
-      line {
-        visibility: hidden;
-      }
+    .overlay {
+      fill: rgba(255, 255, 255, 0.5);
+    }
+  }
 
-      text {
-        fill: #888888;
-      }
+  ::ng-deep .tick {
+    line {
+      visibility: hidden;
     }
 
-    .segment {
-      margin-top: 10px;
+    text {
+      fill: #888888;
     }
+  }
 
-    .domain {
-      stroke: #d8d8d8;
-    }
+  ::ng-deep .segment {
+    margin-top: 10px;
+  }
+
+  ::ng-deep .domain {
+    stroke: #d8d8d8;
   }
 }

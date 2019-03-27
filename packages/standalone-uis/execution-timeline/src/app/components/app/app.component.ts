@@ -61,7 +61,7 @@ export class AppComponent implements OnDestroy {
   }
 
   public selectSegment(segment) {
-    this.selectedSegment = segment === this.selectedSegment ? null : segment;
+    this.selectedSegment = segment;
   }
 
   private isTimelineSegmentMessage(message) {

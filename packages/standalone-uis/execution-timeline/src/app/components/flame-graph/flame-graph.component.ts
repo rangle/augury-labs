@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, NgZone, OnChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import * as d3 from 'd3';
 import { flamegraph } from 'd3-flame-graph';
 import * as d3Tip from 'd3-tip';
@@ -7,20 +15,11 @@ import { round2 } from '../../util/misc-utils';
 
 const tip = (d3Tip as any).default;
 
-@Component({
-  selector: 'ag-flame-graph',
-  templateUrl: './flame-graph.component.html',
-  styleUrls: ['./flame-graph.component.css'],
-  // encapsulation: ViewEncapsulation.None
-})
-export class FlameGraphComponent implements OnChanges {
-  @Input() public height: string;
-  @Input() public width: string;
-  @Input() public data: FlameGraphNode;
+/*
   //
   // e.g.
   //
-  // data = {
+  // rootNode = {
   //   name : 'AppComponent',
   //   value: 100,
   //   children: [
@@ -38,55 +37,60 @@ export class FlameGraphComponent implements OnChanges {
   //     }
   //   ]
   // }
+ */
 
-  @ViewChild('flameGraphContentContainer') public contentContainerSVGElement: ElementRef;
+@Component({
+  selector: 'ag-flame-graph',
+  templateUrl: './flame-graph.component.html',
+  styleUrls: ['./flame-graph.component.scss'],
+})
+export class FlameGraphComponent implements OnChanges, AfterViewChecked {
+  @Input()
+  public rootNode: FlameGraphNode;
 
-  constructor(private zone: NgZone) {}
+  @ViewChild('flameGraphContainer')
+  public container: ElementRef;
 
-  public ngOnChanges() {
+  private isReady: boolean;
+  private width: number;
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    this.isReady = Boolean(this.rootNode) && Boolean(this.container);
+
     this.paint();
   }
 
-  public isReady() {
-    return this.data && this.contentContainerSVGElement;
-  }
-
-  public onResizeContainer() {
-    this.paint();
-  }
-
-  public ngAfterViewChecked() {
-    if (this.contentContainerSVGElement.nativeElement.clientWidth !== this.width) {
+  public ngAfterViewChecked(): void {
+    if (this.container.nativeElement.clientWidth !== this.width) {
       this.paint();
     }
   }
 
-  private paint() {
-    if (this.isReady()) {
-      d3.select(this.contentContainerSVGElement.nativeElement)
-        .selectAll('*')
-        .remove();
-      this._paint();
+  public paint() {
+    if (this.isReady) {
+      this.clearExistingGraph();
+
+      this.width = this.container.nativeElement.clientWidth;
+
+      const t = tip()
+        .direction('s')
+        .offset([8, 0])
+        .attr('class', 'd3-flame-graph-tip')
+        .html(d => `${d.data.name}: ${round2(d.data.value)}ms`);
+
+      const fgraph = flamegraph()
+        .width(this.width)
+        .tooltip(t);
+
+      d3.select(this.container.nativeElement)
+        .datum(this.rootNode)
+        .call(fgraph);
     }
   }
 
-  private _paint() {
-    this.width = this.contentContainerSVGElement.nativeElement.clientWidth;
-    if (!this.data) {
-      throw new Error('no data provided');
-    }
-    const t = tip()
-      .direction('s')
-      .offset([8, 0])
-      .attr('class', 'd3-flame-graph-tip')
-      .html(d => `${d.data.name}: ${round2(d.data.value)}ms`);
-
-    const fgraph = flamegraph()
-      .width(this.width)
-      .tooltip(t);
-
-    d3.select(this.contentContainerSVGElement.nativeElement)
-      .datum(this.data)
-      .call(fgraph);
+  private clearExistingGraph() {
+    d3.select(this.container.nativeElement)
+      .selectAll('*')
+      .remove();
   }
 }

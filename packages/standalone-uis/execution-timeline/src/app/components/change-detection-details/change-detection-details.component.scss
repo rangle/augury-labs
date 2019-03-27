@@ -1,17 +1,21 @@
-.zui-table {
-  margin-top: 10px;
-  border-collapse: collapse;
-  border-spacing: 0;
-  font: normal 13px Arial, sans-serif;
-}
+:host {
+  display: block;
 
-.zui-table tbody td {
-  padding: 10px;
-  border: solid 1px #e3e8ec;
-  font-family: Helvetica;
-  font-size: 14px;
-  color: #627991;
-  letter-spacing: 0;
-  font-weight: 200;
-  margin-bottom: 0;
+  table {
+    font: normal 13px Arial, sans-serif;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 10px;
+
+    tbody td {
+      border: solid 1px #e3e8ec;
+      color: #627991;
+      font-family: Helvetica, serif;
+      font-size: 14px;
+      font-weight: 200;
+      letter-spacing: 0;
+      margin-bottom: 0;
+      padding: 10px;
+    }
+  }
 }

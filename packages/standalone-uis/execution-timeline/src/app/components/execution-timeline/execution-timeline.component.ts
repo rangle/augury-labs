@@ -44,6 +44,8 @@ export interface Segment {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExecutionTimelineComponent implements OnChanges {
+  private static readonly MinimumRepaintTimeInMilliseconds = 500;
+
   @Input()
   public segments: ExtendableSegment[];
 
@@ -74,7 +76,7 @@ export class ExecutionTimelineComponent implements OnChanges {
   private primaryHighlights: Segment[] = [];
 
   private rowColor: (row: string) => string;
-  private lastPosition: [number, number];
+  private timelineSelection = [0, 20];
   private isReady: boolean;
   private lastPaintedTimestamp = performance.now();
 
@@ -82,19 +84,20 @@ export class ExecutionTimelineComponent implements OnChanges {
 
   public ngOnChanges(changes) {
     this.isReady =
-      performance.now() - this.lastPaintedTimestamp > 500
-        ? Boolean(this.segments) && Boolean(this.augurySegments)
+      performance.now() - this.lastPaintedTimestamp >
+      ExecutionTimelineComponent.MinimumRepaintTimeInMilliseconds
+        ? changes.segments || changes.augurySegments
         : false;
 
     this.repaint();
 
-    if (this.selectedSegment) {
+    if (changes.selectedSegment) {
       this.highlightPrimary(this.selectedSegment);
     }
   }
 
-  public repaint(isWindowResize = false) {
-    if (this.isReady || isWindowResize) {
+  public repaint(forceRepaint = false) {
+    if (this.isReady || forceRepaint) {
       this.lastPaintedTimestamp = performance.now();
       this.paint();
     }
@@ -113,71 +116,59 @@ export class ExecutionTimelineComponent implements OnChanges {
   }
 
   private paint() {
-    d3.select(this.contextContentGElement.nativeElement)
-      .selectAll('*')
-      .remove();
+    this.clearGElement(this.contextContentGElement);
+    this.clearGElement(this.focusContentAuguryGElement);
+    this.clearGElement(this.focusContentMainGElement);
 
-    d3.select(this.focusContentAuguryGElement.nativeElement)
-      .selectAll('*')
-      .remove();
+    const focusWidth = this.focusOuterContainerElement.nativeElement.clientWidth;
+    const contextWidth = this.contextOuterContainerElement.nativeElement.clientWidth;
 
-    d3.select(this.focusContentMainGElement.nativeElement)
-      .selectAll('*')
-      .remove();
-
-    this._paint();
-  }
-
-  private _paint() {
-    const heightFocus = Math.max(
-      0,
-      this.focusOuterContainerElement.nativeElement.clientHeight - spacingFocus.marginBottom,
-    );
-    const heightContextOuter = Math.max(
-      0,
-      this.contextOuterContainerElement.nativeElement.clientHeight,
-    );
-    const heightContextInner = Math.max(
-      0,
-      heightContextOuter - spacingContext.marginBottom - spacingContext.marginTop,
-    );
-    const widthFocus = this.focusOuterContainerElement.nativeElement.clientWidth;
-    const widthContext = this.contextOuterContainerElement.nativeElement.clientWidth;
-
-    if (widthFocus <= 0 || widthContext <= 0) {
+    if (focusWidth <= 0 || contextWidth <= 0) {
       return;
     }
 
-    const focusWidthOverContextWidth = widthFocus / widthContext;
+    const focusHeight = Math.max(
+      0,
+      this.focusOuterContainerElement.nativeElement.clientHeight - spacingFocus.marginBottom,
+    );
+    const contextOuterHeight = Math.max(
+      0,
+      this.contextOuterContainerElement.nativeElement.clientHeight,
+    );
+    const contextInnerHeight = Math.max(
+      0,
+      contextOuterHeight - spacingContext.marginBottom - spacingContext.marginTop,
+    );
+
     const minStart = d3.min(this.segments, d => d.start);
     const maxEnd = d3.max(this.segments, d => d.end);
 
     const scaleXFocus = d3
       .scaleLinear()
       .domain([0, maxEnd - minStart])
-      .range([0, widthFocus]);
+      .range([0, focusWidth] as ReadonlyArray<number>);
 
     const scaleXContext = d3
       .scaleLinear()
       .domain(scaleXFocus.domain())
-      .range([0, widthContext]);
+      .range([0, contextWidth] as ReadonlyArray<number>);
 
     const scaleYFocus = d3
       .scaleBand()
-      .domain(this.rows)
-      .range([0, heightFocus]);
+      .domain(this.rows as ReadonlyArray<string>)
+      .range([0, focusHeight]);
 
     const scaleYContext = d3
       .scaleBand()
       .domain(scaleYFocus.domain())
-      .range([0, heightContextInner]);
+      .range([0, contextInnerHeight]);
 
     // to support more than 10 rows, we have to change the color scheme
     if (this.rows.length > 10) {
       throw new Error('more than 10 rows');
     }
 
-    this.rowColor = d3.scaleOrdinal(d3.schemeCategory10).domain(this.rows);
+    this.rowColor = d3.scaleOrdinal(d3.schemeCategory10).domain(this.rows as ReadonlyArray<string>);
 
     const axisXFocus = d3.axisBottom(scaleXFocus).tickFormat((d: number) => `${d} ms`);
 
@@ -192,14 +183,14 @@ export class ExecutionTimelineComponent implements OnChanges {
       .tickPadding(4);
 
     d3.select(this.focusAxisGElement.nativeElement)
-      .attr('transform', 'translate(0,' + heightFocus + ')')
+      .attr('transform', 'translate(0,' + focusHeight + ')')
       .call(axisXFocus);
 
     const brush = d3
       .brushX()
       .extent([
         [0, spacingBrush.marginTopAndBottom],
-        [widthContext, Math.max(0, heightContextOuter - spacingBrush.marginTopAndBottom)],
+        [contextWidth, Math.max(0, contextOuterHeight - spacingBrush.marginTopAndBottom)],
       ])
       .on('brush end', () => {
         const selection = d3.event.selection || scaleXContext.range();
@@ -212,10 +203,10 @@ export class ExecutionTimelineComponent implements OnChanges {
           return;
         } // ignore brush-by-zoom
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'end') {
-          this.lastPosition = [scaleXContext(selection[0]), scaleXContext(selection[1])];
+          this.timelineSelection = [scaleXContext(selection[0]), scaleXContext(selection[1])];
         }
         const transformation = d3.zoomIdentity
-          .scale(widthContext / (selection[1] - selection[0]))
+          .scale(contextWidth / (selection[1] - selection[0]))
           .translate(-selection[0], 0);
 
         if (transformation.x === 0 && transformation.k === 1) {
@@ -225,7 +216,7 @@ export class ExecutionTimelineComponent implements OnChanges {
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain());
 
         const translation =
-          transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidthOverContextWidth;
+          (transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidth) / contextWidth;
         const scale = transformation.k;
 
         d3.select(this.focusContentGElement.nativeElement).attr(
@@ -241,8 +232,8 @@ export class ExecutionTimelineComponent implements OnChanges {
     const zoom = d3
       .zoom()
       .scaleExtent([1, Infinity])
-      .translateExtent([[0, 0], [widthFocus, heightFocus]])
-      .extent([[0, 0], [widthFocus, heightFocus]])
+      .translateExtent([[0, 0], [focusWidth, focusHeight]])
+      .extent([[0, 0], [focusWidth, focusHeight]])
       .on('zoom', () => {
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'brush') {
           return;
@@ -252,7 +243,7 @@ export class ExecutionTimelineComponent implements OnChanges {
         scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain());
 
         const translation =
-          transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidthOverContextWidth;
+          (transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidth) / contextWidth;
         const scale = transformation.k;
 
         d3.select(this.focusContentGElement.nativeElement).attr(
@@ -278,7 +269,7 @@ export class ExecutionTimelineComponent implements OnChanges {
       .attr('x', d => scaleXFocus(d.start - minStart) + spacingFocus.paddingInner)
       .attr('y', d => scaleYFocus(d.row))
       .attr('width', d => scaleXFocus(d.end - minStart) - scaleXFocus(d.start - minStart))
-      .attr('height', Math.max(0, heightFocus / this.rows.length - spacingFocus.paddingInner))
+      .attr('height', Math.max(0, focusHeight / this.rows.length - spacingFocus.paddingInner))
       .on('click', segment => this.zone.run(() => this.segmentSelected.emit(segment)))
       .on('mouseover', d => {
         d3.select(this.focusContentMainGElement.nativeElement)
@@ -304,7 +295,7 @@ export class ExecutionTimelineComponent implements OnChanges {
       .attr('x', d => scaleXFocus(d.start - minStart))
       .attr('y', d => 0)
       .attr('width', d => scaleXFocus(d.end - minStart) - scaleXFocus(d.start - minStart))
-      .attr('height', heightFocus);
+      .attr('height', focusHeight);
 
     d3.select(this.contextContentGElement.nativeElement)
       .selectAll('rect')
@@ -318,13 +309,13 @@ export class ExecutionTimelineComponent implements OnChanges {
       .attr('width', d => scaleXContext(d.end - minStart) - scaleXContext(d.start - minStart))
       .attr(
         'height',
-        Math.max(0, heightContextInner / this.rows.length) - spacingFocus.paddingInner,
+        Math.max(0, contextInnerHeight / this.rows.length) - spacingFocus.paddingInner,
       );
 
     d3.select(this.contextAxisGElement.nativeElement)
       .style('font', '8px times')
       .attr('class', 'axis axis--x')
-      .attr('transform', `translate(0,${heightContextInner + spacingContext.xAxisOffset})`)
+      .attr('transform', `translate(0,${contextInnerHeight + spacingContext.xAxisOffset})`)
       .call(axisXContext);
 
     const lastSegment = this.segments[this.segments.length - 1];
@@ -358,17 +349,11 @@ export class ExecutionTimelineComponent implements OnChanges {
       const endMs = hasPassedMin ? focusStartSize : lastSegment.end * 0.8;
       const scaleFactor =
         scaleXContext.range()[1] / (scaleXContext.domain()[1] - scaleXContext.domain()[0]);
-      const pos: [number, number] =
-        !this.lastPosition && hasPassedMin
-          ? [0, endMs]
-          : [
-              scaleFactor * (this.lastPosition ? this.lastPosition[0] : 0),
-              scaleFactor * (this.lastPosition ? this.lastPosition[1] : endMs),
-            ];
+      const pos: [number, number] = [
+        scaleFactor * (this.timelineSelection ? this.timelineSelection[0] : 0),
+        scaleFactor * (this.timelineSelection ? this.timelineSelection[1] : endMs),
+      ];
 
-      if (!this.lastPosition && hasPassedMin) {
-        this.lastPosition = pos;
-      }
       d3.select(this.contextBrushGElement.nativeElement).call(brush.move, pos);
     }
 
@@ -378,8 +363,8 @@ export class ExecutionTimelineComponent implements OnChanges {
 
     d3.select(this.contextContainerSVGElement.nativeElement)
       .select('#selectionMaskCutout')
-      .style('width', widthContext)
-      .style('height', heightContextInner)
+      .style('width', contextWidth)
+      .style('height', contextInnerHeight)
       .attr('y', spacingContext.marginTop);
 
     d3.select(this.contextBrushGElement.nativeElement)
@@ -410,5 +395,11 @@ export class ExecutionTimelineComponent implements OnChanges {
     }
 
     return darkenColor(this.colorForSegment(s), 0.3);
+  }
+
+  private clearGElement(elementRef: ElementRef) {
+    d3.select(elementRef.nativeElement)
+      .selectAll('*')
+      .remove();
   }
 }
