@@ -1,7 +1,7 @@
-import { AuguryEvent, Enhancer, ProbeService } from '../framework';
+import { AuguryEvent, Enhancer, ProbeManager } from '../framework';
 import { NgDebugProbe } from '../probes';
 
-export const addComponentTree: Enhancer = (event: AuguryEvent, probes: ProbeService) => {
+export const addComponentTree: Enhancer = (event: AuguryEvent, probes: ProbeManager) => {
   const ngDebugProbe = probes.get(NgDebugProbe) as NgDebugProbe;
 
   // @todo: event names registry / enum

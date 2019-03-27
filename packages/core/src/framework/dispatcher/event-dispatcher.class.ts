@@ -2,7 +2,7 @@ import { EnhancerService } from '../enhancers';
 import { SyncEventEmitter } from '../event-emitters';
 import { AuguryEvent, ProcessedAuguryEvent } from '../events';
 import { HistoryService } from '../history';
-import { ProbeService } from '../probes';
+import { ProbeManager } from '../probes';
 import { ReactionService } from '../reactions';
 import { SimpleQueue } from '../utils';
 
@@ -13,12 +13,12 @@ export class EventDispatcher {
   private releasing = false;
 
   constructor(
-    private probes: ProbeService,
+    private probeManager: ProbeManager,
     private enhancers: EnhancerService,
     private reactions: ReactionService,
     private history: HistoryService,
   ) {
-    probes.eventEmitter.subscribe(event => this.dispatch(event));
+    probeManager.subscribe(event => this.dispatch(event));
   }
 
   public dispatch(event: AuguryEvent) {
@@ -56,7 +56,7 @@ export class EventDispatcher {
 
   private releaseAll() {
     while (this.queue.hasItems()) {
-      this.processEvent(this.queue.dequeue()!);
+      this.processEvent(this.queue.dequeue());
     }
   }
 

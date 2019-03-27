@@ -2,7 +2,7 @@ import { ChannelService } from '../channels';
 import { EventDispatcher } from '../dispatcher';
 import { AuguryEvent } from '../events';
 import { HistoryService } from '../history';
-import { ProbeService } from '../probes';
+import { ProbeManager } from '../probes';
 import { ReactionRegistry } from './reaction-registry.type';
 import { ReactionResults } from './reaction-results.interface';
 
@@ -10,7 +10,7 @@ import { ProcessedReaction } from './processed-reaction.interface';
 
 export class ReactionService {
   constructor(
-    private probeService: ProbeService,
+    private probeManager: ProbeManager,
     private channels: ChannelService,
     private reactions: ReactionRegistry,
     private history: HistoryService,
@@ -23,7 +23,7 @@ export class ReactionService {
           event,
           eventDispatcher,
           channels: this.channels,
-          probes: this.probeService,
+          probes: this.probeManager,
           history: this.history,
         }),
       )

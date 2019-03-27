@@ -1,19 +1,19 @@
-import { SyncEventEmitter } from '../event-emitters';
-import { AuguryEvent, createEvent } from '../events';
+import { createEvent } from '../events';
+import { ProbeManager } from './probe-manager.class';
 
 export abstract class Probe {
-  private eventEmitter: SyncEventEmitter<AuguryEvent> | null = null;
+  private probeManager: ProbeManager | null = null;
 
-  public initialize(eventEmitter: SyncEventEmitter<AuguryEvent>) {
-    this.eventEmitter = eventEmitter;
+  public setProbeManager(probeManager: ProbeManager) {
+    this.probeManager = probeManager;
   }
 
   public emit(eventName: string, eventPayload?: any) {
-    if (!this.eventEmitter) {
+    if (!this.probeManager) {
       throw new ReferenceError('Probe Event Emitter has not been initialized.');
     }
 
-    this.eventEmitter.emit(
+    this.probeManager.emit(
       createEvent({ type: 'probe', name: this.constructor.name }, eventName, eventPayload),
     );
   }

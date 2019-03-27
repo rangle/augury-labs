@@ -5,11 +5,11 @@
 </ag-header>
 
 <ag-main>
-  <ag-execution-timeline [segments]="timelineSegments"
-                         [augurySegments]="dragSegments"
-                         [selectedSegment]="selectedSegment"
-                         (segmentSelected)="selectSegment($event)">
-  </ag-execution-timeline>
+  <ag-timeline [segments]="timelineSegments"
+               [augurySegments]="dragSegments"
+               [selectedSegment]="selectedSegment"
+               (segmentSelected)="selectSegment($event)">
+  </ag-timeline>
 
   <ag-segment-details *ngIf="selectedSegment"
                       [segment]="selectedSegment">

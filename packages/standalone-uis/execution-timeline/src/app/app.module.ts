@@ -7,7 +7,6 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 import {
   AppComponent,
   ChangeDetectionDetailsComponent,
-  ExecutionTimelineComponent,
   FlameGraphComponent,
   FooterComponent,
   HeaderComponent,
@@ -19,6 +18,7 @@ import {
   MainComponent,
   SegmentDetailsComponent,
   TaskDetailsComponent,
+  TimelineComponent,
 } from './components';
 import { UiLibraryModule } from './modules/ui-library/ui-library.module';
 import { BridgeService } from './services/bridge.service';
@@ -28,7 +28,6 @@ import { BridgeService } from './services/bridge.service';
   declarations: [
     AppComponent,
     ChangeDetectionDetailsComponent,
-    ExecutionTimelineComponent,
     FlameGraphComponent,
     FooterComponent,
     HeaderComponent,
@@ -40,6 +39,7 @@ import { BridgeService } from './services/bridge.service';
     MainComponent,
     SegmentDetailsComponent,
     TaskDetailsComponent,
+    TimelineComponent,
   ],
   providers: [BridgeService],
   bootstrap: [AppComponent],

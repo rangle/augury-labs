@@ -4,12 +4,12 @@ import { SyncEventEmitter } from '../event-emitters';
 import { ProbeConstructor } from './probe-constructor.interface';
 import { Probe } from './probe.class';
 
-export class ProbeService {
-  public eventEmitter = new SyncEventEmitter<AuguryEvent>();
-
+export class ProbeManager extends SyncEventEmitter<AuguryEvent> {
   private readonly probes: Map<string, Probe>;
 
   constructor(probes: Probe[]) {
+    super();
+
     this.probes = this.initializeProbes(probes);
   }
 
@@ -29,7 +29,7 @@ export class ProbeService {
 
   private initializeProbes(probes: Probe[]): Map<string, Probe> {
     return probes.reduce((probesMap, probe) => {
-      probe.initialize(this.eventEmitter);
+      probe.setProbeManager(this);
 
       probesMap.set(probe.constructor.name, probe);
 

@@ -1,12 +1,13 @@
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
-import { ExtendableSegment } from '../execution-timeline';
+import { ExtendableSegment } from '../../types/extendable-segment.type';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnDestroy {
   public timelineSegments: ExtendableSegment[] = [];

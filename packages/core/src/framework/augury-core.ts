@@ -4,7 +4,7 @@ import { EventDispatcher } from './dispatcher';
 import { EnhancerRegistry, EnhancerService } from './enhancers';
 import { HistoryService } from './history';
 import { Plugin, PluginService } from './plugins';
-import { Probe, ProbeService } from './probes';
+import { Probe, ProbeManager } from './probes';
 import { ReactionRegistry, ReactionService } from './reactions';
 
 export interface BootstrapParams {
@@ -16,7 +16,7 @@ export interface BootstrapParams {
 
 export class AuguryCore {
   private readonly dispatcher: EventDispatcher;
-  private readonly probes: ProbeService;
+  private readonly probes: ProbeManager;
   private readonly enhancers: EnhancerService;
   private readonly channels: ChannelService;
   private readonly reactions: ReactionService;
@@ -30,7 +30,7 @@ export class AuguryCore {
     reactionRegistry: ReactionRegistry,
     commandRegistry: CommandRegistry,
   ) {
-    this.probes = new ProbeService(probes);
+    this.probes = new ProbeManager(probes);
     this.enhancers = new EnhancerService(this.probes, enhancerRegistry);
     this.channels = new ChannelService();
     this.history = new HistoryService();

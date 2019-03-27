@@ -16,7 +16,7 @@ export class SyncEventEmitter<EventType> implements Emittable<EventType>, Subscr
     };
   }
 
-  public emit(value: EventType) {
-    this.subscribers.forEach(subscriber => subscriber.handleEvent(value));
+  public emit(event: EventType) {
+    this.subscribers.forEach(subscriber => subscriber.handleEvent(event));
   }
 }

@@ -12,9 +12,9 @@ import {
 
 import * as d3 from 'd3';
 
+import { ExtendableSegment } from '../../types/extendable-segment.type';
+import { Segment } from '../../types/segment.interface';
 import { darkenColor } from './color-utils';
-
-type Required<T> = T & { [P in keyof T]: T[P] };
 
 const handleColor = '#6dc7ff';
 const spacingFocus = { marginBottom: 20, paddingInner: 2, tickSize: 10 };
@@ -29,22 +29,14 @@ const spacingBrush = { marginTopAndBottom: 3 };
 const focusStartSize = 1000;
 const horizontalScrollScaleFactor = 4;
 
-export type ExtendableSegment = Required<Segment>;
-export interface Segment {
-  start: number;
-  end: number;
-  row: string;
-  color: string;
-}
-
 @Component({
-  selector: 'ag-execution-timeline',
-  templateUrl: './execution-timeline.component.html',
-  styleUrls: ['./execution-timeline.component.scss'],
+  selector: 'ag-timeline',
+  templateUrl: './timeline.component.html',
+  styleUrls: ['./timeline.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExecutionTimelineComponent implements OnChanges {
-  private static readonly MinimumRepaintTimeInMilliseconds = 500;
+export class TimelineComponent implements OnChanges {
+  private static readonly MinimumElapsedTimeToRepaintInMilliseconds = 500;
 
   @Input()
   public segments: ExtendableSegment[];
@@ -83,11 +75,9 @@ export class ExecutionTimelineComponent implements OnChanges {
   constructor(private zone: NgZone) {}
 
   public ngOnChanges(changes) {
-    this.isReady =
-      performance.now() - this.lastPaintedTimestamp >
-      ExecutionTimelineComponent.MinimumRepaintTimeInMilliseconds
-        ? changes.segments || changes.augurySegments
-        : false;
+    this.isReady = this.enoughTimeHasElapsedSinceLastPaint()
+      ? changes.segments || changes.augurySegments
+      : false;
 
     this.repaint();
 
@@ -116,14 +106,12 @@ export class ExecutionTimelineComponent implements OnChanges {
   }
 
   private paint() {
-    this.clearGElement(this.contextContentGElement);
-    this.clearGElement(this.focusContentAuguryGElement);
-    this.clearGElement(this.focusContentMainGElement);
+    this.clearGraphs();
 
     const focusWidth = this.focusOuterContainerElement.nativeElement.clientWidth;
     const contextWidth = this.contextOuterContainerElement.nativeElement.clientWidth;
 
-    if (focusWidth <= 0 || contextWidth <= 0) {
+    if (focusWidth <= 0 || contextWidth <= 0 || this.segments.length === 0) {
       return;
     }
 
@@ -401,5 +389,18 @@ export class ExecutionTimelineComponent implements OnChanges {
     d3.select(elementRef.nativeElement)
       .selectAll('*')
       .remove();
+  }
+
+  private enoughTimeHasElapsedSinceLastPaint() {
+    return (
+      performance.now() - this.lastPaintedTimestamp >
+      TimelineComponent.MinimumElapsedTimeToRepaintInMilliseconds
+    );
+  }
+
+  private clearGraphs() {
+    this.clearGElement(this.contextContentGElement);
+    this.clearGElement(this.focusContentAuguryGElement);
+    this.clearGElement(this.focusContentMainGElement);
   }
 }

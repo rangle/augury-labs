@@ -1,19 +1,21 @@
 export class SimpleQueue<ItemType> {
   private items: ItemType[] = [];
 
-  public hasItems() {
-    return Boolean(this.items.length);
+  public hasItems(): boolean {
+    return this.items.length > 0;
   }
 
-  public enqueue(item: ItemType) {
+  public enqueue(item: ItemType): void {
     this.items.unshift(item);
   }
 
-  public dequeue() {
-    if (!this.hasItems()) {
-      return;
+  public dequeue(): ItemType {
+    const item = this.items.pop();
+
+    if (!item) {
+      throw new Error('There are no items left to dequeue');
     }
 
-    return this.items.pop();
+    return item;
   }
 }

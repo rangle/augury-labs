@@ -1,6 +1,5 @@
 export * from './app/app.component';
 export * from './change-detection-details';
-export * from './execution-timeline';
 export * from './flame-graph';
 export * from './footer/footer.component';
 export * from './header/header.component';
@@ -12,3 +11,4 @@ export * from './logo/logo.component';
 export * from './main/main.component';
 export * from './segment-details/segment-details.component';
 export * from './task-details';
+export * from './timeline';
