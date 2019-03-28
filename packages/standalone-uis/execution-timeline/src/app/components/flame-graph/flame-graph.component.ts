@@ -10,7 +10,7 @@ import {
 import * as d3 from 'd3';
 import { flamegraph } from 'd3-flame-graph';
 import * as d3Tip from 'd3-tip';
-import { FlameGraphNode } from '../../types/flame-graph-node.interface';
+import { FlameGraphNode } from '../../types/flame-graph-node/flame-graph-node.interface';
 import { round2 } from '../../util/misc-utils';
 
 const tip = (d3Tip as any).default;

@@ -6,12 +6,8 @@ import {
   Plugin,
   SingleCDRunFull,
 } from '@augury/core';
+import { PerformanceProfilerWindow } from './performance-profiler-window.class';
 
-import { openPopout } from './popout';
-
-/**
- * needs webpack.
- */
 declare const require;
 
 export class PerformanceProfilerPlugin extends Plugin {
@@ -23,28 +19,6 @@ export class PerformanceProfilerPlugin extends Plugin {
   }
 
   public onInit() {
-    const { channel: tasksChannel } = this.api!.createLiveChannel({
-      reducer: new LastElapsedTaskReducer(),
-    });
-
-    const { channel: cyclesChannel } = this.api!.createLiveChannel({
-      reducer: new LastElapsedCycleReducer(),
-    });
-
-    const { channel: cdChannel } = this.api!.createLiveChannel({
-      reducer: new LastElapsedCDReducer(),
-    });
-
-    const { channel: dragChannel } = this.api!.createLiveChannel({
-      reducer: new LastElapsedEventReducer(),
-    });
-
-    const popout = openPopout('Augury Zone Monitor');
-
-    popout.write(require('!!raw-loader!@augury/execution-timeline-ui/dist/index.html'));
-    popout.injectScript(require('!!raw-loader!@augury/execution-timeline-ui/dist/polyfills.js'));
-    popout.injectScript(require('!!raw-loader!@augury/execution-timeline-ui/dist/main.js'));
-
     // @todo: these util functions should be somewhere in core\
     //        add standard traversal methods to generic trees?
     function rawTreeToComponentInstanceTree(tree = [] as any, parentComponentInstance?) {
@@ -201,30 +175,48 @@ export class PerformanceProfilerPlugin extends Plugin {
       return checkTimePerInstance;
     }
 
+    const { channel: tasksChannel } = this.api!.createLiveChannel({
+      reducer: new LastElapsedTaskReducer(),
+    });
+
+    const { channel: cyclesChannel } = this.api!.createLiveChannel({
+      reducer: new LastElapsedCycleReducer(),
+    });
+
+    const { channel: cdChannel } = this.api!.createLiveChannel({
+      reducer: new LastElapsedCDReducer(),
+    });
+
+    const { channel: dragChannel } = this.api!.createLiveChannel({
+      reducer: new LastElapsedEventReducer(),
+    });
+
+    const performanceProfilerWindow = new PerformanceProfilerWindow();
+
     tasksChannel.events.subscribe(lastElapsedTask =>
-      popout.bridge.in.emit({ type: 'task', lastElapsedTask }),
+      performanceProfilerWindow.sendMessage({ type: 'task', lastElapsedTask }),
     );
 
     cdChannel.events.subscribe(lastElapsedCD =>
-      popout.bridge.in.emit({ type: 'cd', lastElapsedCD }),
+      performanceProfilerWindow.sendMessage({ type: 'cd', lastElapsedCD }),
     );
 
     cyclesChannel.events.subscribe(lastElapsedCycle =>
-      popout.bridge.in.emit({ type: 'cycle', lastElapsedCycle }),
+      performanceProfilerWindow.sendMessage({ type: 'cycle', lastElapsedCycle }),
     );
 
     dragChannel.events.subscribe(lastElapsedEvent =>
-      popout.bridge.in.emit({
+      performanceProfilerWindow.sendMessage({
         type: 'drag',
         start: lastElapsedEvent.creationAtPerformanceStamp,
         finish: lastElapsedEvent.auguryHandlingCompletionPerformanceStamp,
       }),
     );
 
-    popout.bridge.out.subscribe(message => {
-      if (message.type === 'get_full_cd') {
+    performanceProfilerWindow.listenToMessageRequests(request => {
+      if (request.type === 'get_full_cd') {
         const returnVal = this.api!.scanHistory({
-          reducer: new SingleCDRunFull(message.cdStartEID, message.cdEndEID),
+          reducer: new SingleCDRunFull(request.cdStartEID, request.cdEndEID),
         });
 
         const { result: rawCdRunData } = returnVal;
@@ -241,7 +233,7 @@ export class PerformanceProfilerPlugin extends Plugin {
           mergedComponentTree,
         );
 
-        popout.bridge.in.emit({
+        performanceProfilerWindow.sendMessage({
           type: 'get_full_cd:response',
           data: {
             lastComponentTree,

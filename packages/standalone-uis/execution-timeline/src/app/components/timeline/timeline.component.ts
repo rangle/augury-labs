@@ -12,8 +12,7 @@ import {
 
 import * as d3 from 'd3';
 
-import { ExtendableSegment } from '../../types/extendable-segment.type';
-import { Segment } from '../../types/segment.interface';
+import { Segment } from '../../types/segment/segment.interface';
 import { darkenColor } from './color-utils';
 
 const handleColor = '#6dc7ff';
@@ -39,16 +38,16 @@ export class TimelineComponent implements OnChanges {
   private static readonly MinimumElapsedTimeToRepaintInMilliseconds = 500;
 
   @Input()
-  public segments: ExtendableSegment[];
+  public segments: Segment[];
 
   @Input()
-  public augurySegments: ExtendableSegment[];
+  public augurySegments: Segment[];
 
   @Input()
-  public selectedSegment: ExtendableSegment = null;
+  public selectedSegment: Segment = null;
 
   @Output()
-  public segmentSelected = new EventEmitter<ExtendableSegment>();
+  public segmentSelected = new EventEmitter<Segment>();
 
   @ViewChild('contextOuterContainer') public contextOuterContainerElement: ElementRef;
   @ViewChild('contextContainer') public contextContainerSVGElement: ElementRef;

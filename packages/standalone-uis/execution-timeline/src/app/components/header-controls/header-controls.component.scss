@@ -1,7 +1,14 @@
 :host {
   display: flex;
 
-  ag-button:not(:last-child) {
-    margin-right: 1rem;
+  ag-button {
+    svg {
+      height: 40%;
+      vertical-align: middle;
+    }
+
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
   }
 }

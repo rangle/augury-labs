@@ -1,16 +1,8 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
-import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node.functions';
-import { FlameGraphNode } from '../../types/flame-graph-node.interface';
+import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
+import { FlameGraphNode } from '../../types/flame-graph-node/flame-graph-node.interface';
 import { round2 } from '../../util/misc-utils';
 
 function getComponentChangeDetections(componentInstances) {

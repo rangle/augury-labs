@@ -1,7 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
-import { ExtendableSegment } from '../../types/extendable-segment.type';
+import {
+  isDragMessage,
+  isTimelineMessage,
+  mapTimelineMessageToSegment,
+} from '../../types/bridge/bridge-message.functions';
+import { Segment } from '../../types/segment/segment.interface';
 
 @Component({
   selector: 'app-root',
@@ -10,29 +15,24 @@ import { ExtendableSegment } from '../../types/extendable-segment.type';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnDestroy {
-  public timelineSegments: ExtendableSegment[] = [];
-  public dragSegments: ExtendableSegment[] = [];
+  public timelineSegments: Segment[] = [];
+  public dragSegments: Segment[] = [];
   public selectedSegment = null;
   public recording = true;
 
   private subscription: any;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef, private bridge: BridgeService) {
-    // @todo: put bridge in service that runs inside ngzone
+  constructor(bridgeService: BridgeService) {
+    // @todo: put bridgeService in service that runs inside ngzone
     //        add to @augury/ui-tools
-    this.subscription = this.bridge.subscribe(message => {
+    this.subscription = bridgeService.subscribe(message => {
       if (this.recording) {
-        if (this.isTimelineSegmentMessage(message)) {
-          this.addTimelineSegment(this.toTimelineSegment(message));
-        }
+        const segment = mapTimelineMessageToSegment(message);
 
-        if (message.type === 'drag') {
-          this.dragSegments.push({
-            start: message.start,
-            end: message.finish,
-            row: '*',
-            color: '',
-          });
+        if (isTimelineMessage(message)) {
+          this.timelineSegments = this.timelineSegments.concat([segment]);
+        } else if (isDragMessage(message)) {
+          this.dragSegments.push(segment);
         }
       }
     });
@@ -57,45 +57,7 @@ export class AppComponent implements OnDestroy {
     this.selectedSegment = null;
   }
 
-  public addTimelineSegment(segment) {
-    this.timelineSegments = this.timelineSegments.concat([segment]);
-  }
-
   public selectSegment(segment) {
     this.selectedSegment = segment;
-  }
-
-  private isTimelineSegmentMessage(message) {
-    return ['task', 'cycle', 'cd'].indexOf(message.type) > -1;
-  }
-
-  private toTimelineSegment(message) {
-    if (message.type === 'task') {
-      return {
-        originalMessage: message,
-        start: message.lastElapsedTask.startPerformanceStamp,
-        end: message.lastElapsedTask.finishPerformanceStamp,
-        row: 'zone task',
-        color: message.lastElapsedTask.zone === 'ng' ? '#95BCDA' : '#5A1EAE',
-      };
-    }
-    if (message.type === 'cycle') {
-      return {
-        originalMessage: message,
-        start: message.lastElapsedCycle.startPerformanceStamp,
-        end: message.lastElapsedCycle.finishPerformanceStamp,
-        row: 'angular instability',
-        color: '#D34627',
-      };
-    }
-    if (message.type === 'cd') {
-      return {
-        originalMessage: message,
-        start: message.lastElapsedCD.startPerformanceStamp,
-        end: message.lastElapsedCD.finishPerformanceStamp,
-        row: 'change detection',
-        color: '#9B9B9B',
-      };
-    }
   }
 }
