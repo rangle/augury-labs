@@ -1,52 +1,49 @@
-import { Segment } from '../segment/segment.interface';
-import { BridgeMessageType } from './bridge-message-type.type';
-import { BridgeMessage } from './bridge-message.interface';
+import { AuguryBridgeMessage } from '@augury/core';
+import { Segment } from './segment.interface';
 
-function messageMatchesType(message: BridgeMessage, types: BridgeMessageType[]) {
-  return types.includes(message.type);
-}
-
-export function isTimelineMessage(message: BridgeMessage): boolean {
-  return messageMatchesType(message, ['task', 'cycle', 'cd']);
-}
-
-export function isDragMessage(message: BridgeMessage): boolean {
-  return messageMatchesType(message, ['drag']);
-}
-
-export function mapTimelineMessageToSegment(message: BridgeMessage): Segment {
+export function mapTimelineMessageToSegment(message: AuguryBridgeMessage): Segment {
   switch (message.type) {
     case 'task':
       return {
+        type: message.lastElapsedTask.zone === 'ng' ? 'child-zone-task' : 'root-zone-task',
         originalMessage: message,
         start: message.lastElapsedTask.startPerformanceStamp,
         end: message.lastElapsedTask.finishPerformanceStamp,
         row: 'zone task',
-        color: message.lastElapsedTask.zone === 'ng' ? '#95BCDA' : '#5A1EAE',
       };
     case 'cycle':
       return {
+        type: 'instability',
         originalMessage: message,
         start: message.lastElapsedCycle.startPerformanceStamp,
         end: message.lastElapsedCycle.finishPerformanceStamp,
         row: 'angular instability',
-        color: '#D34627',
       };
     case 'cd':
       return {
+        type: 'change-detection',
         originalMessage: message,
         start: message.lastElapsedCD.startPerformanceStamp,
         end: message.lastElapsedCD.finishPerformanceStamp,
         row: 'change detection',
-        color: '#9B9B9B',
       };
     case 'drag': {
       return {
+        type: 'drag',
         start: message.start,
         end: message.finish,
         row: '*',
-        color: '',
       };
     }
   }
+}
+
+export function getSegmentClasses(segment: Segment, selectedSegment: Segment) {
+  const classes = ['segment', segment.type];
+
+  if (segment === selectedSegment) {
+    classes.push('selected');
+  }
+
+  return classes.join(' ');
 }

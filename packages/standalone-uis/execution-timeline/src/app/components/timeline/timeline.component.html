@@ -37,5 +37,8 @@
         <g #focusAxis></g>
       </svg>
     </div>
+    <ag-timeline-options [form]="timelineOptions"
+                         (changed)="timelineOptionsChange.emit($event)">
+    </ag-timeline-options>
   </ag-card>
 </section>

@@ -1,12 +1,10 @@
 import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 
+import { isDragMessage, isTimelineMessage } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
-import {
-  isDragMessage,
-  isTimelineMessage,
-  mapTimelineMessageToSegment,
-} from '../../types/bridge/bridge-message.functions';
+import { mapTimelineMessageToSegment } from '../../types/segment/segment.functions';
 import { Segment } from '../../types/segment/segment.interface';
+import { createDefaultTimelineOptions } from '../../types/timeline-options/timeline-options.functions';
 
 @Component({
   selector: 'app-root',
@@ -19,12 +17,11 @@ export class AppComponent implements OnDestroy {
   public dragSegments: Segment[] = [];
   public selectedSegment = null;
   public recording = true;
+  public timelineOptions = createDefaultTimelineOptions();
 
   private subscription: any;
 
   constructor(bridgeService: BridgeService) {
-    // @todo: put bridgeService in service that runs inside ngzone
-    //        add to @augury/ui-tools
     this.subscription = bridgeService.subscribe(message => {
       if (this.recording) {
         const segment = mapTimelineMessageToSegment(message);

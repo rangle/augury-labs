@@ -79,19 +79,12 @@ export class ModuleMethodsProbe extends Probe {
       }
 
       const property = Class.prototype[propertyName];
-      if (typeof property !== 'function') {
-        return false;
-      }
-      if (property.__added_by_augury__) {
-        return false;
-      }
-      if (property.__augury_wrapped__) {
-        return false;
-      }
-      if (typeof property !== 'function') {
-        return false;
-      }
-      return true;
+
+      return (
+        typeof property === 'function' &&
+        !property.__added_by_augury__ &&
+        !property.__augury_wrapped__
+      );
     }
 
     function wrapClassMethods(Class: () => any, classType: 'service' | 'component') {

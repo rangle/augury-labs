@@ -1,17 +1,13 @@
 import { NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { auguryBootstrap } from '@augury/core';
+import { AuguryCore } from '@augury/core';
 import { PerformanceProfilerPlugin } from '@augury/performance-profiler-plugin';
 
 import { AppModule } from './app/app.module';
 
-auguryBootstrap({
+AuguryCore.create({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [
-    new PerformanceProfilerPlugin(),
-    // new OverlayCycleRuntimes(),
-    // new OverlayHealthIndicator()
-  ],
+  plugins: [new PerformanceProfilerPlugin()],
 });

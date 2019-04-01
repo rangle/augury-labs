@@ -1,11 +1,15 @@
-import { ChannelService } from './channels';
-import { CommandRegistry, CommandService } from './commands';
+import { defaultCommands } from '../commands';
+import { defaultEnhancers } from '../enhancers';
+import { defaultProbes } from '../probes';
+import { defaultReactions } from '../reactions';
+import { ChannelManager } from './channels';
+import { Command, CommandService } from './commands';
 import { EventDispatcher } from './dispatcher';
-import { EnhancerRegistry, EnhancerService } from './enhancers';
+import { Enhancer, EnhancerService } from './enhancers';
 import { HistoryService } from './history';
-import { Plugin, PluginService } from './plugins';
+import { Plugin, PluginManager } from './plugins';
 import { Probe, ProbeManager } from './probes';
-import { ReactionRegistry, ReactionService } from './reactions';
+import { Reaction, ReactionService } from './reactions';
 
 export interface BootstrapParams {
   platform: any;
@@ -15,47 +19,60 @@ export interface BootstrapParams {
 }
 
 export class AuguryCore {
+  public static create(bootstrapParams: BootstrapParams) {
+    const auguryCore = new AuguryCore(
+      defaultProbes,
+      defaultEnhancers,
+      defaultReactions,
+      defaultCommands,
+    );
+
+    (window as any).augury = auguryCore;
+
+    return auguryCore.bootstrap(bootstrapParams);
+  }
+
   private readonly dispatcher: EventDispatcher;
-  private readonly probes: ProbeManager;
-  private readonly enhancers: EnhancerService;
-  private readonly channels: ChannelService;
+  private readonly probeManager: ProbeManager;
+  private readonly enhancerService: EnhancerService;
+  private readonly channelManager: ChannelManager;
   private readonly reactions: ReactionService;
-  private readonly commands: CommandService;
-  private plugins: PluginService;
+  private readonly commandService: CommandService;
+  private readonly pluginManager: PluginManager;
   private readonly history: HistoryService;
 
   constructor(
     probes: Probe[],
-    enhancerRegistry: EnhancerRegistry,
-    reactionRegistry: ReactionRegistry,
-    commandRegistry: CommandRegistry,
+    enhancers: Enhancer[],
+    reactions: Reaction[],
+    commands: Array<Command<any, any>>,
   ) {
-    this.probes = new ProbeManager(probes);
-    this.enhancers = new EnhancerService(this.probes, enhancerRegistry);
-    this.channels = new ChannelService();
+    this.probeManager = new ProbeManager(probes);
+    this.enhancerService = new EnhancerService(this.probeManager, enhancers);
+    this.channelManager = new ChannelManager();
     this.history = new HistoryService();
     this.reactions = new ReactionService(
-      this.probes,
-      this.channels,
-      reactionRegistry,
+      this.probeManager,
+      this.channelManager,
+      reactions,
       this.history,
     );
     this.dispatcher = new EventDispatcher(
-      this.probes,
-      this.enhancers,
+      this.probeManager,
+      this.enhancerService,
       this.reactions,
       this.history,
     );
-    this.commands = new CommandService(this.dispatcher, commandRegistry);
-    this.plugins = new PluginService(this.commands);
+    this.commandService = new CommandService(this.dispatcher, commands);
+    this.pluginManager = new PluginManager(this.commandService);
   }
 
   public bootstrap({ platform, ngModule, NgZone, plugins }: BootstrapParams): Promise<any> {
-    this.plugins.add(plugins);
+    this.pluginManager.addPlugins(plugins);
 
     const ngZone = new NgZone({ enableLongStackTrace: true });
 
-    this.probes.beforeNgBootstrapHook({
+    this.probeManager.beforeNgBootstrapHook({
       ngZone,
       ngModule,
       Promise,
@@ -64,7 +81,7 @@ export class AuguryCore {
     return platform()
       .bootstrapModule(ngModule, { ngZone })
       .then((moduleRef: any) => {
-        this.probes.afterNgBootstrapHook(moduleRef);
+        this.probeManager.afterNgBootstrapHook(moduleRef);
 
         return moduleRef;
       });

@@ -15,6 +15,9 @@ export class HoverDemoMouseListenerComponent {
   public pointChange = new EventEmitter<Point>();
 
   public onMouseMove(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
     this.pointChange.emit({
       x: event.x,
       y: event.y,

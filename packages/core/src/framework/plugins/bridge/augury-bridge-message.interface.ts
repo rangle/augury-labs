@@ -1,4 +1,4 @@
-import { BridgeMessageType } from './bridge-message-type.type';
+import { AuguryBridgeMessageType } from './augury-bridge-message-type.type';
 
 interface Event {
   startPerformanceStamp: number;
@@ -6,8 +6,8 @@ interface Event {
   zone?: any;
 }
 
-export interface BridgeMessage {
-  type: BridgeMessageType;
+export interface AuguryBridgeMessage {
+  type: AuguryBridgeMessageType;
   lastElapsedTask?: Event;
   lastElapsedCycle?: Event;
   lastElapsedCD?: Event;

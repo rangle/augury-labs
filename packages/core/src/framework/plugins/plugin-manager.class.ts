@@ -4,7 +4,7 @@ import { Plugin } from './plugin.class';
 
 // @todo: add plugin hooks
 
-export class PluginService {
+export class PluginManager {
   private plugins: Plugin[] = [];
   private readonly callableAPI: CallableAPIConstructor;
 
@@ -12,15 +12,7 @@ export class PluginService {
     this.callableAPI = this.commands.pluginAPIConstructor();
   }
 
-  public add(plugins: Plugin | Plugin[]) {
-    if (Array.isArray(plugins)) {
-      plugins.forEach(plugin => this.addSingle(plugin));
-    } else {
-      this.addSingle(plugins);
-    }
-  }
-
-  private addSingle(plugin: Plugin) {
+  public addPlugin(plugin: Plugin) {
     this.plugins.push(plugin);
 
     const eventSource: EventSource = {
@@ -29,5 +21,9 @@ export class PluginService {
     };
 
     plugin.init(this.callableAPI(eventSource));
+  }
+
+  public addPlugins(plugins: Plugin[]) {
+    plugins.forEach(plugin => this.addPlugin(plugin));
   }
 }

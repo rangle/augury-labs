@@ -6,8 +6,9 @@
 
 <ag-main>
   <ag-timeline [segments]="timelineSegments"
-               [augurySegments]="dragSegments"
+               [dragSegments]="dragSegments"
                [selectedSegment]="selectedSegment"
+               [(timelineOptions)]="timelineOptions"
                (segmentSelected)="selectSegment($event)">
   </ag-timeline>
 

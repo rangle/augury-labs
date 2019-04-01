@@ -6,9 +6,7 @@ import {
   Plugin,
   SingleCDRunFull,
 } from '@augury/core';
-import { PerformanceProfilerWindow } from './performance-profiler-window.class';
-
-declare const require;
+import { PerformanceProfilerController } from './performance-profiler-controller.class';
 
 export class PerformanceProfilerPlugin extends Plugin {
   public cycles: any = {};
@@ -191,7 +189,7 @@ export class PerformanceProfilerPlugin extends Plugin {
       reducer: new LastElapsedEventReducer(),
     });
 
-    const performanceProfilerWindow = new PerformanceProfilerWindow();
+    const performanceProfilerWindow = new PerformanceProfilerController();
 
     tasksChannel.events.subscribe(lastElapsedTask =>
       performanceProfilerWindow.sendMessage({ type: 'task', lastElapsedTask }),

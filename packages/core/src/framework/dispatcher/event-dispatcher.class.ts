@@ -14,9 +14,9 @@ export class EventDispatcher {
 
   constructor(
     private probeManager: ProbeManager,
-    private enhancers: EnhancerService,
-    private reactions: ReactionService,
-    private history: HistoryService,
+    private enhancerService: EnhancerService,
+    private reactionService: ReactionService,
+    private historyService: HistoryService,
   ) {
     probeManager.subscribe(event => this.dispatch(event));
   }
@@ -49,7 +49,7 @@ export class EventDispatcher {
     this.emitter.emit(processedEvent);
     this.releasing = false;
 
-    this.history.addEvent(processedEvent);
+    this.historyService.addEvent(processedEvent);
 
     return processedEvent;
   }
@@ -62,8 +62,8 @@ export class EventDispatcher {
 
   private createProcessedEvent(event: AuguryEvent): ProcessedAuguryEvent {
     return {
-      ...this.enhancers.enhanceEvent(event),
-      reactionResults: this.reactions.reactTo(event, this),
+      ...this.enhancerService.enhanceEvent(event),
+      reactionResults: this.reactionService.reactTo(event, this),
     };
   }
 }

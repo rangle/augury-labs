@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
@@ -15,8 +14,6 @@ import { TrackByDemoModule } from './features/track-by-demo/track-by-demo.module
   declarations: [AppComponent, MainContentComponent, NavigationComponent],
   imports: [
     BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
     RouterModule.forRoot(appRoutes),
 
     HomeModule,

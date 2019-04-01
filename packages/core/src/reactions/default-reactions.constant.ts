@@ -1,9 +1,9 @@
-import { ReactionRegistry } from '../framework/reactions';
+import { Reaction } from '../framework/reactions';
 
 import { CreateLiveChannelReaction } from './create-live-channel-reaction.class';
 import { ScanHistoryReaction } from './scan-history-reaction.class';
 
-export const reactionRegistry: ReactionRegistry = [
+export const defaultReactions: Reaction[] = [
   new ScanHistoryReaction(),
   new CreateLiveChannelReaction(),
 ];

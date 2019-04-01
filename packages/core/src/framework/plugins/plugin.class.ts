@@ -14,14 +14,8 @@ export abstract class Plugin {
   public init(api: CallableAPI): void {
     this.api = api;
 
-    if (this.onInit) {
-      this.onInit();
-    }
+    this.onInit();
   }
 
-  // hooks
-  public onInit?(): void;
-  public onPluginAdded?(): void; // @todo: not implemented
-  public onAuguryInit?(): void; // @todo: not implemented
-  public onAppInit?(): void; // @todo: not implemented
+  public abstract onInit(): void;
 }

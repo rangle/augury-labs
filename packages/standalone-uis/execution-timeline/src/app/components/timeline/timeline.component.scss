@@ -23,6 +23,12 @@
     .overlay {
       fill: rgba(255, 255, 255, 0.5);
     }
+
+    &:hover {
+      .handle {
+        fill: #6dc7ff;
+      }
+    }
   }
 
   ::ng-deep .tick {
@@ -37,6 +43,61 @@
 
   ::ng-deep .segment {
     margin-top: 10px;
+    transition: fill 150ms ease;
+
+    &.root-zone-task {
+      fill: #5a1eae;
+
+      &.selected {
+        fill: darken(#5a1eae, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#5a1eae, 10%);
+      }
+    }
+
+    &.child-zone-task {
+      fill: #95bcda;
+
+      &.selected {
+        fill: darken(#95bcda, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#95bcda, 10%);
+      }
+    }
+
+    &.instability {
+      fill: #d34627;
+
+      &.selected {
+        fill: darken(#d34627, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#d34627, 10%);
+      }
+    }
+
+    &.change-detection {
+      fill: #9b9b9b;
+
+      &.selected {
+        fill: darken(#9b9b9b, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#9b9b9b, 10%);
+      }
+    }
+  }
+
+  ::ng-deep .augury-segment {
+    fill: grey;
+    opacity: 0.2;
+    pointer-events: none;
   }
 
   ::ng-deep .domain {

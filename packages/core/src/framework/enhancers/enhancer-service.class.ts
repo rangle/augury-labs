@@ -1,9 +1,9 @@
 import { AuguryEvent } from '../events';
 import { ProbeManager } from '../probes';
-import { EnhancerRegistry } from './enhancer-registry.type';
+import { Enhancer } from './enhancer.type';
 
 export class EnhancerService {
-  constructor(private probeManager: ProbeManager, private enhancers: EnhancerRegistry) {}
+  constructor(private probeManager: ProbeManager, private enhancers: Enhancer[]) {}
 
   public enhanceEvent(event: AuguryEvent): AuguryEvent {
     return this.enhancers.reduce(

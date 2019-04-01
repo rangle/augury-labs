@@ -12,3 +12,4 @@ export * from './main/main.component';
 export * from './segment-details/segment-details.component';
 export * from './task-details';
 export * from './timeline';
+export * from './timeline-options/timeline-options.component';

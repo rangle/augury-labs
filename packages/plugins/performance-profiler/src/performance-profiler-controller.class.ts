@@ -1,12 +1,12 @@
-import { PluginWindowSupport } from './plugin-window-support.class';
+import { AuguryPluginController } from '@augury/core';
 
 declare const require;
 
-export class PerformanceProfilerWindow extends PluginWindowSupport {
+export class PerformanceProfilerController extends AuguryPluginController {
   private static readonly WindowName = 'Augury Zone Monitor';
 
   constructor() {
-    super(PerformanceProfilerWindow.WindowName);
+    super(PerformanceProfilerController.WindowName);
 
     this.writeHtml(require('!!raw-loader!@augury/execution-timeline-ui/dist/index.html'));
     this.addScript(require('!!raw-loader!@augury/execution-timeline-ui/dist/polyfills.js'));

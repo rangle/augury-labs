@@ -1,19 +1,19 @@
-import { ChannelService } from '../channels';
+import { ChannelManager } from '../channels';
 import { EventDispatcher } from '../dispatcher';
 import { AuguryEvent } from '../events';
 import { HistoryService } from '../history';
 import { ProbeManager } from '../probes';
-import { ReactionRegistry } from './reaction-registry.type';
 import { ReactionResults } from './reaction-results.interface';
 
 import { ProcessedReaction } from './processed-reaction.interface';
+import { Reaction } from './reaction.class';
 
 export class ReactionService {
   constructor(
     private probeManager: ProbeManager,
-    private channels: ChannelService,
-    private reactions: ReactionRegistry,
-    private history: HistoryService,
+    private channelManager: ChannelManager,
+    private reactions: Reaction[],
+    private historyService: HistoryService,
   ) {}
 
   public reactTo(event: AuguryEvent, eventDispatcher: EventDispatcher): ReactionResults {
@@ -22,9 +22,9 @@ export class ReactionService {
         reaction.react({
           event,
           eventDispatcher,
-          channels: this.channels,
+          channels: this.channelManager,
           probes: this.probeManager,
-          history: this.history,
+          history: this.historyService,
         }),
       )
       .reduce(

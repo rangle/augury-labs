@@ -3,7 +3,7 @@ import { ChannelDelegate } from './channel-delegate.interface';
 import { Channel } from './channel.class';
 import { ScannerChannel } from './scanner-channel.class';
 
-export class ChannelService {
+export class ChannelManager {
   private channels: Channel[] = [];
 
   public createFromScanner(scanner: Scanner): ChannelDelegate {

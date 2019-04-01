@@ -9,10 +9,10 @@ import { createEvent } from '../events';
 import { kebabToCamel, merge } from '../utils';
 
 export class CommandService {
-  constructor(private dispatcher: EventDispatcher, private registry: CommandRegistry) {}
+  constructor(private dispatcher: EventDispatcher, private commands: CommandRegistry) {}
 
   public run(request: CommandRequest<any>): CommandResult {
-    const command = this.registry.find(foundCommand => foundCommand.name === request.name);
+    const command = this.commands.find(foundCommand => foundCommand.name === request.name);
 
     if (!command) {
       return { success: false, errors: ['action not found'] };
@@ -26,7 +26,7 @@ export class CommandService {
   }
 
   public pluginAPIConstructor() {
-    const pluginCommands = this.registry.filter(command => command.availableToPlugins);
+    const pluginCommands = this.commands.filter(command => command.availableToPlugins);
     return this.callableAPIConstructorFrom(pluginCommands);
   }
 
