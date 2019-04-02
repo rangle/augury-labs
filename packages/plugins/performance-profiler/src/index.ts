@@ -12,11 +12,7 @@ export class PerformanceProfilerPlugin extends Plugin {
   public cycles: any = {};
   public queuedTasks: any[] = [];
 
-  public name() {
-    return 'PopoutZoneMonitor';
-  }
-
-  public onInit() {
+  public doInitialize() {
     // @todo: these util functions should be somewhere in core\
     //        add standard traversal methods to generic trees?
     function rawTreeToComponentInstanceTree(tree = [] as any, parentComponentInstance?) {
@@ -173,19 +169,19 @@ export class PerformanceProfilerPlugin extends Plugin {
       return checkTimePerInstance;
     }
 
-    const { channel: tasksChannel } = this.api!.createLiveChannel({
+    const { channel: tasksChannel } = this.run('createLiveChannel', {
       reducer: new LastElapsedTaskReducer(),
     });
 
-    const { channel: cyclesChannel } = this.api!.createLiveChannel({
+    const { channel: cyclesChannel } = this.run('createLiveChannel', {
       reducer: new LastElapsedCycleReducer(),
     });
 
-    const { channel: cdChannel } = this.api!.createLiveChannel({
+    const { channel: cdChannel } = this.run('createLiveChannel', {
       reducer: new LastElapsedCDReducer(),
     });
 
-    const { channel: dragChannel } = this.api!.createLiveChannel({
+    const { channel: dragChannel } = this.run('createLiveChannel', {
       reducer: new LastElapsedEventReducer(),
     });
 
@@ -213,7 +209,7 @@ export class PerformanceProfilerPlugin extends Plugin {
 
     performanceProfilerWindow.listenToMessageRequests(request => {
       if (request.type === 'get_full_cd') {
-        const returnVal = this.api!.scanHistory({
+        const returnVal = this.run('scanHistory', {
           reducer: new SingleCDRunFull(request.cdStartEID, request.cdEndEID),
         });
 

@@ -1,7 +1,7 @@
 import { LoadedEventEmitter, Subscribable } from '../event-emitters';
 import { ElapsedAuguryEvent, ProcessedAuguryEvent } from '../events';
 
-export class HistoryService {
+export class HistoryManager {
   private elapsedEvents: ElapsedAuguryEvent[] = [];
 
   public addEvent(processedEvent: ProcessedAuguryEvent) {
@@ -14,7 +14,7 @@ export class HistoryService {
     });
   }
 
-  public wipeOut() {
+  public clear() {
     this.elapsedEvents = [];
   }
 

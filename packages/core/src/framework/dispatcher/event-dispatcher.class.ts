@@ -1,7 +1,7 @@
 import { EnhancerService } from '../enhancers';
 import { SyncEventEmitter } from '../event-emitters';
 import { AuguryEvent, ProcessedAuguryEvent } from '../events';
-import { HistoryService } from '../history';
+import { HistoryManager } from '../history';
 import { ProbeManager } from '../probes';
 import { ReactionService } from '../reactions';
 import { SimpleQueue } from '../utils';
@@ -16,7 +16,7 @@ export class EventDispatcher {
     private probeManager: ProbeManager,
     private enhancerService: EnhancerService,
     private reactionService: ReactionService,
-    private historyService: HistoryService,
+    private historyService: HistoryManager,
   ) {
     probeManager.subscribe(event => this.dispatch(event));
   }

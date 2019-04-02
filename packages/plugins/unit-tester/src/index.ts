@@ -3,24 +3,16 @@ import { LastElapsedCDReducer, Plugin } from '@augury/core';
 declare const window;
 
 export class UnitTesterPlugin extends Plugin {
-  // @todo: do we still need these "names" ?
-  //        can we get rid of this? (we could use the class's .name)
-  public name() {
-    return 'UnitTester';
-  }
-
-  public onInit() {
+  public doInitialize() {
     window.auguryUT = {};
 
     let cdChannel: any;
     let cdRuns: any = [];
 
     window.auguryUT.startMonitoringChangeDetection = () => {
-      const result = this.api!.createLiveChannel({
+      cdChannel = this.run('createLiveChannel', {
         reducer: new LastElapsedCDReducer(),
-      });
-
-      cdChannel = result.channel;
+      }).channel;
 
       cdChannel.events.subscribe(lastElapsedCD => {
         cdRuns.push(lastElapsedCD);

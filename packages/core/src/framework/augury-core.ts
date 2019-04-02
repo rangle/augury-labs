@@ -6,7 +6,7 @@ import { ChannelManager } from './channels';
 import { Command, CommandService } from './commands';
 import { EventDispatcher } from './dispatcher';
 import { Enhancer, EnhancerService } from './enhancers';
-import { HistoryService } from './history';
+import { HistoryManager } from './history';
 import { Plugin, PluginManager } from './plugins';
 import { Probe, ProbeManager } from './probes';
 import { Reaction, ReactionService } from './reactions';
@@ -36,32 +36,32 @@ export class AuguryCore {
   private readonly probeManager: ProbeManager;
   private readonly enhancerService: EnhancerService;
   private readonly channelManager: ChannelManager;
-  private readonly reactions: ReactionService;
+  private readonly reactionService: ReactionService;
   private readonly commandService: CommandService;
   private readonly pluginManager: PluginManager;
-  private readonly history: HistoryService;
+  private readonly historyManager: HistoryManager;
 
   constructor(
     probes: Probe[],
     enhancers: Enhancer[],
     reactions: Reaction[],
-    commands: Array<Command<any, any>>,
+    commands: Array<Command<any>>,
   ) {
     this.probeManager = new ProbeManager(probes);
     this.enhancerService = new EnhancerService(this.probeManager, enhancers);
     this.channelManager = new ChannelManager();
-    this.history = new HistoryService();
-    this.reactions = new ReactionService(
+    this.historyManager = new HistoryManager();
+    this.reactionService = new ReactionService(
+      reactions,
       this.probeManager,
       this.channelManager,
-      reactions,
-      this.history,
+      this.historyManager,
     );
     this.dispatcher = new EventDispatcher(
       this.probeManager,
       this.enhancerService,
-      this.reactions,
-      this.history,
+      this.reactionService,
+      this.historyManager,
     );
     this.commandService = new CommandService(this.dispatcher, commands);
     this.pluginManager = new PluginManager(this.commandService);

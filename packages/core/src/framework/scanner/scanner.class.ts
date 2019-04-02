@@ -1,6 +1,6 @@
 import { Subscribable, SyncEventEmitter } from '../event-emitters';
 import { AuguryEvent } from '../events';
-import { HistoryService } from '../history';
+import { HistoryManager } from '../history';
 import { Reducer } from '../reducers';
 
 export class Scanner {
@@ -10,14 +10,14 @@ export class Scanner {
   private subscription;
   private lastReducerState;
 
-  constructor(private reducer: Reducer, private history: HistoryService) {}
+  constructor(private reducer: Reducer, private historyManager: HistoryManager) {}
 
   public scan(subscribable: Subscribable<AuguryEvent>) {
     this.subscription = subscribable.subscribe(event => {
       const nextReducerState = this.reducer.deriveState(
         this.lastReducerState,
         event,
-        this.history.getLastElapsedEvent(),
+        this.historyManager.getLastElapsedEvent(),
       );
       const nextResult = Reducer.getResultFromState(nextReducerState);
       const prevResult = Reducer.getResultFromState(this.lastReducerState);

@@ -1,26 +1,15 @@
-import { CallableAPIConstructor, CommandService } from '../commands';
-import { EventSource } from '../events';
+import { CommandService } from '../commands';
 import { Plugin } from './plugin.class';
 
-// @todo: add plugin hooks
-
 export class PluginManager {
-  private plugins: Plugin[] = [];
-  private readonly callableAPI: CallableAPIConstructor;
+  private readonly plugins: Plugin[] = [];
 
-  constructor(private commands: CommandService) {
-    this.callableAPI = this.commands.pluginAPIConstructor();
-  }
+  constructor(private commandService: CommandService) {}
 
   public addPlugin(plugin: Plugin) {
     this.plugins.push(plugin);
 
-    const eventSource: EventSource = {
-      type: 'plugin',
-      name: plugin.name(),
-    };
-
-    plugin.init(this.callableAPI(eventSource));
+    plugin.initialize(this.commandService);
   }
 
   public addPlugins(plugins: Plugin[]) {

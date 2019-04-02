@@ -77,7 +77,10 @@ export class TimelineComponent implements OnChanges {
   private lastPaintedTimestamp = performance.now();
 
   public ngOnChanges(changes) {
-    if (changes.segments && this.enoughTimeHasElapsedSinceLastPaint() || changes.timelineOptions) {
+    if (
+      (changes.segments && this.enoughTimeHasElapsedSinceLastPaint()) ||
+      changes.timelineOptions
+    ) {
       this.repaint();
     } else if (changes.selectedSegment) {
       this.refreshSegmentColors();

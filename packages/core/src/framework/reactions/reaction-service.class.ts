@@ -1,7 +1,7 @@
 import { ChannelManager } from '../channels';
 import { EventDispatcher } from '../dispatcher';
 import { AuguryEvent } from '../events';
-import { HistoryService } from '../history';
+import { HistoryManager } from '../history';
 import { ProbeManager } from '../probes';
 import { ReactionResults } from './reaction-results.interface';
 
@@ -10,10 +10,10 @@ import { Reaction } from './reaction.class';
 
 export class ReactionService {
   constructor(
+    private reactions: Reaction[],
     private probeManager: ProbeManager,
     private channelManager: ChannelManager,
-    private reactions: Reaction[],
-    private historyService: HistoryService,
+    private historyManager: HistoryManager,
   ) {}
 
   public reactTo(event: AuguryEvent, eventDispatcher: EventDispatcher): ReactionResults {
@@ -24,7 +24,7 @@ export class ReactionService {
           eventDispatcher,
           channels: this.channelManager,
           probes: this.probeManager,
-          history: this.historyService,
+          history: this.historyManager,
         }),
       )
       .reduce(
