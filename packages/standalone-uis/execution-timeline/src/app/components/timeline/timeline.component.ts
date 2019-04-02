@@ -74,24 +74,19 @@ export class TimelineComponent implements OnChanges {
   @ViewChild('focusAxis') public focusAxisGElement: ElementRef;
 
   private timelineSelection = [0, 40];
-  private isReady: boolean;
   private lastPaintedTimestamp = performance.now();
 
   public ngOnChanges(changes) {
-    this.isReady = this.enoughTimeHasElapsedSinceLastPaint() || changes.timelineOptions;
-
-    this.repaint();
-
-    if (changes.selectedSegment) {
+    if (changes.segments && this.enoughTimeHasElapsedSinceLastPaint() || changes.timelineOptions) {
+      this.repaint();
+    } else if (changes.selectedSegment) {
       this.refreshSegmentColors();
     }
   }
 
-  public repaint(forceRepaint = false) {
-    if (this.isReady || forceRepaint) {
-      this.lastPaintedTimestamp = performance.now();
-      this.paint();
-    }
+  public repaint() {
+    this.lastPaintedTimestamp = performance.now();
+    this.paint();
   }
 
   private enoughTimeHasElapsedSinceLastPaint() {
