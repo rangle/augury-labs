@@ -1,37 +1,14 @@
-import { defaultCommands } from '../commands';
-import { defaultEnhancers } from '../enhancers';
-import { defaultProbes } from '../probes';
-import { defaultReactions } from '../reactions';
+import { AuguryBootstrapParameters } from './augury-bootstrap-parameters.interface';
 import { ChannelManager } from './channels';
 import { Command, CommandService } from './commands';
 import { EventDispatcher } from './dispatcher';
 import { Enhancer, EnhancerService } from './enhancers';
 import { HistoryManager } from './history';
-import { Plugin, PluginManager } from './plugins';
+import { PluginManager } from './plugins';
 import { Probe, ProbeManager } from './probes';
 import { Reaction, ReactionService } from './reactions';
 
-export interface BootstrapParams {
-  platform: any;
-  ngModule: any;
-  NgZone: any;
-  plugins: Plugin[];
-}
-
 export class AuguryCore {
-  public static create(bootstrapParams: BootstrapParams) {
-    const auguryCore = new AuguryCore(
-      defaultProbes,
-      defaultEnhancers,
-      defaultReactions,
-      defaultCommands,
-    );
-
-    (window as any).augury = auguryCore;
-
-    return auguryCore.bootstrap(bootstrapParams);
-  }
-
   private readonly dispatcher: EventDispatcher;
   private readonly probeManager: ProbeManager;
   private readonly enhancerService: EnhancerService;
@@ -67,7 +44,12 @@ export class AuguryCore {
     this.pluginManager = new PluginManager(this.commandService);
   }
 
-  public bootstrap({ platform, ngModule, NgZone, plugins }: BootstrapParams): Promise<any> {
+  public bootstrap({
+    platform,
+    ngModule,
+    NgZone,
+    plugins,
+  }: AuguryBootstrapParameters): Promise<any> {
     this.pluginManager.addPlugins(plugins);
 
     const ngZone = new NgZone({ enableLongStackTrace: true });
@@ -80,7 +62,7 @@ export class AuguryCore {
 
     return platform()
       .bootstrapModule(ngModule, { ngZone })
-      .then((moduleRef: any) => {
+      .then(moduleRef => {
         this.probeManager.afterNgBootstrapHook(moduleRef);
 
         return moduleRef;

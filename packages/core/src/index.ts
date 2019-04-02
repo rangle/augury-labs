@@ -1,4 +1,4 @@
-export { AuguryCore } from './framework/augury-core';
+export { AuguryCore, auguryBootstrap } from './framework';
 export * from './framework/plugins';
 export { Reducer } from './framework/reducers';
 export * from './reducers';
