@@ -67,8 +67,8 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
     //        full CD reducer should use before/after component tree reducer
     this.bridge.send({
       type: 'get_full_cd',
-      cdStartEID: this.segment.startEID + 10, // @todo: hack because of above ^
-      cdEndEID: this.segment.finishEID - 10,
+      startEventId: this.segment.startEID + 10, // @todo: hack because of above ^
+      endEventId: this.segment.finishEID - 10,
     });
   }
 

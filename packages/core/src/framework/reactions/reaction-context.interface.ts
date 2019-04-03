@@ -7,7 +7,7 @@ import { ProbeManager } from '../probes';
 export interface ReactionContext {
   event: AuguryEvent;
   eventDispatcher: EventDispatcher;
-  channels: ChannelManager;
-  probes: ProbeManager;
-  history: HistoryManager;
+  channelManager: ChannelManager;
+  probeManager: ProbeManager;
+  historyManager: HistoryManager;
 }

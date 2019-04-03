@@ -3,11 +3,10 @@ import { EventSource } from '../events';
 import { CommandResult } from './command-result.interface';
 import { Command } from './command.class';
 
+type RunCommandFunctionType = (parameters?) => CommandResult;
+
 export class CommandApi {
-  private commands: Map<string, (parameters?) => CommandResult> = new Map<
-    string,
-    (parameters?) => CommandResult
-  >();
+  private commands: Map<string, RunCommandFunctionType> = new Map<string, RunCommandFunctionType>();
 
   constructor(
     commands: Array<Command<any>>,
@@ -22,14 +21,12 @@ export class CommandApi {
   }
 
   public run(methodName: string, parameters?): CommandResult {
-    if (this.commands.has(methodName)) {
-      const method = this.commands.get(methodName);
+    const method = this.commands.get(methodName);
 
-      if (method) {
-        return method(parameters);
-      }
+    if (method) {
+      return method(parameters);
+    } else {
+      throw new Error(`A command api called '${methodName}' does not exist`);
     }
-
-    throw new Error(`A command api called '${methodName}' does not exist`);
   }
 }

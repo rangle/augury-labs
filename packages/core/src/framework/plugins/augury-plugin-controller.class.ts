@@ -1,6 +1,6 @@
 import { Subscription } from '../event-emitters';
 import { AuguryPluginWindow } from './augury-plugin-window.interface';
-import { AuguryBridge } from './bridge';
+import { AuguryBridge, AuguryBridgeMessage, AuguryBridgeRequest } from './bridge';
 
 export class AuguryPluginController {
   private readonly window: AuguryPluginWindow;
@@ -11,12 +11,14 @@ export class AuguryPluginController {
     this.window = this.initializeWindow();
   }
 
-  public sendMessage(message) {
+  public sendMessage(message: AuguryBridgeMessage) {
     this.window.bridge.in.emit(message);
   }
 
-  public listenToMessageRequests(handleMessageRequest: (request) => void): Subscription {
-    return this.window.bridge.out.subscribe(handleMessageRequest);
+  public listenToMessageRequests(
+    handleRequest: (request: AuguryBridgeRequest) => void,
+  ): Subscription {
+    return this.window.bridge.out.subscribe(handleRequest);
   }
 
   protected writeHtml(html) {

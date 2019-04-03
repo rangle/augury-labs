@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 
 import {
   ListItemWithOnPushComponent,
@@ -12,10 +11,9 @@ import {
   OnPushDemoFormComponent,
   OnPushDemoListsComponent,
 } from './components';
-import { onPushDemoRoutes } from './on-push-demo.routes';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, RouterModule.forChild(onPushDemoRoutes)],
+  imports: [CommonModule, FormsModule],
   declarations: [
     ListItemWithOnPushComponent,
     ListItemWithOutOnPushComponent,

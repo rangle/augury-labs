@@ -22,9 +22,9 @@ export class ReactionService {
         reaction.react({
           event,
           eventDispatcher,
-          channels: this.channelManager,
-          probes: this.probeManager,
-          history: this.historyManager,
+          channelManager: this.channelManager,
+          probeManager: this.probeManager,
+          historyManager: this.historyManager,
         }),
       )
       .reduce(

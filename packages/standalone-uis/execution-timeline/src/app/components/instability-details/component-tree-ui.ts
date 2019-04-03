@@ -2,7 +2,7 @@ import { NgZone } from '@angular/core';
 import * as d3 from 'd3';
 
 export class ComponentTreeUI {
-  private containerEl: SVGElement;
+  private readonly containerEl: SVGElement;
   private data: any;
 
   constructor(private zone: NgZone, svgEl: SVGElement) {

@@ -19,6 +19,7 @@ export class Scanner {
         event,
         this.historyManager.getLastElapsedEvent(),
       );
+
       const nextResult = Reducer.getResultFromState(nextReducerState);
       const prevResult = Reducer.getResultFromState(this.lastReducerState);
 

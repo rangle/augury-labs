@@ -20,13 +20,13 @@ export class CreateLiveChannelReaction extends Reaction {
         return { success: false, errors: ['historical data not yet supported'] };
       }
 
-      const scanner = new Scanner(reducer, context.history);
+      const scanner = new Scanner(reducer, context.historyManager);
 
       scanner.scan(context.eventDispatcher.emitter);
 
       return {
         success: true,
-        channel: context.channels.createFromScanner(scanner),
+        channel: context.channelManager.createFromScanner(scanner),
       };
     }
   }

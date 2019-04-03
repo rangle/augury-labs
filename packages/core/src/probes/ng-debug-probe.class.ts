@@ -9,7 +9,7 @@ export class NgDebugProbe extends Probe {
   private rootComponent = null;
 
   public getComponentTree() {
-    return this.debugRoots.map(this.getSubTreeFromDebugElement.bind(this));
+    return this.debugRoots.map(this.getComponentTreeNodesFromDebugElement.bind(this));
   }
 
   public getRootComponent() {
@@ -24,15 +24,15 @@ export class NgDebugProbe extends Probe {
     this.debugRoots = getAllAngularRootElements().map(ng.probe);
   }
 
-  private getSubTreeFromDebugElement(debugElement) {
+  private getComponentTreeNodesFromDebugElement(debugElement) {
     return {
+      componentType: debugElement.componentInstance.constructor.name,
       componentInstance: debugElement.componentInstance, // todo: shouldn't be giving out actual references
       nativeNode: debugElement.nativeNode, // todo: probably shouldn't give this out either?
-      componentType: debugElement.componentInstance.constructor.name,
       domOffsets: addUpNodeAndChildrenOffsets(debugElement.nativeNode),
-      childNodes: debugElement.childNodes
-        ? [...debugElement.childNodes.map(childNode => this.getSubTreeFromDebugElement(childNode))]
-        : [],
+      childNodes: debugElement.children.map(childNode =>
+        this.getComponentTreeNodesFromDebugElement(childNode),
+      ),
     };
   }
 }

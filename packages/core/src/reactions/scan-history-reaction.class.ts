@@ -15,13 +15,15 @@ export class ScanHistoryReaction extends Reaction {
         return { success: false, errors: ['reducer not given'] };
       }
 
-      const scanner = new Scanner(reducer, context.history);
+      const scanner = new Scanner(reducer, context.historyManager);
 
-      scanner.scan(context.history.createSubscribable());
+      scanner.scan(context.historyManager.createSubscribable());
+
+      const lastResult = scanner.last();
 
       return {
         success: true,
-        result: scanner.last(),
+        result: lastResult,
       };
     }
   }

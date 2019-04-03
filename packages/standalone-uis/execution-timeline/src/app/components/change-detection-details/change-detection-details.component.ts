@@ -56,8 +56,8 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
 
     this.bridge.send({
       type: 'get_full_cd',
-      cdStartEID: this.segment.startEID,
-      cdEndEID: this.segment.endEID,
+      startEventId: this.segment.startEID,
+      endEventId: this.segment.endEID,
     });
 
     this.runtimeInMilliseconds = round2(

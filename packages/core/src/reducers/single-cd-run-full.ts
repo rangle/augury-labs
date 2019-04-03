@@ -12,7 +12,7 @@ export class SingleCDRunFull extends Reducer {
     };
   }
 
-  constructor(private cdStartEID: number, private cdEndEID: number) {
+  constructor(private startEventId: number, private endEventId: number) {
     super();
   }
 
@@ -23,7 +23,7 @@ export class SingleCDRunFull extends Reducer {
     }
 
     // grab the last component tree before CD
-    if (nextEvent.id < this.cdStartEID && nextEvent.name === 'onStable') {
+    if (nextEvent.id < this.startEventId && nextEvent.name === 'onStable') {
       return {
         result: prevShallowState.result,
         auxiliary: {
@@ -36,8 +36,8 @@ export class SingleCDRunFull extends Reducer {
 
     // grab every lifecycle trigger event within the start/end eids
     if (
-      nextEvent.id >= this.cdStartEID &&
-      nextEvent.id <= this.cdEndEID &&
+      nextEvent.id >= this.startEventId &&
+      nextEvent.id <= this.endEventId &&
       nextEvent.name === 'component_lifecycle_hook_invoked'
     ) {
       return {
@@ -54,7 +54,7 @@ export class SingleCDRunFull extends Reducer {
 
     // grab the first component tree after CD, and we're done
     if (
-      nextEvent.id >= this.cdEndEID &&
+      nextEvent.id >= this.endEventId &&
       nextEvent.name === 'onStable' &&
       !prevShallowState.auxiliary.nextComponentTree
     ) {

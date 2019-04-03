@@ -15,10 +15,9 @@ export abstract class Command<CommandRequestParameters> {
     source: EventSource,
     parameters: CommandRequestParameters,
   ): CommandResult {
-    const commandEvent = createEvent(source, this.name, parameters);
-
     return this.parseReactions(
-      dispatcher.dispatchImmediatelyAndReturn(commandEvent).reactionResults,
+      dispatcher.dispatchImmediatelyAndReturn(createEvent(source, this.name, parameters))
+        .reactionResults,
     );
   }
 
