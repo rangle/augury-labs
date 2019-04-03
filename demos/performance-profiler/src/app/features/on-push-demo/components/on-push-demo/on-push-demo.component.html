@@ -1,0 +1,14 @@
+<section>
+  <al-on-push-demo-form [(useOnPush)]="useOnPush"
+                        [counter]="counter"
+                        (counterIncremented)="incrementCounter()"
+                        (listAdded)="addList()">
+  </al-on-push-demo-form>
+
+  <al-on-push-demo-lists [lists]="lists"
+                         [useOnPush]="useOnPush"
+                         (listRemoved)="removeList($event)"
+                         (listItemAdded)="addListItem($event)"
+                         (listItemRemoved)="removeListItem($event)">
+  </al-on-push-demo-lists>
+</section>

@@ -1,1 +1,1 @@
-export * from './history-service'
+export * from './history-manager.class';

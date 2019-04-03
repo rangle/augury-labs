@@ -1,0 +1,11 @@
+<h5>
+  List {{ list.id }}
+  <button (click)="listItemAdded.emit(list)">Add Item</button>
+  <ng-content></ng-content>
+</h5>
+<ul>
+  <li *ngFor="let item of list.items; trackBy: trackByOnPushListItem">
+    <al-list-item-with-on-push [item]="item"></al-list-item-with-on-push>
+    <button (click)="listItemRemoved.emit({ list: list, item: item })">Remove Item</button>
+  </li>
+</ul>

@@ -1,0 +1,39 @@
+:host {
+  width: 100%;
+
+  .container {
+    width: 100%;
+
+    svg {
+      width: 100%;
+    }
+  }
+
+  ::ng-deep g[name='__HIDDEN__'] {
+    visibility: hidden;
+  }
+
+  ::ng-deep .d3-flame-graph-label {
+    color: black;
+    font-family: Verdana, serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-left: 4px;
+    margin-right: 4px;
+    overflow: hidden;
+    padding: 0 0 0;
+    pointer-events: none;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+::ng-deep .d3-flame-graph-tip {
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 2px;
+  color: white;
+  line-height: 1;
+  padding: 1em;
+}

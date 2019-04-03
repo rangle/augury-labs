@@ -1,7 +1,7 @@
 # Augury Labs
 
-> Experimental developer tools & instrumentation framework used to profile, inspect and
-> troubleshoot [Angular](https://angular.io) web applications.
+> Augury Labs is a project that provides developers with experimental tools and an instrumentation
+> framework used to profile, inspect and troubleshoot [Angular](https://angular.io) applications.
 
 [![CircleCI](https://circleci.com/gh/rangle/augury-labs.svg?style=svg&circle-token=3b4d4e15a644445f9bf5d449fa5746ba774bfcdf)](https://circleci.com/gh/rangle/augury-labs) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](./LICENSE) [![Slack Status](https://augury-slack.herokuapp.com/badge.svg)](https://augury-slack.herokuapp.com) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
@@ -39,7 +39,7 @@ _NOTE: This tool is still experimental. Feedback is greatly appreciated :smile:_
 
 - [@augury/core](https://www.npmjs.com/package/@augury/core) - The main package responsible for
   collecting raw data and communicating with registered plugins. Also contains the core bootstrap
-  precedure that injects the instrumentation code into your application.
+  procedure that injects the instrumentation code into your application.
 - [@augury/performance-profiler-plugin](https://www.npmjs.com/package/@augury/performance-profiler-plugin) -
   Opens a popup window dashboard, displaying the execution of your app as a timeline graph,
   showing the interaction between `Zone.js` tasks, Angular's stability cycles & change detection.
@@ -57,7 +57,7 @@ _NOTE: The following assumes your application is a standard [Angular CLI](https:
    npm install -D @augury/core @augury/performance-profiler-plugin
    ```
 
-1. Create a `src/main.augury.ts` file in your application with the following content:
+2. Create a `src/main.augury.ts` file in your application with the following content:
 
    ```ts
    import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -76,7 +76,7 @@ _NOTE: The following assumes your application is a standard [Angular CLI](https:
    });
    ```
 
-1. Create new project `build` & `serve` configurations in the `angular.json` file.
+3. Create new project `build` & `serve` configurations in the `angular.json` file.
 
    Under `projects / [project-name] / architect / build / configurations` add:
 
@@ -99,7 +99,7 @@ _NOTE: The following assumes your application is a standard [Angular CLI](https:
    }
    ```
 
-1. Add a new npm script in your `package.json`to run the `Angular` application with the augury
+4. Add a new npm script in your `package.json` to run the `Angular` application with the augury
    serve configuration you setup in the previous step.
 
    ```json
@@ -108,7 +108,7 @@ _NOTE: The following assumes your application is a standard [Angular CLI](https:
    }
    ```
 
-1. Run your application with:
+5. Run your application with:
 
    ```shell
    npm run start:augury
@@ -129,7 +129,7 @@ _NOTE: The following assumes your application is a standard [Angular CLI](https:
 
 Here are some other unpublished experimental plugins:
 
-- [Unit Tester](packages/plugins/unit-tester) - Proof of concept which allows programatic access
+- [Unit Tester](packages/plugins/unit-tester) - Proof of concept which allows programmatic access
   to `@augury/core` to be used in `e2e` tests. This could be used to check for acceptable
   thresholds of runtime behaviour in specific areas of your application.
 
@@ -156,7 +156,8 @@ If your having trouble running `augury-labs`, please submit a [GitHub Issue](htt
 
 ## Contributing
 
-We'd love to have your helping hand on `augury-labs`! See [CONTRIBUTING.md](CONTRIBUTING.md) for more information on what we're looking for and how to get started.
+We'd love to have your helping hand on `augury-labs`! See [CONTRIBUTING.md](CONTRIBUTING.md) for
+more information on what we're looking for and how to get started.
 
 ## License
 

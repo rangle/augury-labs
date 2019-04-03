@@ -1,9 +1,9 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'nglocalization-directive',
   template: `
-    <h4>Value = {{value}}</h4>
+    <h4>Value = {{ value }}</h4>
     <button class="btn btn-warning" (click)="inc()">Increment</button>
     <h4 [ngPlural]="value">
       <ng-template ngPluralCase="=0">there is nothing</ng-template>
@@ -14,8 +14,8 @@ import {Component} from '@angular/core';
   `,
 })
 export default class NgLocalizationDirective {
-  value: any = 'init';
-  inc() {
+  public value: any = 'init';
+  public inc() {
     this.value = this.value === 'init' ? 0 : this.value + 1;
   }
 }

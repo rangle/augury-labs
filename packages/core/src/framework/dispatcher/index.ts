@@ -1,4 +1,2 @@
-export * from './event-dispatcher'
-export * from './dispatch'
-export * from './simple-dispatch'
-export * from './dispatcher-event'
+export * from './event-dispatcher.class';
+export * from './dispatch.type';

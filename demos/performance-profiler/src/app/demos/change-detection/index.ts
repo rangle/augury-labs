@@ -4,7 +4,8 @@ import { UserInfoPush } from './components/user-info-push';
 
 export const CHANGE_DETECTION_COMPONENTS = [
   ChangeDetectionComponent,
-  UserInfoPush, UserInfoDefault
+  UserInfoPush,
+  UserInfoDefault,
 ];
 
 export { ChangeDetectionComponent };

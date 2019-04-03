@@ -1,8 +1,8 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
-import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag'
-import { CurrentNgZoneTaskReducer } from './current-ng-zone-task'
-import { CurrentRootZoneTaskReducer } from './current-root-zone-task'
+import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag';
+import { CurrentNgZoneTaskReducer } from './current-ng-zone-task';
+import { CurrentRootZoneTaskReducer } from './current-root-zone-task';
 
 const INIT_STATE = {
   result: undefined,
@@ -12,14 +12,14 @@ const INIT_STATE = {
     //        the flamegraph structure should be imposed by the consumer
     flamegraph: [],
   },
-}
+};
 
 export class LastElapsedTaskReducer extends Reducer {
   public dependencies = {
     currentRootTask: new CurrentRootZoneTaskReducer(),
     currentNgTask: new CurrentNgZoneTaskReducer(),
     accumulatedAuguryDrag: new AccumulatedAuguryDragReducer(),
-  }
+  };
 
   public deriveShallowState({
     prevShallowState = INIT_STATE,
@@ -29,33 +29,33 @@ export class LastElapsedTaskReducer extends Reducer {
     resetDependency,
   }) {
     // @todo: generalize this logic ?
-    const { currentRootTask: prevRootTask, currentNgTask: prevNgTask } = prevDepResults
+    const { currentRootTask: prevRootTask, currentNgTask: prevNgTask } = prevDepResults;
 
     const {
       currentRootTask: { task: nextRootTask, startTime: nextRootStartTime } = {} as any,
       currentNgTask: { task: nextNgTask, startTime: nextNgStartTime } = {} as any,
       accumulatedAuguryDrag: drag,
-    } = nextDepResults
+    } = nextDepResults;
 
-    const rootTaskIsOngoing = () => prevRootTask && nextRootTask
-    const ngTaskIsOngoing = () => prevNgTask && nextNgTask
-    const taskIsOngoing = () => rootTaskIsOngoing() || ngTaskIsOngoing()
+    const rootTaskIsOngoing = () => prevRootTask && nextRootTask;
+    const ngTaskIsOngoing = () => prevNgTask && nextNgTask;
+    const taskIsOngoing = () => rootTaskIsOngoing() || ngTaskIsOngoing();
 
     this.assumption(
       'root tasks and ng tasks do not happen simoultaneously',
       !(prevNgTask && prevRootTask) && !(nextNgTask && nextRootTask),
-    )
+    );
 
-    let updatedFlamegraph = updateFlamegraph(prevShallowState.auxiliary.flamegraph, nextEvent)
+    let updatedFlamegraph = updateFlamegraph(prevShallowState.auxiliary.flamegraph, nextEvent);
 
     // start new flamegraph every task
     // @todo: if methods invoked outside of task -> red flag! something is going undetected.
     if (!prevRootTask && nextRootTask) {
-      updatedFlamegraph = []
+      updatedFlamegraph = [];
     }
 
     if ((!prevRootTask && nextRootTask) || (!prevNgTask && nextNgTask)) {
-      resetDependency('accumulatedAuguryDrag')
+      resetDependency('accumulatedAuguryDrag');
     }
 
     if (prevRootTask && !nextRootTask) {
@@ -72,7 +72,7 @@ export class LastElapsedTaskReducer extends Reducer {
         auxiliary: {
           flamegraph: [],
         },
-      }
+      };
     }
 
     if (prevNgTask && !nextNgTask) {
@@ -89,7 +89,7 @@ export class LastElapsedTaskReducer extends Reducer {
         auxiliary: {
           flamegraph: [],
         },
-      }
+      };
     }
 
     return {
@@ -97,22 +97,22 @@ export class LastElapsedTaskReducer extends Reducer {
       auxiliary: {
         flamegraph: updatedFlamegraph,
       },
-    }
+    };
   }
 }
 
 // @todo: get everything below out of here
 const findHighestPending = pending => {
-  const { children } = pending
+  const { children } = pending;
   if (!children.length) {
-    return null
+    return null;
   }
-  const lastChild = children[children.length - 1]
+  const lastChild = children[children.length - 1];
   if (lastChild.reachedCompletion) {
-    return pending
+    return pending;
   }
-  return findHighestPending(lastChild) || lastChild
-}
+  return findHighestPending(lastChild) || lastChild;
+};
 
 function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
   // todo: mutating, shouldnt be
@@ -128,11 +128,11 @@ function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
         }]`,
         reachedCompletion: false,
         children: [],
-      })
+      });
     } else {
-      let highestPending = findHighestPending(prevFlameGraph[prevFlameGraph.length - 1])
+      let highestPending = findHighestPending(prevFlameGraph[prevFlameGraph.length - 1]);
       if (!highestPending) {
-        highestPending = prevFlameGraph[prevFlameGraph.length - 1]
+        highestPending = prevFlameGraph[prevFlameGraph.length - 1];
       }
       highestPending.children.push({
         event: e,
@@ -144,24 +144,24 @@ function updateFlamegraph(prevFlameGraph: any[] = [], e /* augury event */) {
         }]`,
         reachedCompletion: false,
         children: [],
-      })
+      });
     }
   }
 
   if (e.name === 'method_completed') {
     if (!prevFlameGraph.length || prevFlameGraph[prevFlameGraph.length - 1].reachedCompletion) {
-      console.log('orphan:', e)
+      console.log('orphan:', e);
     } else {
-      let highestPending = findHighestPending(prevFlameGraph[prevFlameGraph.length - 1])
+      let highestPending = findHighestPending(prevFlameGraph[prevFlameGraph.length - 1]);
       if (!highestPending) {
-        highestPending = prevFlameGraph[prevFlameGraph.length - 1]
+        highestPending = prevFlameGraph[prevFlameGraph.length - 1];
       }
-      highestPending.reachedCompletion = true
-      highestPending.finishPerfstamp = e.payload.perfstamp
-      const perfDiff = highestPending.finishPerfstamp - highestPending.startPerfstamp
-      highestPending.value = perfDiff > 0 ? perfDiff : 0.0125
+      highestPending.reachedCompletion = true;
+      highestPending.finishPerfstamp = e.payload.perfstamp;
+      const perfDiff = highestPending.finishPerfstamp - highestPending.startPerfstamp;
+      highestPending.value = perfDiff > 0 ? perfDiff : 0.0125;
     }
   }
 
-  return prevFlameGraph.concat([])
+  return prevFlameGraph.concat([]);
 }

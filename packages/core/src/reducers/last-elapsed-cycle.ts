@@ -1,19 +1,19 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
-import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag'
-import { CurrentCDReducer } from './current-cd'
-import { CurrentCycleReducer } from './current-cycle'
+import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag';
+import { CurrentCDReducer } from './current-cd';
+import { CurrentCycleReducer } from './current-cycle';
 
 const INIT_STATE = {
   result: undefined,
-}
+};
 
 export class LastElapsedCycleReducer extends Reducer {
   public dependencies = {
     currentCycle: new CurrentCycleReducer(),
     currentCD: new CurrentCDReducer(),
     accumulatedAuguryDrag: new AccumulatedAuguryDragReducer(),
-  }
+  };
 
   public deriveShallowState({
     prevShallowState = INIT_STATE,
@@ -26,11 +26,11 @@ export class LastElapsedCycleReducer extends Reducer {
       currentCycle: nextCycle,
       currentCD: nextCD,
       accumulatedAuguryDrag: drag,
-    } = nextDepResults
-    const { currentCycle: prevCycle, currentCD: prevCD } = prevDepResults
+    } = nextDepResults;
+    const { currentCycle: prevCycle, currentCD: prevCD } = prevDepResults;
 
     if (!prevCycle && nextCycle) {
-      resetDependency('accumulatedAuguryDrag')
+      resetDependency('accumulatedAuguryDrag');
     }
 
     if (prevCycle && !nextCycle) {
@@ -48,9 +48,9 @@ export class LastElapsedCycleReducer extends Reducer {
           job: prevCycle.job,
           drag,
         },
-      }
+      };
     }
 
-    return prevShallowState
+    return prevShallowState;
   }
 }

@@ -30,11 +30,11 @@
     "precommit": "lint-staged",
     "link": "yarn link"
   },
+  "dependencies": {
+    "@augury/core": "^0.5.2"
+  },
   "devDependencies": {
     "@augury/execution-timeline-ui": "^0.5.2",
     "@augury/tools": "^0.5.2"
-  },
-  "dependencies": {
-    "@augury/core": "^0.5.2"
   }
 }

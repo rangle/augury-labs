@@ -1,0 +1,7 @@
+<ag-header-logo></ag-header-logo>
+
+<ag-header-controls [recording]="recording"
+                    (cleared)="cleared.emit()"
+                    (started)="started.emit()"
+                    (stopped)="stopped.emit()">
+</ag-header-controls>

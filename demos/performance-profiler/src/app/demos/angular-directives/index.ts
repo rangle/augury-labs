@@ -8,9 +8,14 @@ import NgStyleDirective from './components/ngstyle-directive';
 import NgSwitchDirective from './components/ngswitch-directive';
 
 export const ANGULAR_DIRECTIVES_COMPONENTS = [
-  AngularDirectivesComponent, HelloDirectives,
-  NgClassDirective, NgForDirective, NgIfDirective,
-  NgLocalizationDirective, NgStyleDirective, NgSwitchDirective,
+  AngularDirectivesComponent,
+  HelloDirectives,
+  NgClassDirective,
+  NgForDirective,
+  NgIfDirective,
+  NgLocalizationDirective,
+  NgStyleDirective,
+  NgSwitchDirective,
 ];
 
 export { AngularDirectivesComponent };

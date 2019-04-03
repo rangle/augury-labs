@@ -1,18 +1,18 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
-const INIT_STATE = { result: true }
+const INIT_STATE = { result: true };
 
 export class IsStableReducer extends Reducer {
   public deriveShallowState({ prevShallowState = INIT_STATE, nextEvent }) {
     // @todo: event enum
     if (nextEvent.name === 'onUnstable') {
-      return { result: false }
+      return { result: false };
     }
 
     if (nextEvent.name === 'onStable') {
-      return { result: true }
+      return { result: true };
     }
 
-    return prevShallowState
+    return prevShallowState;
   }
 }

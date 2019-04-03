@@ -1,3 +1,3 @@
-import 'core-js'
-import 'web-animations-js'
-import 'zone.js'
+import 'core-js';
+import 'web-animations-js';
+import 'zone.js';

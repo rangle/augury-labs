@@ -1,8 +1,8 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
 const INIT_STATE = {
   result: undefined,
-}
+};
 
 // @todo: rename to CurrentNgZoneTaskReducer (because this is public api, should be clear)
 export class CurrentNgZoneTaskReducer extends Reducer {
@@ -11,7 +11,7 @@ export class CurrentNgZoneTaskReducer extends Reducer {
       this.assumption(
         'a `task` cannot begin until the previous one is complete',
         !prevShallowState.result,
-      )
+      );
 
       return {
         result: {
@@ -19,13 +19,13 @@ export class CurrentNgZoneTaskReducer extends Reducer {
           startEID: nextEvent.id,
           startPerfStamp: nextEvent.creationAtPerformanceStamp,
         },
-      }
+      };
     }
 
     if (nextEvent.name === 'onInvokeTask_completed') {
-      return { result: undefined }
+      return { result: undefined };
     }
 
-    return prevShallowState
+    return prevShallowState;
   }
 }

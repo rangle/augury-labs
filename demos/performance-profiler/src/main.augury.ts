@@ -1,18 +1,13 @@
-import { enableProdMode, NgZone, ViewContainerRef } from '@angular/core';
+import { NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
-
 import { auguryBootstrap } from '@augury/core';
 import { PerformanceProfilerPlugin } from '@augury/performance-profiler-plugin';
+
+import { AppModule } from './app/app.module';
 
 auguryBootstrap({
   platform: platformBrowserDynamic,
   ngModule: AppModule,
   NgZone,
-  plugins: [
-    new PerformanceProfilerPlugin(),
-    // new OverlayCycleRuntimes(),
-    // new OverlayHealthIndicator()
-  ]
+  plugins: [new PerformanceProfilerPlugin()],
 });

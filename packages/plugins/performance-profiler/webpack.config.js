@@ -1,6 +1,6 @@
-const path = require('path')
-const webpack = require('webpack')
-const ProgressPlugin = require('webpack/lib/ProgressPlugin')
+const path = require('path');
+const webpack = require('webpack');
+const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 
 /*
  * Config
@@ -52,4 +52,4 @@ module.exports = {
   },
 
   plugins: [new ProgressPlugin()],
-}
+};

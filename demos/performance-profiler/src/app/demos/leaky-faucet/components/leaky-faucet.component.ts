@@ -6,20 +6,20 @@ import { Component } from '@angular/core';
     <div>
       <p>{{ isDripping ? 'The faucet is dripping' : 'Faucet is not dripping' }}</p>
       <button type="button" class="btn btn-danger" (click)="toggleLeak()">
-        {{ isDripping ? 'Stop dripping' : 'Start drip' }} (calls a recursive function using setTimeout)
+        {{ isDripping ? 'Stop dripping' : 'Start drip' }} (calls a recursive function using
+        setTimeout)
       </button>
       <div class="drip">Faucet: {{ drip }}</div>
     </div>
     <app-run-outside-angular></app-run-outside-angular>
-
-  `
+  `,
 })
 export class LeakyFaucetComponent {
-  isDripping = false;
-  drip = 'start the drip';
-  dripRate = 50;
+  public isDripping = false;
+  public drip = 'start the drip';
+  public dripRate = 50;
 
-  toggleLeak() {
+  public toggleLeak() {
     if (!this.isDripping) {
       return this.startLeak();
     }

@@ -1,1 +1,1 @@
-export * from './offsets'
+export * from './offsets';

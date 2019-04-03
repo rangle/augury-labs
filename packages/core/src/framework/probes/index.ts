@@ -1,3 +1,3 @@
-export * from './probe'
-export * from './probe-service'
-export * from './probe-registry'
+export * from './probe.class';
+export * from './probe-constructor.interface';
+export * from './probe-manager.class';

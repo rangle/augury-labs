@@ -1,0 +1,14 @@
+<ag-card>
+  <ag-section-heading>Instability Period Details</ag-section-heading>
+  <ag-sub-section label="Runtime">
+    {{ runtimeInMilliseconds }}ms (+ augury's impact of {{ dragInMilliseconds }}ms)
+  </ag-sub-section>
+  <ag-sub-section label="Start Time (ms since page request)">
+    {{ startTimeInMilliseconds }}ms
+  </ag-sub-section>
+</ag-card>
+
+<ag-card>
+  <ag-section-heading>Component Tree</ag-section-heading>
+  <svg #componentTreeSvg id="componentTreeSvg"></svg>
+</ag-card>

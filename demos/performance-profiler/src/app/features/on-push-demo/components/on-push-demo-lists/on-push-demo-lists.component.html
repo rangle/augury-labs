@@ -1,0 +1,20 @@
+<ul>
+  <li *ngFor="let list of lists; trackBy: trackByList">
+    <ng-container [ngSwitch]="useOnPush">
+      <al-list-with-on-push *ngSwitchCase="true"
+                            [list]="list"
+                            (listItemAdded)="listItemAdded.emit($event)"
+                            (listItemRemoved)="listItemRemoved.emit($event)">
+        <button (click)="listRemoved.emit(list)">Remove List</button>
+      </al-list-with-on-push>
+
+      <al-list-with-out-on-push *ngSwitchCase="false"
+                                [list]="list"
+                                (listItemAdded)="listItemAdded.emit($event)"
+                                (listItemRemoved)="listItemRemoved.emit($event)">
+        <button (click)="listRemoved.emit(list)">Remove List</button>
+      </al-list-with-out-on-push>
+    </ng-container>
+  </li>
+</ul>
+

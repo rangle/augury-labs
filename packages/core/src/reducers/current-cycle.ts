@@ -1,17 +1,17 @@
-import { Reducer } from '../framework/reducers'
+import { Reducer } from '../framework/reducers';
 
-import { CurrentNgZoneTaskReducer } from './current-ng-zone-task'
-import { IsStableReducer } from './is-stable'
+import { CurrentNgZoneTaskReducer } from './current-ng-zone-task';
+import { IsStableReducer } from './is-stable';
 
 const INIT_STATE = {
   result: undefined,
-}
+};
 
 export class CurrentCycleReducer extends Reducer {
   public dependencies = {
     isStable: new IsStableReducer(),
     currentTask: new CurrentNgZoneTaskReducer(),
-  }
+  };
 
   public deriveShallowState({
     prevShallowState = INIT_STATE,
@@ -19,8 +19,8 @@ export class CurrentCycleReducer extends Reducer {
     nextDepResults,
     prevDepResults,
   }) {
-    const { isStable: nextIsStable, currentTask: nextTask } = nextDepResults
-    const { isStable: prevIsStable } = prevDepResults
+    const { isStable: nextIsStable, currentTask: nextTask } = nextDepResults;
+    const { isStable: prevIsStable } = prevDepResults;
 
     // @definition: if we just became unstable, then we've entered a new cycle, thus started a new `job`
     if ((prevIsStable || prevIsStable === undefined) && !nextIsStable) {
@@ -30,14 +30,14 @@ export class CurrentCycleReducer extends Reducer {
           startPerformanceStamp: nextEvent.creationAtPerformanceStamp,
           job: nextTask,
         },
-      }
+      };
     }
 
     // @definition if we've just become stable, we're done the `job`
     if (!prevIsStable && nextIsStable) {
-      return { result: undefined }
+      return { result: undefined };
     }
 
-    return prevShallowState
+    return prevShallowState;
   }
 }

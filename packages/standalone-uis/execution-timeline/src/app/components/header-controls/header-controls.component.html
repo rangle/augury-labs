@@ -1,0 +1,25 @@
+<ng-container [ngSwitch]="recording">
+  <ng-container *ngSwitchCase="true">
+    <ag-button (pressed)="cleared.emit()">
+      Clear
+    </ag-button>
+
+    <ag-button class="pause"
+               (pressed)="stopped.emit()">
+      <svg version="1.1" id="Capa_1" x="0px" y="0px" width="50%" viewBox="0 0 357 357">
+        <g>
+          <g id="pause">
+            <path d="M25.5,357h102V0h-102V357z M229.5,0v357h102V0H229.5z" style="fill: white"></path>
+          </g>
+        </g>
+      </svg>
+    </ag-button>
+  </ng-container>
+
+  <ag-button *ngSwitchCase="false"
+             (pressed)="started.emit()">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="50" style="fill: #dc4141;"></circle>
+    </svg>
+  </ag-button>
+</ng-container>

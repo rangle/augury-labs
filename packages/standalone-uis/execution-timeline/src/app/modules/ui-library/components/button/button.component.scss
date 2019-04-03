@@ -1,0 +1,20 @@
+:host {
+  button {
+    font-size: 16px;
+    background-color: rgb(38, 38, 38);
+    display: inline-block;
+    width: 80px;
+    margin: 0.35em 0.5em 0 0;
+    height: 44px;
+    text-align: center;
+    line-height: inherit;
+    color: rgb(233, 233, 233);
+    cursor: pointer;
+    border-width: 0;
+    border-style: initial;
+    border-color: initial;
+    border-image: initial;
+    text-decoration: none;
+    transition: color 0.3s ease-out 0s;
+  }
+}

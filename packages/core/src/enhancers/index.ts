@@ -1,2 +1,2 @@
-export * from './registry'
-export * from './component-tree-enhancer'
+export * from './default-enhancers.constant';
+export * from './component-tree-enhancer';

@@ -1,65 +1,53 @@
-import { ChannelService } from './channels'
-import { CommandRegistry, CommandService } from './commands'
-import { EventDispatcher } from './dispatcher'
-import { EnhancerRegistry, EnhancerService } from './enhancers'
-import { HistoryService } from './history'
-import { Plugin, PluginService } from './plugins'
-import { ProbeRegistry, ProbeService } from './probes'
-import { ReactionRegistry, ReactionService } from './reactions'
-
-export interface BootstrapParams {
-  platform: any
-  ngModule: any
-  NgZone: any
-  plugins: Plugin[]
-}
+import { ChannelManager } from './channels';
+import { Command, CommandService } from './commands';
+import { EventDispatcher } from './dispatcher';
+import { Enhancer, EnhancerService } from './enhancers';
+import { HistoryManager } from './history';
+import { PluginManager } from './plugins';
+import { Plugin } from './plugins';
+import { Probe, ProbeManager } from './probes';
+import { Reaction, ReactionService } from './reactions';
 
 export class AuguryCore {
-  private dispatcher: EventDispatcher
-
-  private probes: ProbeService
-  private enhancers: EnhancerService
-  private channels: ChannelService
-  private reactions: ReactionService
-  private commands: CommandService
-  private plugins: PluginService
-  private history: HistoryService
+  private readonly dispatcher: EventDispatcher;
+  private readonly probeManager: ProbeManager;
+  private readonly enhancerService: EnhancerService;
+  private readonly channelManager: ChannelManager;
+  private readonly reactionService: ReactionService;
+  private readonly commandService: CommandService;
+  private readonly pluginManager: PluginManager;
+  private readonly historyManager: HistoryManager;
 
   constructor(
-    probeRegistry: ProbeRegistry,
-    enhancerRegistry: EnhancerRegistry,
-    reactionRegistry: ReactionRegistry,
-    commandRegistry: CommandRegistry,
+    probes: Probe[],
+    enhancers: Enhancer[],
+    reactions: Reaction[],
+    commands: Array<Command<any>>,
+    plugins: Plugin[],
   ) {
-    this.probes = new ProbeService(probeRegistry)
-    this.enhancers = new EnhancerService(this.probes, enhancerRegistry)
-    this.channels = new ChannelService()
-    this.history = new HistoryService()
-    this.reactions = new ReactionService(this.probes, this.channels, reactionRegistry, this.history)
-    this.dispatcher = new EventDispatcher(this.enhancers, this.reactions, this.history)
-    this.commands = new CommandService(this.dispatcher, commandRegistry)
-    this.plugins = new PluginService(this.commands)
-
-    this.dispatcher.subscribeTo(this.probes.probeEvents)
+    this.probeManager = new ProbeManager(probes);
+    this.enhancerService = new EnhancerService(this.probeManager, enhancers);
+    this.channelManager = new ChannelManager();
+    this.historyManager = new HistoryManager();
+    this.reactionService = new ReactionService(
+      reactions,
+      this.probeManager,
+      this.channelManager,
+      this.historyManager,
+    );
+    this.dispatcher = new EventDispatcher(
+      this.probeManager,
+      this.enhancerService,
+      this.reactionService,
+      this.historyManager,
+    );
+    this.commandService = new CommandService(this.dispatcher, commands);
+    this.pluginManager = new PluginManager(this.commandService, plugins);
   }
 
-  public bootstrap({ platform, ngModule, NgZone, plugins }: BootstrapParams): Promise<any> {
-    this.plugins.add(plugins)
+  public initialize(ngZone, ngModule) {
+    this.probeManager.initialize(ngZone, ngModule);
 
-    const ngZone = new NgZone({ enableLongStackTrace: true })
-
-    this.probes.beforeNgBootstrapHook({
-      ngZone,
-      ngModule,
-      Promise,
-    })
-
-    return platform()
-      .bootstrapModule(ngModule, { ngZone })
-      .then((moduleRef: any) => {
-        this.probes.afterNgBootstrapHook(moduleRef)
-
-        return moduleRef
-      })
+    return this;
   }
 }

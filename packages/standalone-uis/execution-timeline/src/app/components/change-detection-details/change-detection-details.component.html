@@ -1,0 +1,20 @@
+<ag-card>
+  <ag-section-heading>Change Detection Run</ag-section-heading>
+
+  <ag-sub-section label="Runtime">
+    {{ runtimeInMilliseconds }}ms
+  </ag-sub-section>
+  <ag-sub-section label="Instance Check Counts">
+    <table>
+      <tbody>
+      <tr *ngFor="let component of componentChangeDetections ">
+        <td> {{ component.componentType.name }} </td>
+        <td> {{ component.entry.numChecks }} </td>
+      </tr>
+      </tbody>
+    </table>
+  </ag-sub-section>
+
+  <ag-flame-graph [rootNode]="rootFlameGraphNode">
+  </ag-flame-graph>
+</ag-card>
