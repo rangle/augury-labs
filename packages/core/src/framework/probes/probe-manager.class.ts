@@ -17,14 +17,8 @@ export class ProbeManager extends SyncEventEmitter<AuguryEvent> {
     return this.probes.get(constructor.name);
   }
 
-  public beforeNgBootstrapHook(preBootstrapTargets: any) {
-    this.probes.forEach(
-      probe => probe.beforeNgBootstrap && probe.beforeNgBootstrap(preBootstrapTargets),
-    );
-  }
-
-  public afterNgBootstrapHook(ngModuleRef: any) {
-    this.probes.forEach(probe => probe.afterNgBootstrap && probe.afterNgBootstrap(ngModuleRef));
+  public initialize(ngZone, ngModule) {
+    this.probes.forEach(probe => probe.initialize && probe.initialize(ngZone, ngModule));
   }
 
   private initializeProbes(probes: Probe[]): Map<string, Probe> {

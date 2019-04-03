@@ -5,7 +5,7 @@ declare const Zone;
 export class RootZoneProbe extends Probe {
   private rootZone;
 
-  public beforeNgBootstrap() {
+  public initialize(ngZone, ngModule) {
     // @todo: assuming executing in root zone. should be moving up parent chain.
     const rootZone = Zone.current;
     const ZoneDelegate = rootZone._zoneDelegate.constructor;

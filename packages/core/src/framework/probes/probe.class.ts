@@ -19,6 +19,7 @@ export abstract class Probe {
   }
 
   // @todo: how are we handling / exposing errors during attachment?
-  public beforeNgBootstrap?(preBootstrapTargets: any): void;
-  public afterNgBootstrap?(ngModuleRef: any): void;
+  public initialize(ngZone, ngModule) {
+    // do nothing
+  }
 }

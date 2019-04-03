@@ -14,7 +14,7 @@ export class NgZoneProbe extends Probe {
   // target
   private ngZone;
 
-  public beforeNgBootstrap({ ngZone }) {
+  public initialize(ngZone, ngModule) {
     if (ngZone._augury_instrumented_) {
       throw new Error('ngZone is already instrumented.');
     }

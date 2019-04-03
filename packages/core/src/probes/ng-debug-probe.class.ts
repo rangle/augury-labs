@@ -5,11 +5,11 @@ declare const ng;
 declare const getAllAngularRootElements;
 
 export class NgDebugProbe extends Probe {
-  private debugRoots: any[] = [];
+  private rootDebugElements: any[] = [];
   private rootComponent = null;
 
   public getComponentTree() {
-    return this.debugRoots.map(this.getComponentTreeNodesFromDebugElement.bind(this));
+    return this.getRootDebugElements().map(this.getComponentTreeNodesFromDebugElement.bind(this));
   }
 
   public getRootComponent() {
@@ -20,8 +20,12 @@ export class NgDebugProbe extends Probe {
     return this.rootComponent;
   }
 
-  public afterNgBootstrap() {
-    this.debugRoots = getAllAngularRootElements().map(ng.probe);
+  private getRootDebugElements() {
+    if (this.rootDebugElements.length === 0) {
+      this.rootDebugElements = getAllAngularRootElements().map(ng.probe);
+    }
+
+    return this.rootDebugElements;
   }
 
   private getComponentTreeNodesFromDebugElement(debugElement) {

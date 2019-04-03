@@ -5,15 +5,21 @@ import { defaultReactions } from '../reactions';
 import { AuguryBootstrapParameters } from './augury-bootstrap-parameters.interface';
 import { AuguryCore } from './augury-core';
 
-export function auguryBootstrap(parameters: AuguryBootstrapParameters): Promise<any> {
-  const auguryCore = new AuguryCore(
+export function auguryBootstrap({
+  platform,
+  ngModule,
+  NgZone,
+  plugins,
+}: AuguryBootstrapParameters): Promise<any> {
+  const ngZone = new NgZone({ enableLongStackTrace: true });
+
+  (window as any).augury = new AuguryCore(
     defaultProbes,
     defaultEnhancers,
     defaultReactions,
     defaultCommands,
-  );
+    plugins,
+  ).initialize(ngZone, ngModule);
 
-  (window as any).augury = auguryCore;
-
-  return auguryCore.bootstrap(parameters);
+  return platform().bootstrapModule(ngModule, { ngZone });
 }
