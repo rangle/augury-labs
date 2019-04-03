@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
 import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
@@ -28,7 +28,7 @@ function getComponentChangeDetections(componentInstances) {
   templateUrl: './change-detection-details.component.html',
   styleUrls: ['./change-detection-details.component.scss'],
 })
-export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
+export class ChangeDetectionDetailsComponent implements OnInit, OnDestroy {
   @Input()
   public segment: any;
 
@@ -40,7 +40,7 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
 
   constructor(private bridge: BridgeService) {}
 
-  public ngOnChanges(changes: SimpleChanges): void {
+  public ngOnInit(): void {
     this.subscription = this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
         this.componentChangeDetections = getComponentChangeDetections(

@@ -9,7 +9,7 @@ export class HistoryManager {
 
     this.elapsedEvents.push({
       ...processedEvent,
-      auguryHandlingCompletionPerformanceStamp: currentPerformanceStamp,
+      completedAtTimestamp: currentPerformanceStamp,
       auguryDrag: currentPerformanceStamp - processedEvent.creationAtPerformanceStamp,
     });
   }

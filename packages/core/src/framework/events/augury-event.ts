@@ -26,6 +26,6 @@ export interface ProcessedAuguryEvent extends AuguryEvent {
 }
 
 export interface ElapsedAuguryEvent extends ProcessedAuguryEvent {
-  auguryHandlingCompletionPerformanceStamp: number;
+  completedAtTimestamp: number;
   auguryDrag: number;
 }

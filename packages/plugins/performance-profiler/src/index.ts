@@ -43,7 +43,7 @@ export class PerformanceProfilerPlugin extends Plugin {
       this.performanceProfilerWindow.sendMessage({
         type: 'drag',
         start: lastElapsedEvent.creationAtPerformanceStamp,
-        finish: lastElapsedEvent.auguryHandlingCompletionPerformanceStamp,
+        finish: lastElapsedEvent.completedAtTimestamp,
       }),
     );
 
