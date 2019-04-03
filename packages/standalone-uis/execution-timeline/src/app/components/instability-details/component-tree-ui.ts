@@ -24,8 +24,8 @@ export class ComponentTreeUI {
   }
 
   private paint() {
-    if (!this.data) {
-      throw new Error('no data provided');
+    if (this.data.length === 0) {
+      return;
     }
 
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };

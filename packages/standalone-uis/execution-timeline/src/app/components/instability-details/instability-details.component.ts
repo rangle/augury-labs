@@ -21,8 +21,10 @@ function createHierarchyDataFromNodeArray(nodes = [] as any[]) {
   }));
 }
 
-function createHierarchyDataFromTree(tree = [] as any[]) {
-  return createHierarchyDataFromNodeArray(tree)[0];
+function createHierarchyDataFromTree(mergedComponentTree = [] as any[]) {
+  return mergedComponentTree.length > 0
+    ? createHierarchyDataFromNodeArray(mergedComponentTree)[0]
+    : [];
 }
 
 @Component({
@@ -57,8 +59,9 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
 
     this.subscription = this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
+        // @todo: mark new/removed nodes
         this.componentTreeUI.updateData(
-          createHierarchyDataFromTree(message.data.mergedComponentTree), // @todo: mark new/removed nodes
+          createHierarchyDataFromTree(message.data.mergedComponentTree),
         );
       }
     });

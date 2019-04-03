@@ -4,7 +4,6 @@ import {
   LastElapsedEventReducer,
   LastElapsedTaskReducer,
   Plugin,
-  SingleCDRunFull,
 } from '@augury/core';
 import { Reducer } from '@augury/core';
 import { AuguryBridgeRequest } from '@augury/core';
@@ -61,14 +60,12 @@ export class PerformanceProfilerPlugin extends Plugin {
     return this.run('createLiveChannel', { reducer }).channel;
   }
 
-  private scanHistory(reducer: Reducer) {
-    return this.run('scanHistory', { reducer }).result;
+  private scanHistory(startEventId: number, endEventId: number) {
+    return this.run('scanHistory', { startEventId, endEventId }).result;
   }
 
   private handleGetFullChangeDetectionRequest(request: AuguryBridgeRequest) {
-    const rawCdRunData = this.scanHistory(
-      new SingleCDRunFull(request.startEventId, request.endEventId),
-    );
+    const rawCdRunData = this.scanHistory(request.startEventId, request.endEventId);
 
     const lastComponentTree = rawTreeToComponentInstanceTree(rawCdRunData.lastComponentTree);
     const nextComponentTree = rawTreeToComponentInstanceTree(rawCdRunData.nextComponentTree);

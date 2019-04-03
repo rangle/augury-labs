@@ -2,7 +2,7 @@ import { LoadedEventEmitter, Subscribable } from '../event-emitters';
 import { ElapsedAuguryEvent, ProcessedAuguryEvent } from '../events';
 
 export class HistoryManager {
-  private elapsedEvents: ElapsedAuguryEvent[] = [];
+  public elapsedEvents: ElapsedAuguryEvent[] = [];
 
   public addEvent(processedEvent: ProcessedAuguryEvent) {
     const currentPerformanceStamp = performance.now();

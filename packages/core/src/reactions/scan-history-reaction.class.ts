@@ -9,21 +9,34 @@ export class ScanHistoryReaction extends Reaction {
 
   public doReact(context: ReactionContext): ReactionResult | undefined {
     if (context.event.name === 'request-history-scan') {
-      const { reducer, startFromEID, untilEID } = context.event.payload;
-
-      if (!reducer) {
-        return { success: false, errors: ['reducer not given'] };
-      }
-
-      const scanner = new Scanner(reducer, context.historyManager);
-
-      scanner.scan(context.historyManager.createSubscribable());
-
-      const lastResult = scanner.last();
+      const { startEventId, endEventId } = context.event.payload;
 
       return {
         success: true,
-        result: lastResult,
+        result: context.historyManager.elapsedEvents.reduce(
+          (result: any, event) => {
+            if (event.name === 'onStable') {
+              if (event.id < startEventId) {
+                result.lastComponentTree = event.payload.componentTree;
+              } else if (event.id >= endEventId && result.nextComponentTree.length === 0) {
+                result.nextComponentTree = event.payload.componentTree;
+              }
+            } else if (
+              event.name === 'component_lifecycle_hook_invoked' &&
+              event.id >= startEventId &&
+              event.id <= endEventId
+            ) {
+              result.lifecycleHooksTriggered.push(event);
+            }
+
+            return result;
+          },
+          {
+            lastComponentTree: [],
+            nextComponentTree: [],
+            lifecycleHooksTriggered: [],
+          },
+        ),
       };
     }
   }
