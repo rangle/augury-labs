@@ -1,4 +1,4 @@
 export interface AuguryEventSource {
-  type: 'action' | 'probe' | 'plugin';
+  type: 'probe';
   name: string;
 }
