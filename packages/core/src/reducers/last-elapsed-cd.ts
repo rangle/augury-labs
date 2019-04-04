@@ -45,10 +45,10 @@ export class LastElapsedCDReducer extends Reducer {
     if (prevCD && !nextCD) {
       return {
         result: {
-          startEID: prevCD.startEID,
-          endEID: nextEvent.id,
-          startPerformanceStamp: prevCD.startTime,
-          finishPerformanceStamp: nextEvent.creationAtPerformanceStamp,
+          startEventId: prevCD.startEventId,
+          startTimestamp: prevCD.startTimestamp,
+          endEventId: nextEvent.id,
+          endTimestamp: nextEvent.creationAtTimestamp,
           componentsChecked: updatedComponentsChecked,
           drag,
         },

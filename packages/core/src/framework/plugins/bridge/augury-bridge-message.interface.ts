@@ -1,8 +1,8 @@
 import { AuguryBridgeMessageType } from './augury-bridge-message-type.type';
 
 interface Event {
-  startPerformanceStamp: number;
-  finishPerformanceStamp: number;
+  startTimestamp: number;
+  endTimestamp: number;
   zone?: any;
 }
 

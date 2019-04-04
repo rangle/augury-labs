@@ -1,8 +1,8 @@
-import { CommandService } from '../commands';
+import { AuguryCore } from '../augury-core';
 import { Plugin } from './plugin.class';
 
 export class PluginManager {
-  constructor(private readonly commandService: CommandService, private readonly plugins: Plugin[]) {
+  constructor(private readonly plugins: Plugin[], private readonly augury: AuguryCore) {
     this.addPlugins(plugins);
   }
 
@@ -13,6 +13,6 @@ export class PluginManager {
   private addPlugin(plugin: Plugin) {
     this.plugins.push(plugin);
 
-    plugin.initialize(this.commandService);
+    plugin.initialize(this.augury);
   }
 }

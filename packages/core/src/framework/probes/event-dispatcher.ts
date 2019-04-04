@@ -1,10 +1,10 @@
 import { AuguryEvent } from '../events';
 
-import { SyncEventEmitter } from '../event-emitters';
+import { EventEmitter } from '../event-emitters';
 import { ProbeConstructor } from './probe-constructor.interface';
 import { Probe } from './probe.class';
 
-export class ProbeManager extends SyncEventEmitter<AuguryEvent> {
+export class EventDispatcher extends EventEmitter<AuguryEvent> {
   private readonly probes: Map<string, Probe>;
 
   constructor(probes: Probe[]) {

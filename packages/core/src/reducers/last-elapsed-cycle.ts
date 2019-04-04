@@ -40,11 +40,10 @@ export class LastElapsedCycleReducer extends Reducer {
           //        it means this reducer has to know at what point
           //        component tree is a part of the event payload.
           componentTree: nextEvent.payload.componentTree,
-
-          startEID: prevCycle.startEID,
-          startPerformanceStamp: prevCycle.startPerformanceStamp,
-          finishEID: nextEvent.id,
-          finishPerformanceStamp: nextEvent.creationAtPerformanceStamp, // @todo: not considering / measuring our own impact here.
+          startEventId: prevCycle.startEventId,
+          startTimestamp: prevCycle.startTimestamp,
+          endEventId: nextEvent.id,
+          endTimestamp: nextEvent.creationAtTimestamp, // @todo: not considering / measuring our own impact here.
           job: prevCycle.job,
           drag,
         },

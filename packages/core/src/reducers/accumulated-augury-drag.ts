@@ -13,6 +13,6 @@ export class AccumulatedAuguryDragReducer extends Reducer {
       return prevShallowState;
     }
 
-    return { result: prevResult + lastElapsedEvent.auguryDrag };
+    return { result: prevResult + lastElapsedEvent.getAuguryDrag() };
   }
 }

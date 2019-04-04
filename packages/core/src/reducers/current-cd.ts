@@ -19,8 +19,8 @@ export class CurrentCDReducer extends Reducer {
         if (nextEvent.payload.hook === 'ngDoCheck') {
           return {
             result: {
-              startEID: nextEvent.id,
-              startTime: nextEvent.creationAtPerformanceStamp,
+              startEventId: nextEvent.id,
+              startTimestamp: nextEvent.creationAtTimestamp,
             },
           };
         }

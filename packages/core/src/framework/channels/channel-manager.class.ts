@@ -1,19 +1,19 @@
 import { Scanner } from '../scanner';
-import { ChannelDelegate } from './channel-delegate.interface';
 import { Channel } from './channel.class';
 import { ScannerChannel } from './scanner-channel.class';
 
 export class ChannelManager {
-  private channels: Channel[] = [];
+  private channels: Array<Channel<any>> = [];
 
-  public createFromScanner(scanner: Scanner): ChannelDelegate {
-    const channel = new ScannerChannel(scanner);
+  public createScannerChannel(scanner: Scanner): Channel<any> {
+    const channel = new ScannerChannel<any>(scanner, this);
+
     this.channels.push(channel);
 
-    return channel.createDelegate(() => this.releaseDeadChannel(channel));
+    return channel;
   }
 
-  private releaseDeadChannel(channelToRelease: Channel) {
+  public releaseDeadChannel(channelToRelease: Channel<any>) {
     this.channels = this.channels.filter(channel => channel !== channelToRelease);
   }
 }

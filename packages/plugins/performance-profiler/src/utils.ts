@@ -1,3 +1,5 @@
+import { AuguryEvent } from '@augury/core';
+
 function merge(...objs) {
   return Object.assign({}, ...objs);
 }
@@ -78,20 +80,19 @@ export function mergeComponentTrees(tree1 = [] as any[], tree2 = [] as any[]) {
   return recursivelyMergeChildNodes(tree1, tree2);
 }
 
-export function groupLifecycleHooksByInstance(hookEvents) {
-  const entries = new Map();
-  hookEvents.forEach(hookEvent => {
-    const { creationAtPerformanceStamp, auguryDrag } = hookEvent;
-    const { hook, componentInstance } = hookEvent.payload;
+export function groupLifecycleHooksByInstance(events: AuguryEvent[]) {
+  const entries = new Map<string, any>();
+
+  events.forEach(event => {
+    const { hook, componentInstance } = event.payload;
 
     if (!entries.has(componentInstance)) {
       entries.set(componentInstance, {});
     }
 
-    const entry = entries.get(componentInstance);
-
-    entry[hook] = creationAtPerformanceStamp;
+    entries.get(componentInstance)[hook] = event.creationAtTimestamp;
   });
+
   return entries;
 }
 

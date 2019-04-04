@@ -1,20 +1,20 @@
 import { Channel } from './channel.class';
 
-import { SyncEventEmitter } from '../event-emitters';
+import { Subscription } from '../event-emitters';
 import { Scanner } from '../scanner';
+import { ChannelManager } from './channel-manager.class';
 
-export class ScannerChannel extends Channel {
-  public type = 'scanner';
+export class ScannerChannel<EventType> extends Channel<EventType> {
+  constructor(private readonly scanner: Scanner, private readonly manager: ChannelManager) {
+    super('scanner');
+  }
 
-  constructor(private scanner: Scanner) {
-    super();
+  public subscribe(handleEvent: (event: EventType) => void): Subscription {
+    return this.scanner.emitter.subscribe(handleEvent);
   }
 
   public shutdown() {
     this.scanner.stop();
-  }
-
-  public events(): SyncEventEmitter<any> {
-    return this.scanner.emitter;
+    this.manager.releaseDeadChannel(this);
   }
 }

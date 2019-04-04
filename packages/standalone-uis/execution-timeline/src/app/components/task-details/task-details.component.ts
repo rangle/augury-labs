@@ -8,7 +8,7 @@ import { round2 } from '../../util/misc-utils';
 })
 export class TaskDetailsComponent implements OnChanges {
   @Input()
-  public segment: any;
+  public segment;
 
   public runtimeInMilliseconds: number;
   public totalRuntimeInMilliseconds: number;
@@ -16,11 +16,11 @@ export class TaskDetailsComponent implements OnChanges {
   public targetType: string;
 
   public ngOnChanges(changes: SimpleChanges): void {
-    const totalTime = this.segment.finishPerformanceStamp - this.segment.startPerformanceStamp;
+    const totalTime = this.segment.endTimestamp - this.segment.startTimestamp;
 
     this.runtimeInMilliseconds = round2(totalTime - this.segment.drag);
     this.totalRuntimeInMilliseconds = round2(totalTime);
-    this.startTimeInMilliseconds = round2(this.segment.startPerformanceStamp);
+    this.startTimeInMilliseconds = round2(this.segment.startTimestamp);
     this.targetType = this.segment.task.target && this.segment.task.target.constructor.name;
   }
 }
