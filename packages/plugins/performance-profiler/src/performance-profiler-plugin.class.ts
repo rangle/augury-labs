@@ -43,7 +43,7 @@ export class PerformanceProfilerPlugin extends Plugin {
         }),
       );
 
-    this.bridge.listenToMessageRequests(request => {
+    this.bridge.listenToRequests(request => {
       switch (request.type) {
         case 'get_full_cd':
           this.handleGetFullChangeDetectionRequest(request);
