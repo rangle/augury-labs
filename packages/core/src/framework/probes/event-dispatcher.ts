@@ -23,7 +23,7 @@ export class EventDispatcher extends EventEmitter<AuguryEvent> {
 
   private initializeProbes(probes: Probe[]): Map<string, Probe> {
     return probes.reduce((probesMap, probe) => {
-      probe.setProbeManager(this);
+      probe.setEventDispatcher(this);
 
       probesMap.set(probe.constructor.name, probe);
 

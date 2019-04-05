@@ -21,7 +21,7 @@ __karma__.loaded = () => {
   // do nothing
 };
 
-// First, setProbeManager the Angular testing environment.
+// First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 // Then we find all the tests.
 const context = require.context('./', true, /\.spec\.ts$/);

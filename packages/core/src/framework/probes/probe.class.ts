@@ -2,18 +2,18 @@ import { AuguryEvent, AuguryEventSource } from '../events';
 import { EventDispatcher } from './event-dispatcher';
 
 export abstract class Probe {
-  private probeManager: EventDispatcher | null = null;
+  private eventDispatcher: EventDispatcher | null = null;
 
-  public setProbeManager(probeManager: EventDispatcher) {
-    this.probeManager = probeManager;
+  public setEventDispatcher(eventDispatcher: EventDispatcher) {
+    this.eventDispatcher = eventDispatcher;
   }
 
   public emit(eventName: string, eventPayload?: any) {
-    if (!this.probeManager) {
-      throw new ReferenceError('Probe Event Emitter has not been initialized.');
+    if (!this.eventDispatcher) {
+      throw new ReferenceError('Event Emitter has not been initialized.');
     }
 
-    this.probeManager.emit(new AuguryEvent(this.createEventSource(), eventName, eventPayload));
+    this.eventDispatcher.emit(new AuguryEvent(this.createEventSource(), eventName, eventPayload));
   }
 
   // @todo: how are we handling / exposing errors during attachment?
