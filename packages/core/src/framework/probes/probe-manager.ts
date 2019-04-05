@@ -4,7 +4,7 @@ import { EventEmitter } from '../event-emitters';
 import { ProbeConstructor } from './probe-constructor.interface';
 import { Probe } from './probe.class';
 
-export class EventDispatcher extends EventEmitter<AuguryEvent> {
+export class ProbeManager extends EventEmitter<AuguryEvent> {
   private readonly probes: Map<string, Probe>;
 
   constructor(probes: Probe[], ngZone, ngModule) {

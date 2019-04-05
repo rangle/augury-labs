@@ -1,11 +1,11 @@
 import { AuguryEvent, AuguryEventSource } from '../events';
-import { EventDispatcher } from './event-dispatcher';
+import { ProbeManager } from './probe-manager';
 
 export abstract class Probe {
-  private eventDispatcher: EventDispatcher | null = null;
+  private probeManager: ProbeManager | null = null;
 
-  public initialize(eventDispatcher: EventDispatcher, ngZone, ngModule) {
-    this.eventDispatcher = eventDispatcher;
+  public initialize(probeManager: ProbeManager, ngZone, ngModule) {
+    this.probeManager = probeManager;
 
     this.doInitialize(ngZone, ngModule);
   }
@@ -13,11 +13,11 @@ export abstract class Probe {
   public abstract doInitialize(ngZone, ngModule);
 
   public emit(eventName: string, eventPayload?: any) {
-    if (!this.eventDispatcher) {
+    if (!this.probeManager) {
       throw new ReferenceError('Event Emitter has not been initialized.');
     }
 
-    this.eventDispatcher.emit(new AuguryEvent(this.createEventSource(), eventName, eventPayload));
+    this.probeManager.emit(new AuguryEvent(this.createEventSource(), eventName, eventPayload));
   }
 
   private createEventSource(): AuguryEventSource {
