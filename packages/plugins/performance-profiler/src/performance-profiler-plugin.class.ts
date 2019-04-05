@@ -1,11 +1,11 @@
 import {
-  LastElapsedCDReducer,
+  LastElapsedChangeDetectionReducer,
   LastElapsedCycleReducer,
-  LastElapsedEventReducer,
   LastElapsedTaskReducer,
   Plugin,
 } from '@augury/core';
 import { AuguryBridgeRequest } from '@augury/core';
+import { EventDragInfoProjection } from '@augury/core';
 import { PerformanceProfilerController } from './performance-profiler-controller.class';
 import {
   deriveCheckTimePerInstance,
@@ -23,23 +23,31 @@ export class PerformanceProfilerPlugin extends Plugin {
   public doInitialize() {
     this.getAugury()
       .createLiveChannel(new LastElapsedTaskReducer())
-      .subscribe(lastElapsedTask => this.bridge.sendMessage({ type: 'task', lastElapsedTask }));
+      .subscribe(lastElapsedTask =>
+        this.bridge.sendMessage({ type: 'task', payload: lastElapsedTask }),
+      );
 
     this.getAugury()
       .createLiveChannel(new LastElapsedCycleReducer())
-      .subscribe(lastElapsedCD => this.bridge.sendMessage({ type: 'cd', lastElapsedCD }));
+      .subscribe(lastElapsedCycle =>
+        this.bridge.sendMessage({ type: 'cycle', payload: lastElapsedCycle }),
+      );
 
     this.getAugury()
-      .createLiveChannel(new LastElapsedCDReducer())
-      .subscribe(lastElapsedCycle => this.bridge.sendMessage({ type: 'cycle', lastElapsedCycle }));
+      .createLiveChannel(new LastElapsedChangeDetectionReducer())
+      .subscribe(lastElapsedChangeDetection =>
+        this.bridge.sendMessage({
+          type: 'cd',
+          payload: lastElapsedChangeDetection,
+        }),
+      );
 
     this.getAugury()
-      .createLiveChannel(new LastElapsedEventReducer())
-      .subscribe(lastElapsedEvent =>
+      .createChannel(new EventDragInfoProjection())
+      .subscribe(eventDragInfo =>
         this.bridge.sendMessage({
           type: 'drag',
-          start: lastElapsedEvent.creationAtTimestamp,
-          finish: lastElapsedEvent.completedAtTimestamp,
+          payload: eventDragInfo,
         }),
       );
 
@@ -72,7 +80,7 @@ export class PerformanceProfilerPlugin extends Plugin {
 
     this.bridge.sendMessage({
       type: 'get_full_cd:response',
-      data: {
+      payload: {
         lastComponentTree,
         nextComponentTree,
         mergedComponentTree,

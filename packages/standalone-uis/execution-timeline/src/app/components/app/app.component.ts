@@ -1,6 +1,6 @@
 import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 
-import { isDragMessage, isTimelineMessage } from '@augury/core';
+import { EventDragInfo, isDragMessage, isTimelineMessage } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { mapTimelineMessageToSegment } from '../../types/segment/segment.functions';
 import { Segment } from '../../types/segment/segment.interface';
@@ -13,8 +13,8 @@ import { createDefaultTimelineOptions } from '../../types/timeline-options/timel
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnDestroy {
-  public timelineSegments: Segment[] = [];
-  public dragSegments: Segment[] = [];
+  public timelineSegments: Array<Segment<any>> = [];
+  public dragSegments: Array<Segment<EventDragInfo>> = [];
   public selectedSegment = null;
   public recording = true;
   public timelineOptions = createDefaultTimelineOptions();

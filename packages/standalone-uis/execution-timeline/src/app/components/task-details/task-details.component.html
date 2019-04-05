@@ -5,13 +5,13 @@
       {{ runtimeInMilliseconds }}ms
     </ag-sub-section>
     <ag-sub-section label="Zone">
-      {{ segment.zone }}
+      {{ lastElapsedTask.zone }}
     </ag-sub-section>
     <ag-sub-section label="Target Type">
       {{ targetType }}
     </ag-sub-section>
     <ag-sub-section label="Source">
-      {{ segment.task.source }}
+      {{ lastElapsedTask.task.source }}
     </ag-sub-section>
     <ag-sub-section label="Runtime">
       {{ totalRuntimeInMilliseconds }}

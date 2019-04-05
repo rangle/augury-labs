@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
+import { LastElapsedChangeDetection } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
 import { FlameGraphNode } from '../../types/flame-graph-node/flame-graph-node.interface';
@@ -30,7 +31,7 @@ function getComponentChangeDetections(componentInstances) {
 })
 export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
   @Input()
-  public segment: any;
+  public lastElapsedChangeDetection: LastElapsedChangeDetection;
 
   public componentChangeDetections = null;
   public rootFlameGraphNode: FlameGraphNode = null;
@@ -41,31 +42,33 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
   constructor(private bridge: BridgeService) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.segment.firstChange) {
+    if (!changes.lastElapsedChangeDetection.firstChange) {
       this.subscription.unsubscribe();
     }
 
     this.subscription = this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
         this.componentChangeDetections = getComponentChangeDetections(
-          message.data.checkTimePerInstance,
+          message.payload.checkTimePerInstance,
         );
 
         this.rootFlameGraphNode = mapComponentTreeToFlameGraphTree(
-          message.data.mergedComponentTree,
-          message.data.checkTimePerInstance,
+          message.payload.mergedComponentTree,
+          message.payload.checkTimePerInstance,
         )[0];
       }
     });
 
     this.bridge.send({
       type: 'get_full_cd',
-      startEventId: this.segment.startEventId,
-      endEventId: this.segment.endEventId,
+      startEventId: this.lastElapsedChangeDetection.startEventId,
+      endEventId: this.lastElapsedChangeDetection.endEventId,
     });
 
     this.runtimeInMilliseconds = round2(
-      this.segment.endTimestamp - this.segment.startTimestamp - this.segment.drag,
+      this.lastElapsedChangeDetection.endTimestamp -
+        this.lastElapsedChangeDetection.startTimestamp -
+        this.lastElapsedChangeDetection.drag,
     );
   }
 

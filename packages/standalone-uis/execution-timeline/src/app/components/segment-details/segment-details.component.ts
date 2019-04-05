@@ -8,5 +8,5 @@ import { Segment } from '../../types/segment/segment.interface';
 })
 export class SegmentDetailsComponent {
   @Input()
-  public segment: Segment;
+  public segment: Segment<any>;
 }

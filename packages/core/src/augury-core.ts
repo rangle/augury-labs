@@ -3,7 +3,7 @@ import { HistoryManager } from './history';
 import { PluginManager } from './plugins';
 import { Plugin } from './plugins';
 import { Probe, ProbeManager } from './probes';
-import { Reducer } from './reducers';
+import { AuguryEventProjection, Reducer } from './projections';
 import { Scanner } from './scanner';
 
 export class AuguryCore {
@@ -17,12 +17,7 @@ export class AuguryCore {
     this.channelManager = new ChannelManager();
     this.historyManager = new HistoryManager();
     this.pluginManager = new PluginManager(plugins, this);
-
-    this.probeManager.subscribe(event => {
-      event.markComplete();
-
-      this.historyManager.addEvent(event);
-    });
+    this.probeManager.subscribe(event => this.historyManager.addEvent(event));
   }
 
   public createLiveChannel(reducer: Reducer) {
@@ -30,5 +25,9 @@ export class AuguryCore {
     scanner.scan(this.probeManager);
 
     return this.channelManager.createScannerChannel(scanner);
+  }
+
+  public createChannel(projection: AuguryEventProjection<any>) {
+    return this.channelManager.createProbeChannel(this.probeManager, projection);
   }
 }

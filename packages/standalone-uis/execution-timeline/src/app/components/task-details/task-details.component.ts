@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
+import { LastElapsedTask } from '@augury/core';
 import { round2 } from '../../util/misc-utils';
 
 @Component({
@@ -8,7 +9,7 @@ import { round2 } from '../../util/misc-utils';
 })
 export class TaskDetailsComponent implements OnChanges {
   @Input()
-  public segment;
+  public lastElapsedTask: LastElapsedTask;
 
   public runtimeInMilliseconds: number;
   public totalRuntimeInMilliseconds: number;
@@ -16,11 +17,12 @@ export class TaskDetailsComponent implements OnChanges {
   public targetType: string;
 
   public ngOnChanges(changes: SimpleChanges): void {
-    const totalTime = this.segment.endTimestamp - this.segment.startTimestamp;
+    const totalTime = this.lastElapsedTask.endTimestamp - this.lastElapsedTask.startTimestamp;
 
-    this.runtimeInMilliseconds = round2(totalTime - this.segment.drag);
+    this.runtimeInMilliseconds = round2(totalTime - this.lastElapsedTask.drag);
     this.totalRuntimeInMilliseconds = round2(totalTime);
-    this.startTimeInMilliseconds = round2(this.segment.startTimestamp);
-    this.targetType = this.segment.task.target && this.segment.task.target.constructor.name;
+    this.startTimeInMilliseconds = round2(this.lastElapsedTask.startTimestamp);
+    this.targetType =
+      this.lastElapsedTask.task.target && this.lastElapsedTask.task.target.constructor.name;
   }
 }

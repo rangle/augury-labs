@@ -39,7 +39,7 @@ export class ModuleMethodsProbe extends Probe {
     ) {
       const original = Class.prototype[methodName];
       Class.prototype[methodName] = function(...args) {
-        probe.emit('method_invoked', {
+        probe.emit('method_invoked', () => ({
           perfstamp: performance.now(),
           methodName,
           classType,
@@ -47,11 +47,11 @@ export class ModuleMethodsProbe extends Probe {
           instance: this,
           args,
           module: Class.__m,
-        });
+        }));
 
         const retVal = original.apply(this, args);
 
-        probe.emit('method_completed', {
+        probe.emit('method_completed', () => ({
           perfstamp: performance.now(),
           hook: methodName,
           classType,
@@ -60,7 +60,7 @@ export class ModuleMethodsProbe extends Probe {
           args,
           retVal,
           module: Class.__m,
-        });
+        }));
 
         return retVal;
       };

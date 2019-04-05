@@ -1,6 +1,6 @@
-import { Reducer } from '../reducer.class';
-import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag';
-import { CurrentCDReducer } from './current-cd';
+import { Reducer } from '../../reducer.class';
+import { AccumulatedAuguryDragReducer } from '../accumulated-augury-drag';
+import { CurrentCDReducer } from '../current-cd';
 
 const initState = () => ({
   result: undefined,
@@ -9,7 +9,7 @@ const initState = () => ({
   },
 });
 
-export class LastElapsedCDReducer extends Reducer {
+export class LastElapsedChangeDetectionReducer extends Reducer {
   public dependencies = {
     currentCD: new CurrentCDReducer(),
     accumulatedAuguryDrag: new AccumulatedAuguryDragReducer(),

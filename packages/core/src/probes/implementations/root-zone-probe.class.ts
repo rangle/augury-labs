@@ -14,12 +14,12 @@ export class RootZoneProbe extends Probe {
 
     rootZone._zoneDelegate = new ZoneDelegate(rootZone, rootZone._zoneDelegate, {
       onInvokeTask(delegate, current, target, task, applyThis, applyArgs) {
-        probe.emit('root_task_executing', { task });
+        probe.emit('root_task_executing', () => ({ task }));
 
         try {
           return delegate.invokeTask(target, task, applyThis, applyArgs);
         } finally {
-          probe.emit('root_task_completed', { task });
+          probe.emit('root_task_completed', () => ({ task }));
         }
       },
     });

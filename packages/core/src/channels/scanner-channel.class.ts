@@ -5,8 +5,8 @@ import { Scanner } from '../scanner';
 import { ChannelManager } from './channel-manager.class';
 
 export class ScannerChannel<EventType> extends Channel<EventType> {
-  constructor(private readonly scanner: Scanner, private readonly manager: ChannelManager) {
-    super('scanner');
+  constructor(manager: ChannelManager, private readonly scanner: Scanner) {
+    super(manager);
   }
 
   public subscribe(handleEvent: (event: EventType) => void): Subscription {
@@ -14,7 +14,8 @@ export class ScannerChannel<EventType> extends Channel<EventType> {
   }
 
   public shutdown() {
+    super.shutdown();
+
     this.scanner.stop();
-    this.manager.releaseDeadChannel(this);
   }
 }

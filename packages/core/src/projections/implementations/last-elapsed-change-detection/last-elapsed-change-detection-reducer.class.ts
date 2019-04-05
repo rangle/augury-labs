@@ -1,7 +1,7 @@
-import { Reducer } from '../reducer.class';
-import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag';
-import { CurrentCDReducer } from './current-cd';
-import { CurrentCycleReducer } from './current-cycle';
+import { Reducer } from '../../reducer.class';
+import { AccumulatedAuguryDragReducer } from '../accumulated-augury-drag';
+import { CurrentCDReducer } from '../current-cd';
+import { CurrentCycleReducer } from '../current-cycle';
 
 const INIT_STATE = {
   result: undefined,

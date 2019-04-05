@@ -9,6 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import { LastElapsedCycle } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { round2 } from '../../util/misc-utils';
 import { ComponentTreeUI } from './component-tree-ui';
@@ -34,7 +35,7 @@ function createHierarchyDataFromTree(mergedComponentTree = [] as any[]) {
 })
 export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
   @Input()
-  public segment: any;
+  public lastElapsedCycle: LastElapsedCycle;
 
   @ViewChild('componentTreeSvg')
   public componentTreeSvg: ElementRef;
@@ -50,14 +51,16 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.runtimeInMilliseconds = round2(
-      this.segment.endTimestamp - this.segment.startTimestamp - this.segment.drag,
+      this.lastElapsedCycle.endTimestamp -
+        this.lastElapsedCycle.startTimestamp -
+        this.lastElapsedCycle.drag,
     );
-    this.dragInMilliseconds = round2(this.segment.drag);
-    this.startTimeInMilliseconds = round2(this.segment.startTimestamp);
+    this.dragInMilliseconds = round2(this.lastElapsedCycle.drag);
+    this.startTimeInMilliseconds = round2(this.lastElapsedCycle.startTimestamp);
 
     this.componentTreeUI = new ComponentTreeUI(this.zone, this.componentTreeSvg.nativeElement);
 
-    if (!changes.segment.firstChange) {
+    if (!changes.lastElapsedCycle.firstChange) {
       this.subscription.unsubscribe();
     }
 
@@ -65,7 +68,7 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
       if (message.type === 'get_full_cd:response') {
         // @todo: mark new/removed nodes
         this.componentTreeUI.updateData(
-          createHierarchyDataFromTree(message.data.mergedComponentTree),
+          createHierarchyDataFromTree(message.payload.mergedComponentTree),
         );
       }
     });
@@ -74,8 +77,8 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
     //        full CD reducer should use before/after component tree reducer
     this.bridgeService.send({
       type: 'get_full_cd',
-      startEventId: this.segment.startEventId + 10, // @todo: hack because of above ^
-      endEventId: this.segment.endEventId - 10,
+      startEventId: this.lastElapsedCycle.startEventId + 10, // @todo: hack because of above ^
+      endEventId: this.lastElapsedCycle.endEventId - 10,
     });
   }
 

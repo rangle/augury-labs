@@ -1,4 +1,4 @@
-import { LastElapsedCDReducer, Plugin } from '@augury/core';
+import { LastElapsedChangeDetectionReducer, Plugin } from '@augury/core';
 
 declare const window;
 
@@ -10,7 +10,7 @@ export class UnitTesterPlugin extends Plugin {
     let cdRuns: any = [];
 
     window.auguryUT.startMonitoringChangeDetection = () => {
-      cdChannel = this.getAugury().createLiveChannel(new LastElapsedCDReducer());
+      cdChannel = this.getAugury().createLiveChannel(new LastElapsedChangeDetectionReducer());
       cdChannel.subscribe(lastElapsedCD => {
         cdRuns.push(lastElapsedCD);
       });

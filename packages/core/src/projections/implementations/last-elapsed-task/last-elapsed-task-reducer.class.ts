@@ -1,7 +1,7 @@
-import { Reducer } from '../reducer.class';
-import { AccumulatedAuguryDragReducer } from './accumulated-augury-drag';
-import { CurrentNgZoneTaskReducer } from './current-ng-zone-task';
-import { CurrentRootZoneTaskReducer } from './current-root-zone-task';
+import { Reducer } from '../../reducer.class';
+import { AccumulatedAuguryDragReducer } from '../accumulated-augury-drag';
+import { CurrentNgZoneTaskReducer } from '../current-ng-zone-task';
+import { CurrentRootZoneTaskReducer } from '../current-root-zone-task';
 
 const INIT_STATE = {
   result: undefined,

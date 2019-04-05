@@ -37,13 +37,13 @@ export class ComponentHooksProbe extends Probe {
         const original = component.prototype[name];
 
         component.prototype[name] = function(...args) {
-          probe.emit('component_lifecycle_hook_invoked', {
+          probe.emit('component_lifecycle_hook_invoked', () => ({
             hook: name,
             componentType: component,
             componentInstance: this,
             rootComponentInstance: getRootComponentInstance(),
             args,
-          });
+          }));
 
           if (original) {
             original.apply(this, args);

@@ -1,7 +1,7 @@
 import { EventEmitter, Subscribable } from '../event-emitters';
 import { AuguryEvent } from '../events';
 import { HistoryManager } from '../history';
-import { Reducer } from '../reducers';
+import { Reducer } from '../projections';
 
 export class Scanner {
   // @todo: types, how do we get the reducer types in here?
