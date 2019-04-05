@@ -1,5 +1,6 @@
-export { auguryBootstrap, AuguryCore, AuguryEvent } from './framework';
-export * from './framework/plugins';
-export { Reducer } from './framework/reducers';
+export { auguryBootstrap } from './augury-bootstrap.function';
+export { AuguryCore } from './augury-core';
+export { AuguryEvent } from './events';
+export * from './event-emitters';
 export * from './reducers';
-export * from './framework/event-emitters';
+export * from './plugins';
