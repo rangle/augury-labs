@@ -10,7 +10,7 @@ export function auguryBootstrap({
 }: AuguryBootstrapParameters): Promise<any> {
   const ngZone = new NgZone({ enableLongStackTrace: true });
 
-  (window as any).augury = new AuguryCore(defaultProbes, plugins).initialize(ngZone, ngModule);
+  (window as any).augury = new AuguryCore(defaultProbes, plugins, ngZone, ngModule);
 
   return platform().bootstrapModule(ngModule, { ngZone });
 }

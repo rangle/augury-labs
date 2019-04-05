@@ -4,7 +4,7 @@ import { getComponentTree } from '../framework/utils';
 export class NgZoneProbe extends Probe {
   private ngZone;
 
-  public initialize(ngZone, ngModule) {
+  public doInitialize(ngZone, ngModule) {
     if (ngZone._augury_instrumented_) {
       throw new Error('ngZone is already instrumented.');
     }

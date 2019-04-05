@@ -15,7 +15,7 @@ export class ModuleMethodsProbe extends Probe {
   // target
   private ngModule;
 
-  public initialize(ngZone, ngModule) {
+  public doInitialize(ngZone, ngModule) {
     this.ngModule = ngModule;
 
     function getAllRecursively(getAllFromModule: (module) => any[], module: any) {

@@ -7,13 +7,13 @@ import { Reducer } from './reducers';
 import { Scanner } from './scanner';
 
 export class AuguryCore {
-  public readonly dispatcher: EventDispatcher;
-  public readonly channelManager: ChannelManager;
   public readonly historyManager: HistoryManager;
+  private readonly dispatcher: EventDispatcher;
+  private readonly channelManager: ChannelManager;
   private readonly pluginManager: PluginManager;
 
-  constructor(probes: Probe[], plugins: Plugin[]) {
-    this.dispatcher = new EventDispatcher(probes);
+  constructor(probes: Probe[], plugins: Plugin[], ngZone, ngModule) {
+    this.dispatcher = new EventDispatcher(probes, ngZone, ngModule);
     this.channelManager = new ChannelManager();
     this.historyManager = new HistoryManager();
     this.pluginManager = new PluginManager(plugins, this);
@@ -23,12 +23,6 @@ export class AuguryCore {
 
       this.historyManager.addEvent(event);
     });
-  }
-
-  public initialize(ngZone, ngModule) {
-    this.dispatcher.initialize(ngZone, ngModule);
-
-    return this;
   }
 
   public createLiveChannel(reducer: Reducer) {

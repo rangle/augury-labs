@@ -7,23 +7,19 @@ import { Probe } from './probe.class';
 export class EventDispatcher extends EventEmitter<AuguryEvent> {
   private readonly probes: Map<string, Probe>;
 
-  constructor(probes: Probe[]) {
+  constructor(probes: Probe[], ngZone, ngModule) {
     super();
 
-    this.probes = this.initializeProbes(probes);
+    this.probes = this.initializeProbes(probes, ngZone, ngModule);
   }
 
   public get(constructor: ProbeConstructor): Probe | undefined {
     return this.probes.get(constructor.name);
   }
 
-  public initialize(ngZone, ngModule) {
-    this.probes.forEach(probe => probe.initialize && probe.initialize(ngZone, ngModule));
-  }
-
-  private initializeProbes(probes: Probe[]): Map<string, Probe> {
+  private initializeProbes(probes: Probe[], ngZone, ngModule): Map<string, Probe> {
     return probes.reduce((probesMap, probe) => {
-      probe.setEventDispatcher(this);
+      probe.initialize(this, ngZone, ngModule);
 
       probesMap.set(probe.constructor.name, probe);
 

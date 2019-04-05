@@ -4,9 +4,13 @@ import { EventDispatcher } from './event-dispatcher';
 export abstract class Probe {
   private eventDispatcher: EventDispatcher | null = null;
 
-  public setEventDispatcher(eventDispatcher: EventDispatcher) {
+  public initialize(eventDispatcher: EventDispatcher, ngZone, ngModule) {
     this.eventDispatcher = eventDispatcher;
+
+    this.doInitialize(ngZone, ngModule);
   }
+
+  public abstract doInitialize(ngZone, ngModule);
 
   public emit(eventName: string, eventPayload?: any) {
     if (!this.eventDispatcher) {
@@ -14,11 +18,6 @@ export abstract class Probe {
     }
 
     this.eventDispatcher.emit(new AuguryEvent(this.createEventSource(), eventName, eventPayload));
-  }
-
-  // @todo: how are we handling / exposing errors during attachment?
-  public initialize(ngZone, ngModule) {
-    // do nothing
   }
 
   private createEventSource(): AuguryEventSource {

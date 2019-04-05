@@ -16,7 +16,7 @@ export const HookNames = [
 export class ComponentHooksProbe extends Probe {
   private ngModule;
 
-  public initialize(ngZone, ngModule) {
+  public doInitialize(ngZone, ngModule) {
     this.ngModule = ngModule;
     const probe = this;
 
