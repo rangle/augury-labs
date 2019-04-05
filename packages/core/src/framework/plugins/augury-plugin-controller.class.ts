@@ -1,24 +1,13 @@
-import { Subscription } from '../event-emitters';
 import { AuguryPluginWindow } from './augury-plugin-window.interface';
-import { AuguryBridge, AuguryBridgeMessage, AuguryBridgeRequest } from './bridge';
+import { AuguryBridge } from './bridge';
 
 export class AuguryPluginController {
   private readonly window: AuguryPluginWindow;
   private readonly onUnload: () => void;
 
-  constructor(protected name: string) {
+  constructor(protected readonly name: string, private readonly bridge: AuguryBridge) {
     this.onUnload = this.kill.bind(this);
     this.window = this.initializeWindow();
-  }
-
-  public sendMessage(message: AuguryBridgeMessage) {
-    this.window.bridge.in.emit(message);
-  }
-
-  public listenToMessageRequests(
-    handleRequest: (request: AuguryBridgeRequest) => void,
-  ): Subscription {
-    return this.window.bridge.out.subscribe(handleRequest);
   }
 
   protected writeHtml(html) {
@@ -43,7 +32,7 @@ export class AuguryPluginController {
 
     pluginWindow.moveTo(0, 0);
     pluginWindow.resizeTo(screen.width, screen.height);
-    pluginWindow.bridge = new AuguryBridge();
+    pluginWindow.bridge = this.bridge;
 
     window.addEventListener('unload', this.onUnload);
 

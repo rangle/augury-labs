@@ -1,4 +1,4 @@
-import { Probe } from '../framework/probes/probe.class';
+import { Probe } from '../framework/probes';
 import * as helpers from './shared-helpers/ng-module';
 
 export class ModuleMethodsProbe extends Probe {
@@ -15,7 +15,7 @@ export class ModuleMethodsProbe extends Probe {
   // target
   private ngModule;
 
-  public initialize(ngZone, ngModule) {
+  public doInitialize(ngZone, ngModule) {
     this.ngModule = ngModule;
 
     function getAllRecursively(getAllFromModule: (module) => any[], module: any) {

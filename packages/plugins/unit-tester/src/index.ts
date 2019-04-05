@@ -10,22 +10,17 @@ export class UnitTesterPlugin extends Plugin {
     let cdRuns: any = [];
 
     window.auguryUT.startMonitoringChangeDetection = () => {
-      cdChannel = this.run('createLiveChannel', {
-        reducer: new LastElapsedCDReducer(),
-      }).channel;
-
-      cdChannel.events.subscribe(lastElapsedCD => {
+      cdChannel = this.getAugury().createLiveChannel(new LastElapsedCDReducer());
+      cdChannel.subscribe(lastElapsedCD => {
         cdRuns.push(lastElapsedCD);
       });
     };
 
     window.auguryUT.finishMonitoringChangeDetection = () => {
-      console.log(cdRuns);
-
       const result = {
         cdRuns: cdRuns.map(cdRun => ({
           // @todo: rename drag to auguryDrag
-          runtime: cdRun.finishPerformanceStamp - cdRun.startPerformanceStamp - cdRun.drag,
+          runtime: cdRun.endTimestamp - cdRun.startTimestamp - cdRun.drag,
         })),
       };
 

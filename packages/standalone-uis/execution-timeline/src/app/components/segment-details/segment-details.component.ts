@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Segment } from '../../types/segment/segment.interface';
 
 @Component({
   selector: 'ag-segment-details',
@@ -7,5 +8,5 @@ import { Component, Input } from '@angular/core';
 })
 export class SegmentDetailsComponent {
   @Input()
-  public segment;
+  public segment: Segment;
 }

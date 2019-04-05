@@ -16,8 +16,8 @@ export class CurrentNgZoneTaskReducer extends Reducer {
       return {
         result: {
           task: nextEvent.payload.task,
-          startEID: nextEvent.id,
-          startPerfStamp: nextEvent.creationAtPerformanceStamp,
+          startEventId: nextEvent.id,
+          startTimestamp: nextEvent.creationAtTimestamp,
         },
       };
     }

@@ -1,6 +1,6 @@
 import { DeepState, DependencyResults, DependencyStates, ShallowState } from './state';
 
-import { AuguryEvent, ElapsedAuguryEvent } from '../events';
+import { AuguryEvent } from '../events';
 import { merge, objToPairs, shallowClone } from '../utils';
 
 // @todo: these types
@@ -52,7 +52,7 @@ export abstract class Reducer {
   public deriveState(
     prevState: DeepState = DEEP_INIT,
     nextEvent: AuguryEvent,
-    lastElapsedAgEvent?: ElapsedAuguryEvent,
+    lastElapsedAgEvent?: AuguryEvent,
   ) {
     const nextDepState = this.deriveDepState(prevState.deps, nextEvent, lastElapsedAgEvent);
 
@@ -82,7 +82,7 @@ export abstract class Reducer {
   private deriveDepState(
     prevDepState: DependencyStates = {},
     nextAgEvent: AuguryEvent,
-    lastElapsedAgEvent?: ElapsedAuguryEvent,
+    lastElapsedAgEvent?: AuguryEvent,
   ): DependencyStates {
     return objToPairs(this.dependencies)
       .map(({ k: name, v: reducer }) => ({

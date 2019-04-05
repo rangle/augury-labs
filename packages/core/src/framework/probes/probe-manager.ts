@@ -1,29 +1,25 @@
 import { AuguryEvent } from '../events';
 
-import { SyncEventEmitter } from '../event-emitters';
+import { EventEmitter } from '../event-emitters';
 import { ProbeConstructor } from './probe-constructor.interface';
 import { Probe } from './probe.class';
 
-export class ProbeManager extends SyncEventEmitter<AuguryEvent> {
+export class ProbeManager extends EventEmitter<AuguryEvent> {
   private readonly probes: Map<string, Probe>;
 
-  constructor(probes: Probe[]) {
+  constructor(probes: Probe[], ngZone, ngModule) {
     super();
 
-    this.probes = this.initializeProbes(probes);
+    this.probes = this.initializeProbes(probes, ngZone, ngModule);
   }
 
   public get(constructor: ProbeConstructor): Probe | undefined {
     return this.probes.get(constructor.name);
   }
 
-  public initialize(ngZone, ngModule) {
-    this.probes.forEach(probe => probe.initialize && probe.initialize(ngZone, ngModule));
-  }
-
-  private initializeProbes(probes: Probe[]): Map<string, Probe> {
+  private initializeProbes(probes: Probe[], ngZone, ngModule): Map<string, Probe> {
     return probes.reduce((probesMap, probe) => {
-      probe.setProbeManager(this);
+      probe.initialize(this, ngZone, ngModule);
 
       probesMap.set(probe.constructor.name, probe);
 

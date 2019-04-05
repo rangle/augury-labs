@@ -1,40 +1,52 @@
-import { LoadedEventEmitter, Subscribable } from '../event-emitters';
-import { ElapsedAuguryEvent, ProcessedAuguryEvent } from '../events';
+import { AuguryEvent } from '../events';
 
 export class HistoryManager {
-  public elapsedEvents: ElapsedAuguryEvent[] = [];
+  public elapsedEvents: AuguryEvent[] = [];
 
-  public addEvent(processedEvent: ProcessedAuguryEvent) {
-    const currentPerformanceStamp = performance.now();
-
-    this.elapsedEvents.push({
-      ...processedEvent,
-      completedAtTimestamp: currentPerformanceStamp,
-      auguryDrag: currentPerformanceStamp - processedEvent.creationAtPerformanceStamp,
-    });
+  public addEvent(event: AuguryEvent) {
+    this.elapsedEvents.push(event);
   }
 
   public clear() {
     this.elapsedEvents = [];
   }
 
-  // @todo: ensure startEventId and endEventId are valid
-  public getTotalAuguryDrag(startEventId: number, endEventId: number) {
+  public scan(startEventId: number, endEventId: number) {
+    return this.elapsedEvents.reduce(
+      (result: any, event) => {
+        if (event.name === 'onStable') {
+          if (event.id < startEventId) {
+            result.lastComponentTree = event.payload.componentTree;
+          } else if (event.id >= endEventId && result.nextComponentTree.length === 0) {
+            result.nextComponentTree = event.payload.componentTree;
+          }
+        } else if (
+          event.name === 'component_lifecycle_hook_invoked' &&
+          event.isIdInRange(startEventId, endEventId)
+        ) {
+          result.lifecycleHooksTriggered.push(event);
+        }
+
+        return result;
+      },
+      {
+        lastComponentTree: [],
+        nextComponentTree: [],
+        lifecycleHooksTriggered: [],
+      },
+    );
+  }
+
+  public getTotalAuguryDrag(startEventId: number, endEventId: number): number {
     return this.elapsedEvents.reduce(
       (totalDrag, elapsedEvent) =>
-        startEventId <= elapsedEvent.id && endEventId >= elapsedEvent.id
-          ? totalDrag + elapsedEvent.auguryDrag
-          : totalDrag,
+        totalDrag +
+        (elapsedEvent.isIdInRange(startEventId, endEventId) ? elapsedEvent.getAuguryDrag() : 0),
       0,
     );
   }
 
-  public getLastElapsedEvent(): ElapsedAuguryEvent {
+  public getLastElapsedEvent(): AuguryEvent {
     return this.elapsedEvents[this.elapsedEvents.length - 1];
-  }
-
-  // @todo: startEventId / endEventId arguments
-  public createSubscribable(): Subscribable<ElapsedAuguryEvent> {
-    return new LoadedEventEmitter<ElapsedAuguryEvent>(this.elapsedEvents);
   }
 }

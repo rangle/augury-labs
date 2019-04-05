@@ -1,11 +1,11 @@
-import { Subscribable, SyncEventEmitter } from '../event-emitters';
+import { EventEmitter, Subscribable } from '../event-emitters';
 import { AuguryEvent } from '../events';
 import { HistoryManager } from '../history';
 import { Reducer } from '../reducers';
 
 export class Scanner {
   // @todo: types, how do we get the reducer types in here?
-  public emitter = new SyncEventEmitter<any>();
+  public emitter = new EventEmitter<any>();
 
   private subscription;
   private lastReducerState;

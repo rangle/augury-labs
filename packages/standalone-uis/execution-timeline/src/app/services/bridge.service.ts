@@ -11,10 +11,10 @@ export class BridgeService {
   constructor(private ngZone: NgZone) {}
 
   public subscribe(callback: (message: AuguryBridgeMessage) => void) {
-    return bridge.in.subscribe(message => this.ngZone.run(() => callback(message)));
+    return bridge.listenToMessages(message => this.ngZone.run(() => callback(message)));
   }
 
   public send(request: AuguryBridgeRequest) {
-    bridge.out.emit(request);
+    bridge.sendRequest(request);
   }
 }

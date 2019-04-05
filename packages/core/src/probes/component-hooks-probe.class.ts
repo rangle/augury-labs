@@ -1,4 +1,5 @@
 import { Probe } from '../framework/probes';
+import { getRootComponentInstance } from '../framework/utils';
 import * as ngModuleHelpers from './shared-helpers/ng-module';
 
 export const HookNames = [
@@ -13,10 +14,9 @@ export const HookNames = [
 ];
 
 export class ComponentHooksProbe extends Probe {
-  // target
   private ngModule;
 
-  public initialize(ngZone, ngModule) {
+  public doInitialize(ngZone, ngModule) {
     this.ngModule = ngModule;
     const probe = this;
 
@@ -41,6 +41,7 @@ export class ComponentHooksProbe extends Probe {
             hook: name,
             componentType: component,
             componentInstance: this,
+            rootComponentInstance: getRootComponentInstance(),
             args,
           });
 

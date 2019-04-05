@@ -26,8 +26,8 @@ export class CurrentCycleReducer extends Reducer {
     if ((prevIsStable || prevIsStable === undefined) && !nextIsStable) {
       return {
         result: {
-          startEID: nextEvent.id,
-          startPerformanceStamp: nextEvent.creationAtPerformanceStamp,
+          startEventId: nextEvent.id,
+          startTimestamp: nextEvent.creationAtTimestamp,
           job: nextTask,
         },
       };

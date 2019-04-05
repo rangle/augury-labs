@@ -7,24 +7,24 @@ export function mapTimelineMessageToSegment(message: AuguryBridgeMessage): Segme
       return {
         type: message.lastElapsedTask.zone === 'ng' ? 'child-zone-task' : 'root-zone-task',
         originalMessage: message,
-        start: message.lastElapsedTask.startPerformanceStamp,
-        end: message.lastElapsedTask.finishPerformanceStamp,
+        start: message.lastElapsedTask.startTimestamp,
+        end: message.lastElapsedTask.endTimestamp,
         row: 'zone task',
       };
     case 'cycle':
       return {
         type: 'instability',
         originalMessage: message,
-        start: message.lastElapsedCycle.startPerformanceStamp,
-        end: message.lastElapsedCycle.finishPerformanceStamp,
+        start: message.lastElapsedCycle.startTimestamp,
+        end: message.lastElapsedCycle.endTimestamp,
         row: 'angular instability',
       };
     case 'cd':
       return {
         type: 'change-detection',
         originalMessage: message,
-        start: message.lastElapsedCD.startPerformanceStamp,
-        end: message.lastElapsedCD.finishPerformanceStamp,
+        start: message.lastElapsedCD.startTimestamp,
+        end: message.lastElapsedCD.endTimestamp,
         row: 'change detection',
       };
     case 'drag': {

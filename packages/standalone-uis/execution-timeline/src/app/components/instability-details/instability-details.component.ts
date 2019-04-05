@@ -46,18 +46,22 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
 
   private subscription: any;
 
-  constructor(private bridge: BridgeService, private zone: NgZone) {}
+  constructor(private bridgeService: BridgeService, private zone: NgZone) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.runtimeInMilliseconds = round2(
-      this.segment.finishPerformanceStamp - this.segment.startPerformanceStamp - this.segment.drag,
+      this.segment.endTimestamp - this.segment.startTimestamp - this.segment.drag,
     );
     this.dragInMilliseconds = round2(this.segment.drag);
-    this.startTimeInMilliseconds = round2(this.segment.startPerformanceStamp);
+    this.startTimeInMilliseconds = round2(this.segment.startTimestamp);
 
     this.componentTreeUI = new ComponentTreeUI(this.zone, this.componentTreeSvg.nativeElement);
 
-    this.subscription = this.bridge.subscribe(message => {
+    if (!changes.segment.firstChange) {
+      this.subscription.unsubscribe();
+    }
+
+    this.subscription = this.bridgeService.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
         // @todo: mark new/removed nodes
         this.componentTreeUI.updateData(
@@ -68,10 +72,10 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
 
     // @todo: get just component trees
     //        full CD reducer should use before/after component tree reducer
-    this.bridge.send({
+    this.bridgeService.send({
       type: 'get_full_cd',
-      startEventId: this.segment.startEID + 10, // @todo: hack because of above ^
-      endEventId: this.segment.finishEID - 10,
+      startEventId: this.segment.startEventId + 10, // @todo: hack because of above ^
+      endEventId: this.segment.endEventId - 10,
     });
   }
 

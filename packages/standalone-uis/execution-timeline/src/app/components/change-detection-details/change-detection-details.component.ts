@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
 import { BridgeService } from '../../services/bridge.service';
 import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
@@ -28,7 +28,7 @@ function getComponentChangeDetections(componentInstances) {
   templateUrl: './change-detection-details.component.html',
   styleUrls: ['./change-detection-details.component.scss'],
 })
-export class ChangeDetectionDetailsComponent implements OnInit, OnDestroy {
+export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
   @Input()
   public segment: any;
 
@@ -36,11 +36,15 @@ export class ChangeDetectionDetailsComponent implements OnInit, OnDestroy {
   public rootFlameGraphNode: FlameGraphNode = null;
   public runtimeInMilliseconds: number;
 
-  private subscription: any;
+  private subscription: any = null;
 
   constructor(private bridge: BridgeService) {}
 
-  public ngOnInit(): void {
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.segment.firstChange) {
+      this.subscription.unsubscribe();
+    }
+
     this.subscription = this.bridge.subscribe(message => {
       if (message.type === 'get_full_cd:response') {
         this.componentChangeDetections = getComponentChangeDetections(
@@ -56,12 +60,12 @@ export class ChangeDetectionDetailsComponent implements OnInit, OnDestroy {
 
     this.bridge.send({
       type: 'get_full_cd',
-      startEventId: this.segment.startEID,
-      endEventId: this.segment.endEID,
+      startEventId: this.segment.startEventId,
+      endEventId: this.segment.endEventId,
     });
 
     this.runtimeInMilliseconds = round2(
-      this.segment.finishPerformanceStamp - this.segment.startPerformanceStamp - this.segment.drag,
+      this.segment.endTimestamp - this.segment.startTimestamp - this.segment.drag,
     );
   }
 
