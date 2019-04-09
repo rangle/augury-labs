@@ -3,39 +3,39 @@ import { AuguryEventAssembler } from '../augury-event-assembler.class';
 import { ChangeDetectionInfo } from './change-detection-info.interface';
 
 export class ChangeDetectionInfoAssembler extends AuguryEventAssembler<ChangeDetectionInfo> {
-  private ChangeDetectionInfo: Partial<ChangeDetectionInfo> = {
+  private changeDetectionInfo: Partial<ChangeDetectionInfo> = {
     drag: 0,
   };
   private numberOfViewChecks: number = 0;
 
   public process(event: AuguryEvent): boolean {
     if (event.probeName === 'ComponentHooksProbe') {
-      this.ChangeDetectionInfo.drag += event.getAuguryDrag();
+      this.changeDetectionInfo.drag += event.getAuguryDrag();
 
       switch (event.payload.hook) {
         case 'ngDoCheck':
-          if (!this.ChangeDetectionInfo.componentsChecked) {
-            this.ChangeDetectionInfo = {
-              ...this.ChangeDetectionInfo,
+          if (!this.changeDetectionInfo.componentsChecked) {
+            this.changeDetectionInfo = {
+              ...this.changeDetectionInfo,
               startEventId: event.id,
               startTimestamp: event.creationAtTimestamp,
               componentsChecked: [],
             };
           }
 
-          this.ChangeDetectionInfo.componentsChecked.push(event.payload.componentInstance);
+          this.changeDetectionInfo.componentsChecked.push(event.payload.componentInstance);
 
           break;
         case 'ngAfterViewChecked':
           this.numberOfViewChecks++;
 
-          this.ChangeDetectionInfo = {
-            ...this.ChangeDetectionInfo,
+          this.changeDetectionInfo = {
+            ...this.changeDetectionInfo,
             endEventId: event.id,
             endTimestamp: event.completedAtTimestamp,
           };
 
-          if (this.numberOfViewChecks === this.ChangeDetectionInfo.componentsChecked.length) {
+          if (this.numberOfViewChecks === this.changeDetectionInfo.componentsChecked.length) {
             return true;
           }
       }
@@ -45,11 +45,11 @@ export class ChangeDetectionInfoAssembler extends AuguryEventAssembler<ChangeDet
   }
 
   protected getOutput(): ChangeDetectionInfo | null {
-    return this.ChangeDetectionInfo as ChangeDetectionInfo;
+    return this.changeDetectionInfo as ChangeDetectionInfo;
   }
 
   protected cleanup() {
-    this.ChangeDetectionInfo = {
+    this.changeDetectionInfo = {
       drag: 0,
     };
     this.numberOfViewChecks = 0;
