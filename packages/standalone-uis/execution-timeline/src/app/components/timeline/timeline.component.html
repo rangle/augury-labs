@@ -1,8 +1,8 @@
-<section (window:resize)="repaint()">
+<section>
   <ag-card>
     <ag-section-heading>Timeline Overview</ag-section-heading>
-    <div #contextOuterContainer>
-      <svg #contextContainer
+    <div #timelineOverviewGraph>
+      <svg id="timeline-overview-container"
            height="120"
            width="100%">
         <defs>
@@ -16,9 +16,9 @@
                   fill="black"></rect>
           </mask>
         </defs>
-        <g #contextContent></g>
-        <g #contextAxis></g>
-        <g #contextBrush class="brush"></g>
+        <g id="timeline-overview-content"></g>
+        <g id="timeline-overview-axis"></g>
+        <g id="timeline-overview-brush"></g>
       </svg>
     </div>
   </ag-card>
@@ -26,13 +26,13 @@
   <ag-card>
     <ag-section-heading>Timeline Detail View</ag-section-heading>
     <ag-legend></ag-legend>
-    <div #focusOuterContainer>
-      <svg #focusContainer
+    <div #timelineDetailViewGraph>
+      <svg id="timeline-detail-container"
            height="160"
            width="100%">
-        <g #focusContent id="focus-chart">
-          <g #focusMainContent></g>
-          <g #focusAuguryContent></g>
+        <g id="timeline-detail-chart">
+          <g id="timeline-detail-segments"></g>
+          <g id="timeline-detail-drag-segments"></g>
         </g>
         <g #focusAxis></g>
       </svg>

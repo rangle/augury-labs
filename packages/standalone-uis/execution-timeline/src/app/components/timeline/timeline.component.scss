@@ -7,12 +7,12 @@
     margin-bottom: 1rem;
   }
 
-  #focus-chart,
-  #focus-chart g {
+  #timeline-detail-chart,
+  #timeline-detail-chart g {
     width: 100%;
   }
 
-  ::ng-deep .brush {
+  ::ng-deep #timeline-overview-brush {
     > .selection {
       fill: none;
       stroke: #e1e9ee;
