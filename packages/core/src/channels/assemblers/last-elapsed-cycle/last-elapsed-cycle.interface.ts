@@ -4,6 +4,5 @@ export interface LastElapsedCycle {
   startTimestamp: number;
   endEventId: number;
   endTimestamp: number;
-  job: any;
   drag: number;
 }

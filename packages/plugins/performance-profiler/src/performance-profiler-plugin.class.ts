@@ -1,11 +1,13 @@
 import {
-  LastElapsedChangeDetectionReducer,
-  LastElapsedCycleReducer,
-  LastElapsedTaskReducer,
+  AuguryBridgeRequest,
+  EventDragInfoProjection,
+  hasDragOccured,
+  LastElapsedChangeDetectionAssembler,
+  LastElapsedCycleAssembler,
+  LastElapsedNgTaskAssembler,
+  LastElapsedRootTaskAssembler,
   Plugin,
 } from '@augury/core';
-import { AuguryBridgeRequest } from '@augury/core';
-import { EventDragInfoProjection } from '@augury/core';
 import { PerformanceProfilerController } from './performance-profiler-controller.class';
 import {
   deriveCheckTimePerInstance,
@@ -22,19 +24,25 @@ export class PerformanceProfilerPlugin extends Plugin {
 
   public doInitialize() {
     this.getAugury()
-      .createLiveChannel(new LastElapsedTaskReducer())
+      .createAssemblyChannel(new LastElapsedRootTaskAssembler())
       .subscribe(lastElapsedTask =>
         this.bridge.sendMessage({ type: 'task', payload: lastElapsedTask }),
       );
 
     this.getAugury()
-      .createLiveChannel(new LastElapsedCycleReducer())
+      .createAssemblyChannel(new LastElapsedNgTaskAssembler())
+      .subscribe(lastElapsedTask =>
+        this.bridge.sendMessage({ type: 'task', payload: lastElapsedTask }),
+      );
+
+    this.getAugury()
+      .createAssemblyChannel(new LastElapsedCycleAssembler())
       .subscribe(lastElapsedCycle =>
         this.bridge.sendMessage({ type: 'cycle', payload: lastElapsedCycle }),
       );
 
     this.getAugury()
-      .createLiveChannel(new LastElapsedChangeDetectionReducer())
+      .createAssemblyChannel(new LastElapsedChangeDetectionAssembler())
       .subscribe(lastElapsedChangeDetection =>
         this.bridge.sendMessage({
           type: 'cd',
@@ -43,13 +51,15 @@ export class PerformanceProfilerPlugin extends Plugin {
       );
 
     this.getAugury()
-      .createChannel(new EventDragInfoProjection())
-      .subscribe(eventDragInfo =>
-        this.bridge.sendMessage({
-          type: 'drag',
-          payload: eventDragInfo,
-        }),
-      );
+      .createSimpleChannel(new EventDragInfoProjection())
+      .subscribe(eventDragInfo => {
+        if (hasDragOccured(eventDragInfo)) {
+          this.bridge.sendMessage({
+            type: 'drag',
+            payload: eventDragInfo,
+          });
+        }
+      });
 
     this.bridge.listenToRequests(request => {
       switch (request.type) {

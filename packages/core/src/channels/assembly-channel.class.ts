@@ -1,24 +1,28 @@
 import { Subscription } from '../event-emitters';
 import { ProbeManager } from '../probes';
-import { AuguryEventProjection } from '../projections';
+import { AuguryEventAssembler } from './assemblers';
 import { ChannelManager } from './channel-manager.class';
 import { Channel } from './channel.class';
 
-export class ProbeChannel<Output> extends Channel<Output> {
+export class AssemblyChannel<Output> extends Channel<Output> {
   constructor(
     manager: ChannelManager,
     private probeManager: ProbeManager,
-    private projection: AuguryEventProjection<Output>,
+    private assembler: AuguryEventAssembler<Output>,
   ) {
     super(manager);
   }
 
   public subscribe(handleOutput: (output: Output) => void): Subscription {
     return this.probeManager.subscribe(event => {
-      const output = this.projection.transform(event);
+      const isDone = this.assembler.collect(event);
 
-      if (output) {
-        handleOutput(output);
+      if (isDone) {
+        const output = this.assembler.finish();
+
+        if (output) {
+          handleOutput(output);
+        }
       }
     });
   }
