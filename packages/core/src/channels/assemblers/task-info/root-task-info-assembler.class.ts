@@ -1,6 +1,6 @@
-import { LastElapsedTaskAssembler } from './last-elapsed-task-assembler.class';
+import { TaskInfoAssembler } from './task-info.class';
 
-export class LastElapsedRootTaskAssembler extends LastElapsedTaskAssembler {
+export class RootTaskInfoAssembler extends TaskInfoAssembler {
   protected getExecutingEventName(): string {
     return 'root_task_executing';
   }

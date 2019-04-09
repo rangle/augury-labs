@@ -1,1 +1,6 @@
-export type AuguryBridgeMessageType = 'task' | 'cycle' | 'cd' | 'drag' | 'get_full_cd:response';
+export type AuguryBridgeMessageType =
+  | 'task'
+  | 'instability-period'
+  | 'change-detection'
+  | 'drag'
+  | 'query-change-detection-tree:response';

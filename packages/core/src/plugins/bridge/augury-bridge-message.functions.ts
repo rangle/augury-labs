@@ -6,7 +6,7 @@ function messageMatchesType(message: AuguryBridgeMessage<any>, types: AuguryBrid
 }
 
 export function isTimelineMessage(message: AuguryBridgeMessage<any>): boolean {
-  return messageMatchesType(message, ['task', 'cycle', 'cd']);
+  return messageMatchesType(message, ['task', 'instability-period', 'change-detection']);
 }
 
 export function isDragMessage(message: AuguryBridgeMessage<any>): boolean {

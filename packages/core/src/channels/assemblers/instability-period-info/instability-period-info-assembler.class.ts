@@ -1,14 +1,14 @@
 import { AuguryEvent } from '../../../events';
 import { AuguryEventAssembler } from '../augury-event-assembler.class';
-import { LastElapsedCycle } from './last-elapsed-cycle.interface';
+import { InstabilityPeriodInfo } from './instability-period-info.interface';
 
-export class LastElapsedCycleAssembler extends AuguryEventAssembler<LastElapsedCycle> {
-  private lastElapsedCycle: Partial<LastElapsedCycle> = {};
+export class InstabilityPeriodInfoAssembler extends AuguryEventAssembler<InstabilityPeriodInfo> {
+  private instabilityPeriodInfo: Partial<InstabilityPeriodInfo> = {};
   private isDuringInstabilityPeriod = false;
 
   public collect(event: AuguryEvent): boolean {
     if (event.name === 'onUnstable') {
-      this.lastElapsedCycle = {
+      this.instabilityPeriodInfo = {
         startEventId: event.id,
         startTimestamp: event.creationAtTimestamp,
         drag: 0,
@@ -18,11 +18,11 @@ export class LastElapsedCycleAssembler extends AuguryEventAssembler<LastElapsedC
     }
 
     if (this.isDuringInstabilityPeriod) {
-      this.lastElapsedCycle.drag = event.getAuguryDrag();
+      this.instabilityPeriodInfo.drag = event.getAuguryDrag();
 
       if (event.name === 'onStable') {
-        this.lastElapsedCycle = {
-          ...this.lastElapsedCycle,
+        this.instabilityPeriodInfo = {
+          ...this.instabilityPeriodInfo,
           endEventId: event.id,
           endTimestamp: event.creationAtTimestamp,
           componentTree: event.payload.componentTree,
@@ -35,12 +35,12 @@ export class LastElapsedCycleAssembler extends AuguryEventAssembler<LastElapsedC
     return false;
   }
 
-  protected getOutput(): LastElapsedCycle {
-    return this.lastElapsedCycle as LastElapsedCycle;
+  protected getOutput(): InstabilityPeriodInfo {
+    return this.instabilityPeriodInfo as InstabilityPeriodInfo;
   }
 
   protected cleanup() {
-    this.lastElapsedCycle = {};
+    this.instabilityPeriodInfo = {};
     this.isDuringInstabilityPeriod = false;
   }
 }

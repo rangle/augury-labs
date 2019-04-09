@@ -1,6 +1,6 @@
-import { LastElapsedTaskAssembler } from './last-elapsed-task-assembler.class';
+import { TaskInfoAssembler } from './task-info.class';
 
-export class LastElapsedNgTaskAssembler extends LastElapsedTaskAssembler {
+export class NgTaskInfoAssembler extends TaskInfoAssembler {
   protected getExecutingEventName(): string {
     return 'onInvokeTask_executing';
   }

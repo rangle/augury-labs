@@ -1,14 +1,14 @@
 import { AuguryEvent } from '../../../events';
 import { AuguryEventAssembler } from '../augury-event-assembler.class';
-import { LastElapsedTask } from './last-elapsed-task.interface';
+import { TaskInfo } from './task-info.interface';
 
-export abstract class LastElapsedTaskAssembler extends AuguryEventAssembler<LastElapsedTask> {
-  private lastElapsedTask: Partial<LastElapsedTask> = {};
+export abstract class TaskInfoAssembler extends AuguryEventAssembler<TaskInfo> {
+  private taskInfo: Partial<TaskInfo> = {};
   private isTaskExecuting = false;
 
   public collect(event: AuguryEvent): boolean {
     if (event.name === this.getExecutingEventName()) {
-      this.lastElapsedTask = {
+      this.taskInfo = {
         zone: this.getZoneValue(),
         task: event.payload.task,
         startEventId: event.id,
@@ -20,11 +20,11 @@ export abstract class LastElapsedTaskAssembler extends AuguryEventAssembler<Last
     }
 
     if (this.isTaskExecuting) {
-      this.lastElapsedTask.drag += event.getAuguryDrag();
+      this.taskInfo.drag += event.getAuguryDrag();
 
       if (event.name === this.getCompletedEventName()) {
-        this.lastElapsedTask = {
-          ...this.lastElapsedTask,
+        this.taskInfo = {
+          ...this.taskInfo,
           endTimestamp: event.creationAtTimestamp,
         };
 
@@ -35,12 +35,12 @@ export abstract class LastElapsedTaskAssembler extends AuguryEventAssembler<Last
     return false;
   }
 
-  protected getOutput(): LastElapsedTask {
-    return this.lastElapsedTask as LastElapsedTask;
+  protected getOutput(): TaskInfo {
+    return this.taskInfo as TaskInfo;
   }
 
   protected cleanup() {
-    this.lastElapsedTask = {};
+    this.taskInfo = {};
     this.isTaskExecuting = false;
   }
 

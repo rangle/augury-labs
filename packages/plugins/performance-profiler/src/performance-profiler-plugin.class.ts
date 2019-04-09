@@ -1,12 +1,12 @@
 import {
   AuguryBridgeRequest,
+  ChangeDetectionInfoAssembler,
   EventDragInfoProjection,
   hasDragOccured,
-  LastElapsedChangeDetectionAssembler,
-  LastElapsedCycleAssembler,
-  LastElapsedNgTaskAssembler,
-  LastElapsedRootTaskAssembler,
+  InstabilityPeriodInfoAssembler,
+  NgTaskInfoAssembler,
   Plugin,
+  RootTaskInfoAssembler,
 } from '@augury/core';
 import { PerformanceProfilerController } from './performance-profiler-controller.class';
 import {
@@ -24,29 +24,25 @@ export class PerformanceProfilerPlugin extends Plugin {
 
   public doInitialize() {
     this.getAugury()
-      .createAssemblyChannel(new LastElapsedRootTaskAssembler())
-      .subscribe(lastElapsedTask =>
-        this.bridge.sendMessage({ type: 'task', payload: lastElapsedTask }),
+      .createAssemblyChannel(new RootTaskInfoAssembler())
+      .subscribe(rootTaskInfo => this.bridge.sendMessage({ type: 'task', payload: rootTaskInfo }));
+
+    this.getAugury()
+      .createAssemblyChannel(new NgTaskInfoAssembler())
+      .subscribe(ngTaskInfo => this.bridge.sendMessage({ type: 'task', payload: ngTaskInfo }));
+
+    this.getAugury()
+      .createAssemblyChannel(new InstabilityPeriodInfoAssembler())
+      .subscribe(instabilityPeriodInfo =>
+        this.bridge.sendMessage({ type: 'instability-period', payload: instabilityPeriodInfo }),
       );
 
     this.getAugury()
-      .createAssemblyChannel(new LastElapsedNgTaskAssembler())
-      .subscribe(lastElapsedTask =>
-        this.bridge.sendMessage({ type: 'task', payload: lastElapsedTask }),
-      );
-
-    this.getAugury()
-      .createAssemblyChannel(new LastElapsedCycleAssembler())
-      .subscribe(lastElapsedCycle =>
-        this.bridge.sendMessage({ type: 'cycle', payload: lastElapsedCycle }),
-      );
-
-    this.getAugury()
-      .createAssemblyChannel(new LastElapsedChangeDetectionAssembler())
-      .subscribe(lastElapsedChangeDetection =>
+      .createAssemblyChannel(new ChangeDetectionInfoAssembler())
+      .subscribe(changeDetectionInfo =>
         this.bridge.sendMessage({
-          type: 'cd',
-          payload: lastElapsedChangeDetection,
+          type: 'change-detection',
+          payload: changeDetectionInfo,
         }),
       );
 
@@ -63,7 +59,7 @@ export class PerformanceProfilerPlugin extends Plugin {
 
     this.bridge.listenToRequests(request => {
       switch (request.type) {
-        case 'get_full_cd':
+        case 'query-change-detection-tree':
           this.handleGetFullChangeDetectionRequest(request);
           break;
       }
@@ -89,7 +85,7 @@ export class PerformanceProfilerPlugin extends Plugin {
     );
 
     this.bridge.sendMessage({
-      type: 'get_full_cd:response',
+      type: 'query-change-detection-tree:response',
       payload: {
         lastComponentTree,
         nextComponentTree,

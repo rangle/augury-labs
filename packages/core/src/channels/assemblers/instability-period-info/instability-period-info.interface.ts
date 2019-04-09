@@ -1,8 +1,8 @@
-export interface LastElapsedTask {
-  zone: string;
-  task: any; // ZoneTask
+export interface InstabilityPeriodInfo {
+  componentTree: any[];
   startEventId: number;
   startTimestamp: number;
+  endEventId: number;
   endTimestamp: number;
   drag: number;
 }

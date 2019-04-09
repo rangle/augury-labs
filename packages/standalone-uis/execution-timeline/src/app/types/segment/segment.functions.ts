@@ -1,16 +1,11 @@
 import { AuguryBridgeMessage } from '@augury/core';
-import {
-  EventDragInfo,
-  LastElapsedChangeDetection,
-  LastElapsedCycle,
-  LastElapsedTask,
-} from '@augury/core';
+import { ChangeDetectionInfo, EventDragInfo, InstabilityPeriodInfo, TaskInfo } from '@augury/core';
 import { Segment } from './segment.interface';
 
 export function mapTimelineMessageToSegment(message: AuguryBridgeMessage<any>): Segment<any> {
   switch (message.type) {
     case 'task':
-      const taskMessage = message as AuguryBridgeMessage<LastElapsedTask>;
+      const taskMessage = message as AuguryBridgeMessage<TaskInfo>;
 
       return {
         type: taskMessage.payload.zone === 'ng' ? 'child-zone-task' : 'root-zone-task',
@@ -19,18 +14,18 @@ export function mapTimelineMessageToSegment(message: AuguryBridgeMessage<any>): 
         row: 'zone task',
         originalMessage: taskMessage,
       };
-    case 'cycle':
-      const cycleMessage = message as AuguryBridgeMessage<LastElapsedCycle>;
+    case 'instability-period':
+      const instabilityPeriodMessage = message as AuguryBridgeMessage<InstabilityPeriodInfo>;
 
       return {
         type: 'instability',
-        start: cycleMessage.payload.startTimestamp,
-        end: cycleMessage.payload.endTimestamp,
+        start: instabilityPeriodMessage.payload.startTimestamp,
+        end: instabilityPeriodMessage.payload.endTimestamp,
         row: 'angular instability',
-        originalMessage: cycleMessage,
+        originalMessage: instabilityPeriodMessage,
       };
-    case 'cd':
-      const changeDetectionMessage = message as AuguryBridgeMessage<LastElapsedChangeDetection>;
+    case 'change-detection':
+      const changeDetectionMessage = message as AuguryBridgeMessage<ChangeDetectionInfo>;
 
       return {
         type: 'change-detection',

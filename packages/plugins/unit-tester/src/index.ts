@@ -1,9 +1,4 @@
-import {
-  Channel,
-  LastElapsedChangeDetection,
-  LastElapsedChangeDetectionAssembler,
-  Plugin,
-} from '@augury/core';
+import { ChangeDetectionInfo, ChangeDetectionInfoAssembler, Channel, Plugin } from '@augury/core';
 
 declare const window;
 
@@ -11,13 +6,13 @@ export class UnitTesterPlugin extends Plugin {
   public doInitialize() {
     window.auguryUT = {};
 
-    let cdChannel: Channel<LastElapsedChangeDetection>;
-    let cdRuns: LastElapsedChangeDetection[] = [];
+    let cdChannel: Channel<ChangeDetectionInfo>;
+    let cdRuns: ChangeDetectionInfo[] = [];
 
     window.auguryUT.startMonitoringChangeDetection = () => {
-      cdChannel = this.getAugury().createAssemblyChannel(new LastElapsedChangeDetectionAssembler());
-      cdChannel.subscribe(lastElapsedChangeDetection => {
-        cdRuns.push(lastElapsedChangeDetection);
+      cdChannel = this.getAugury().createAssemblyChannel(new ChangeDetectionInfoAssembler());
+      cdChannel.subscribe(changeDetectionInfo => {
+        cdRuns.push(changeDetectionInfo);
       });
     };
 

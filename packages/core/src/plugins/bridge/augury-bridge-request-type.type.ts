@@ -1,1 +1,1 @@
-export type AuguryBridgeRequestType = 'get_full_cd';
+export type AuguryBridgeRequestType = 'query-change-detection-tree';

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
-import { LastElapsedChangeDetection } from '@augury/core';
+import { ChangeDetectionInfo } from '@augury/core';
 import { Subscription } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
@@ -32,7 +32,7 @@ function getComponentChangeDetections(componentInstances): any[] {
 })
 export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
   @Input()
-  public lastElapsedChangeDetection: LastElapsedChangeDetection;
+  public changeDetectionInfo: ChangeDetectionInfo;
 
   public componentChangeDetections: any[] = null;
   public rootFlameGraphNode: FlameGraphNode = null;
@@ -43,12 +43,12 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
   constructor(private bridge: BridgeService) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.lastElapsedChangeDetection.firstChange) {
+    if (!changes.changeDetectionInfo.firstChange) {
       this.subscription.unsubscribe();
     }
 
     this.subscription = this.bridge.subscribe(message => {
-      if (message.type === 'get_full_cd:response') {
+      if (message.type === 'query-change-detection-tree:response') {
         this.componentChangeDetections = getComponentChangeDetections(
           message.payload.checkTimePerInstance,
         );
@@ -61,15 +61,15 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
     });
 
     this.bridge.send({
-      type: 'get_full_cd',
-      startEventId: this.lastElapsedChangeDetection.startEventId,
-      endEventId: this.lastElapsedChangeDetection.endEventId,
+      type: 'query-change-detection-tree',
+      startEventId: this.changeDetectionInfo.startEventId,
+      endEventId: this.changeDetectionInfo.endEventId,
     });
 
     this.runtimeInMilliseconds = round2(
-      this.lastElapsedChangeDetection.endTimestamp -
-        this.lastElapsedChangeDetection.startTimestamp -
-        this.lastElapsedChangeDetection.drag,
+      this.changeDetectionInfo.endTimestamp -
+        this.changeDetectionInfo.startTimestamp -
+        this.changeDetectionInfo.drag,
     );
   }
 
