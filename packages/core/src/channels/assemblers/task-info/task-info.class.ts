@@ -6,7 +6,7 @@ export abstract class TaskInfoAssembler extends AuguryEventAssembler<TaskInfo> {
   private taskInfo: Partial<TaskInfo> = {};
   private isTaskExecuting = false;
 
-  public collect(event: AuguryEvent): boolean {
+  public process(event: AuguryEvent): boolean {
     if (event.name === this.getExecutingEventName()) {
       this.taskInfo = {
         zone: this.getZoneValue(),

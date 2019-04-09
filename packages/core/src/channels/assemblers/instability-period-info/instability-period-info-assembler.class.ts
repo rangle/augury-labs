@@ -6,7 +6,7 @@ export class InstabilityPeriodInfoAssembler extends AuguryEventAssembler<Instabi
   private instabilityPeriodInfo: Partial<InstabilityPeriodInfo> = {};
   private isDuringInstabilityPeriod = false;
 
-  public collect(event: AuguryEvent): boolean {
+  public process(event: AuguryEvent): boolean {
     if (event.name === 'onUnstable') {
       this.instabilityPeriodInfo = {
         startEventId: event.id,

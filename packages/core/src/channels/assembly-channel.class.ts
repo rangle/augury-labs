@@ -15,7 +15,7 @@ export class AssemblyChannel<Output> extends Channel<Output> {
 
   public subscribe(handleOutput: (output: Output) => void): Subscription {
     return this.probeManager.subscribe(event => {
-      const isDone = this.assembler.collect(event);
+      const isDone = this.assembler.process(event);
 
       if (isDone) {
         const output = this.assembler.finish();

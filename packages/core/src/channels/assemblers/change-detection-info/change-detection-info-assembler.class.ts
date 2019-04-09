@@ -8,7 +8,7 @@ export class ChangeDetectionInfoAssembler extends AuguryEventAssembler<ChangeDet
   };
   private numberOfViewChecks: number = 0;
 
-  public collect(event: AuguryEvent): boolean {
+  public process(event: AuguryEvent): boolean {
     if (event.probeName === 'ComponentHooksProbe') {
       this.ChangeDetectionInfo.drag += event.getAuguryDrag();
 
