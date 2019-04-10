@@ -1,4 +1,4 @@
-import { normalize } from '@angular-devkit/core';
+import { JsonAstObject, JsonParseMode, normalize, parseJsonAst } from '@angular-devkit/core';
 import {
   apply,
   branchAndMerge,
@@ -18,6 +18,11 @@ import {
   NodeDependency,
   NodeDependencyType,
 } from '@schematics/angular/utility/dependencies';
+import {
+  appendPropertyInAstObject,
+  findPropertyInAstObject,
+  insertPropertyInAstObjectInOrder,
+} from '@schematics/angular/utility/json-utils';
 import { getProject } from '@schematics/angular/utility/project';
 import { getProjectTargets } from '@schematics/angular/utility/project-targets';
 import { of } from 'rxjs';
@@ -142,25 +147,61 @@ export function addAuguryScriptToPackage(options: Schema): Rule {
       throw new SchematicsException(`Project root could not be found`);
     }
 
-    const packageJsonFilePath = normalize(`${project.root}/package.json`);
-    const packageJson = tree.read(packageJsonFilePath);
+    const packageJsonAst = _readPackageJson(tree);
+    const scriptsNode = findPropertyInAstObject(packageJsonAst, 'scripts');
 
-    if (!packageJson) {
-      throw new SchematicsException(`package.json file was not found`);
+    const auguryScript = {
+      name: 'start:augury',
+      command: 'ng serve --configuration augury',
+    };
+
+    const recorder = tree.beginUpdate('/package.json');
+    if (!scriptsNode) {
+      // Haven't found the script key, add it to the root of the package.json.
+      appendPropertyInAstObject(
+        recorder,
+        packageJsonAst,
+        'scripts',
+        {
+          [auguryScript.name]: auguryScript.command,
+        },
+        2,
+      );
+    } else if (scriptsNode.kind === 'object') {
+      // check if script already added
+      const scriptNode = findPropertyInAstObject(scriptsNode, auguryScript.name);
+
+      if (!scriptNode) {
+        // Package not found, add it.
+        insertPropertyInAstObjectInOrder(
+          recorder,
+          scriptsNode,
+          auguryScript.name,
+          auguryScript.command,
+          4,
+        );
+      }
     }
 
-    const parsedPackageJson = JSON.parse(packageJson.toString());
-    try {
-      parsedPackageJson.scripts['start:augury'] = 'ng serve --configuration augury';
+    tree.commitUpdate(recorder);
 
-      // Save package.json file after configuration changes
-      tree.overwrite(packageJsonFilePath, JSON.stringify(parsedPackageJson, null, '\t'));
-
-      context.logger.info(`✅️ Added augury script to package.json`);
-    } catch (error) {
-      throw new SchematicsException(`Error while adding script: ${error}`);
-    }
+    context.logger.info(`✅️ Added augury script to package.json`);
 
     return tree;
   };
+}
+
+function _readPackageJson(tree: Tree): JsonAstObject {
+  const buffer = tree.read('/package.json');
+  if (buffer === null) {
+    throw new SchematicsException('Could not read package.json.');
+  }
+  const content = buffer.toString();
+
+  const packageJson = parseJsonAst(content, JsonParseMode.Strict);
+  if (packageJson.kind !== 'object') {
+    throw new SchematicsException('Invalid package.json. Was expecting an object');
+  }
+
+  return packageJson;
 }
