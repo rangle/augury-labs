@@ -7,10 +7,12 @@ import {
   addBuildConfiguration,
   addPackageJsonDependencies,
   installDependencies,
+  validateOptions,
 } from '../app/utils';
 
 export default function(options: Schema): Rule {
   return chain([
+    validateOptions(options),
     addPackageJsonDependencies(),
     installDependencies(),
     addAuguryMain(options),

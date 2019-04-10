@@ -7,12 +7,9 @@
     "project": {
       "type": "string",
       "description": "The name of the project.",
-      "default": {
-        "$source": "projectName"
-      },
-      "x-prompt": "What's the name of the project?"
+      "x-prompt": "What's the name of the application?"
     }
   },
-  "required": [],
+  "required": ["project"],
   "additionalProperties": false
 }

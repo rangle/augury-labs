@@ -26,6 +26,23 @@ import { concatMap, map } from 'rxjs/operators';
 import { getLatestNodeVersion, NpmRegistryPackage } from './npmjs-utils';
 import { Schema } from './schema';
 
+export function validateOptions(options: Schema): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    if (!options.project || options.project === '') {
+      throw new SchematicsException('You need to enter project name');
+    }
+
+    const workspace = getWorkspace(tree);
+    const project = getProject(workspace, options.project);
+
+    if (!project) {
+      throw new SchematicsException(`Could not find project: '${options.project}'`);
+    }
+
+    return tree;
+  };
+}
+
 export function addPackageJsonDependencies(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     return of('@augury/core', '@augury/performance-profiler-plugin').pipe(
