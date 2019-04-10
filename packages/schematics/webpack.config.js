@@ -28,10 +28,13 @@ module.exports = {
     'aws-sdk': 'aws-sdk',
   },
 
-  entry: './src/index.ts',
+  entry: {
+    'ng-add/index': './src/ng-add/index.ts',
+  },
 
   // Config for our build files
   output: {
+    libraryTarget: 'commonjs',
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     sourceMapFilename: '[name].js.map',
@@ -68,4 +71,6 @@ module.exports = {
       },
     ]),
   ],
+
+  optimization: {},
 };
