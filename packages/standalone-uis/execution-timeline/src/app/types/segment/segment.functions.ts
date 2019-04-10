@@ -47,3 +47,15 @@ export function getSegmentClasses(segment: Segment, selectedSegment: Segment) {
 
   return classes.join(' ');
 }
+
+export function getMinimumStartTimestamp(segments: Segment[]) {
+  return Math.min(...segments.map(segment => segment.start));
+}
+
+export function getMaximumEndTimestamp(segments: Segment[]) {
+  return Math.max(...segments.map(segment => segment.end));
+}
+
+export function getUnpaintedSegments(segments: Segment[], lastSegmentIndex: number): Segment[] {
+  return segments.filter((_, index) => index > lastSegmentIndex);
+}

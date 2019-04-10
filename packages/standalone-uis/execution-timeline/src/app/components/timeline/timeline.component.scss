@@ -1,5 +1,6 @@
 :host {
   display: block;
+  flex-shrink: 0;
   margin-right: 1rem;
   width: 65%;
 
@@ -7,9 +8,9 @@
     margin-bottom: 1rem;
   }
 
-  #timeline-detail-chart,
-  #timeline-detail-chart g {
-    width: 100%;
+  #timeline-overview-axis,
+  #timeline-detail-axis {
+    font-size: 8px;
   }
 
   ::ng-deep #timeline-overview-brush {
