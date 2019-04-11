@@ -1,6 +1,5 @@
 import { chain, Rule } from '@angular-devkit/schematics';
 
-import { Schema } from '../app/schema';
 import {
   addAuguryMain,
   addAuguryScriptToPackage,
@@ -8,7 +7,8 @@ import {
   addPackageJsonDependencies,
   installDependencies,
   validateOptions,
-} from '../app/utils';
+} from '../app/rules';
+import { Schema } from '../app/schema';
 
 export default function(options: Schema): Rule {
   return chain([

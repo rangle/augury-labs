@@ -8,7 +8,7 @@ import { Schema } from './schema';
 
 const testProjectName = 'test-project';
 
-describe('Utils', () => {
+describe('Rules', () => {
   const collectionPath = path.join(__dirname, '../collection.json');
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
