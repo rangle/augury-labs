@@ -95,7 +95,7 @@
     }
   }
 
-  ::ng-deep .augury-segment {
+  ::ng-deep #timeline-detail-drag-segments rect {
     fill: grey;
     opacity: 0.2;
     pointer-events: none;

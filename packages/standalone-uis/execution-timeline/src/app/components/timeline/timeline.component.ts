@@ -88,14 +88,8 @@ export class TimelineComponent implements OnChanges {
       return;
     }
 
-    const minimumStartTimestamp = Math.min(
-      getMinimumStartTimestamp(this.segments),
-      getMinimumStartTimestamp(this.dragSegments),
-    );
-    const maximumEndTimestamp = Math.max(
-      getMaximumEndTimestamp(this.segments),
-      getMaximumEndTimestamp(this.dragSegments),
-    );
+    const minimumStartTimestamp = getMinimumStartTimestamp(this.segments);
+    const maximumEndTimestamp = getMaximumEndTimestamp(this.segments);
 
     const scales = getTimelineGraphsScales(boundaries, minimumStartTimestamp, maximumEndTimestamp);
     const axes = getTimelineGraphsAxes(scales);
@@ -387,7 +381,6 @@ export class TimelineComponent implements OnChanges {
       this.dragSegments,
       selection =>
         selection
-          .classed('augury-segment', true)
           .attr('x', segment => scales.xScale(segment.start - minimumStartTimestamp))
           .attr('y', 0)
           .attr(
