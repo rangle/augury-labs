@@ -1,5 +1,6 @@
 import {
   AuguryBridgeRequest,
+  ChangeDetectionComponentTreeProjection,
   ChangeDetectionInfoProjection,
   EventDragInfo,
   EventDragInfoProjection,
@@ -67,32 +68,37 @@ export class PerformanceProfilerPlugin extends Plugin {
   }
 
   private handleGetFullChangeDetectionRequest(request: AuguryBridgeRequest) {
-    const rawCdRunData = this.getAugury().historyManager.scan(
-      request.startEventId,
-      request.endEventId,
+    const changeDetectionComponentTree = this.getAugury().project(
+      new ChangeDetectionComponentTreeProjection(request.startEventId, request.endEventId),
     );
 
-    const lastComponentTree = rawTreeToComponentInstanceTree(rawCdRunData.lastComponentTree);
-    const nextComponentTree = rawTreeToComponentInstanceTree(rawCdRunData.nextComponentTree);
-    const mergedComponentTree = mergeComponentTrees(lastComponentTree, nextComponentTree);
+    if (changeDetectionComponentTree.length > 0) {
+      const lastComponentTree = rawTreeToComponentInstanceTree(
+        changeDetectionComponentTree[0].lastComponentTree,
+      );
+      const nextComponentTree = rawTreeToComponentInstanceTree(
+        changeDetectionComponentTree[0].nextComponentTree,
+      );
+      const mergedComponentTree = mergeComponentTrees(lastComponentTree, nextComponentTree);
 
-    const lifecycleHooksByInstance = groupLifecycleHooksByInstance(
-      rawCdRunData.lifecycleHooksTriggered,
-    );
-    const checkTimePerInstance = deriveCheckTimePerInstance(
-      lifecycleHooksByInstance,
-      mergedComponentTree,
-    );
-
-    this.bridge.sendMessage({
-      type: 'query-change-detection-tree:response',
-      payload: {
-        lastComponentTree,
-        nextComponentTree,
-        mergedComponentTree,
+      const lifecycleHooksByInstance = groupLifecycleHooksByInstance(
+        changeDetectionComponentTree[0].lifecycleHooksTriggered,
+      );
+      const checkTimePerInstance = deriveCheckTimePerInstance(
         lifecycleHooksByInstance,
-        checkTimePerInstance,
-      },
-    });
+        mergedComponentTree,
+      );
+
+      this.bridge.sendMessage({
+        type: 'query-change-detection-tree:response',
+        payload: {
+          lastComponentTree,
+          nextComponentTree,
+          mergedComponentTree,
+          lifecycleHooksByInstance,
+          checkTimePerInstance,
+        },
+      });
+    }
   }
 }

@@ -18,12 +18,12 @@ export class HistoryManager {
     endEventId: number = null,
   ): Output[] {
     return this.elapsedEvents.reduce(
-      (results, event) => {
+      (results, event, index) => {
         if (
-          (projection.process(event) && (startEventId === endEventId) === null) ||
-          (event.id >= startEventId && event.id <= endEventId)
+          this.eventFallsWithinRange(event, startEventId, endEventId) &&
+          this.shouldCollectResult(event, projection, index)
         ) {
-          const result = projection.finish();
+          const result = projection.collectResult();
 
           return result ? results.concat([result]) : results;
         }
@@ -34,42 +34,19 @@ export class HistoryManager {
     );
   }
 
-  public scan(startEventId: number, endEventId: number) {
-    return this.elapsedEvents.reduce(
-      (result: any, event) => {
-        if (event.name === 'onStable') {
-          if (event.id < startEventId) {
-            result.lastComponentTree = event.payload.componentTree;
-          } else if (event.id >= endEventId && result.nextComponentTree.length === 0) {
-            result.nextComponentTree = event.payload.componentTree;
-          }
-        } else if (
-          event.name === 'component_lifecycle_hook_invoked' &&
-          event.isIdInRange(startEventId, endEventId)
-        ) {
-          result.lifecycleHooksTriggered.push(event);
-        }
-
-        return result;
-      },
-      {
-        lastComponentTree: [],
-        nextComponentTree: [],
-        lifecycleHooksTriggered: [],
-      },
-    );
+  private shouldCollectResult<Output>(
+    event: AuguryEvent,
+    projection: AuguryEventProjection<Output>,
+    currentIndex: number,
+  ) {
+    return currentIndex === this.elapsedEvents.length - 1 || projection.process(event);
   }
 
-  public getTotalAuguryDrag(startEventId: number, endEventId: number): number {
-    return this.elapsedEvents.reduce(
-      (totalDrag, elapsedEvent) =>
-        totalDrag +
-        (elapsedEvent.isIdInRange(startEventId, endEventId) ? elapsedEvent.getAuguryDrag() : 0),
-      0,
-    );
-  }
-
-  public getLastElapsedEvent(): AuguryEvent {
-    return this.elapsedEvents[this.elapsedEvents.length - 1];
+  private eventFallsWithinRange(
+    event: AuguryEvent,
+    startEventId: number,
+    endEventId: number,
+  ): boolean {
+    return (startEventId === endEventId) === null || event.isIdInRange(startEventId, endEventId);
   }
 }

@@ -6,8 +6,8 @@ import { Probe, ProbeManager } from './probes';
 import { AuguryEventProjection } from './projections';
 
 export class AuguryCore {
-  public readonly historyManager: HistoryManager;
   private readonly probeManager: ProbeManager;
+  private readonly historyManager: HistoryManager;
   private readonly pluginManager: PluginManager;
 
   constructor(probes: Probe[], plugins: Plugin[], ngZone, ngModule) {
@@ -23,7 +23,7 @@ export class AuguryCore {
   ): Subscription {
     return this.probeManager.subscribe(event => {
       if (projection.process(event)) {
-        const output = projection.finish();
+        const output = projection.collectResult();
 
         if (output) {
           handleOutput(output);
@@ -34,8 +34,8 @@ export class AuguryCore {
 
   public project<Output>(
     projection: AuguryEventProjection<Output>,
-    startEventId: null,
-    endEventId: null,
+    startEventId: number = null,
+    endEventId: number = null,
   ): Output[] {
     return this.historyManager.project(projection, startEventId, endEventId);
   }

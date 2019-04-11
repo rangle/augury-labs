@@ -1,4 +1,4 @@
 export interface Projection<Input, Output> {
   process(input: Input): boolean;
-  finish(): Output | null;
+  collectResult(): Output | null;
 }
