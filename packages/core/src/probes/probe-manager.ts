@@ -1,7 +1,6 @@
 import { AuguryEvent } from '../events';
 
 import { EventEmitter } from '../event-emitters';
-import { ProbeConstructor } from './probe-constructor.interface';
 import { Probe } from './probe.class';
 
 export class ProbeManager extends EventEmitter<AuguryEvent> {
@@ -11,10 +10,6 @@ export class ProbeManager extends EventEmitter<AuguryEvent> {
     super();
 
     this.probes = this.initializeProbes(probes, ngZone, ngModule);
-  }
-
-  public get(constructor: ProbeConstructor): Probe | undefined {
-    return this.probes.get(constructor.name);
   }
 
   private initializeProbes(probes: Probe[], ngZone, ngModule): Map<string, Probe> {

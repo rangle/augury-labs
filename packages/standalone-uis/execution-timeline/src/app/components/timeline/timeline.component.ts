@@ -43,19 +43,19 @@ export class TimelineComponent implements OnChanges {
   ];
 
   @Input()
-  public segments: Segment[];
+  public segments: Array<Segment<any>>;
 
   @Input()
-  public dragSegments: Segment[];
+  public dragSegments: Array<Segment<any>>;
 
   @Input()
-  public selectedSegment: Segment = null;
+  public selectedSegment: Segment<any> = null;
 
   @Input()
   public timelineOptions: TimelineOptions;
 
   @Output()
-  public segmentSelected = new EventEmitter<Segment>();
+  public segmentSelected = new EventEmitter<Segment<any>>();
 
   @Output()
   public timelineOptionsChange = new EventEmitter<TimelineOptions>();
@@ -336,7 +336,7 @@ export class TimelineComponent implements OnChanges {
       element => {
         d3.select(element)
           .selectAll('.segment')
-          .attr('class', (d: Segment) => getSegmentClasses(d, this.selectedSegment));
+          .attr('class', (d: Segment<any>) => getSegmentClasses(d, this.selectedSegment));
       },
     );
   }

@@ -9,6 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import { InstabilityPeriodInfo } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { round2 } from '../../util/misc-utils';
 import { ComponentTreeUI } from './component-tree-ui';
@@ -34,7 +35,7 @@ function createHierarchyDataFromTree(mergedComponentTree = [] as any[]) {
 })
 export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
   @Input()
-  public segment: any;
+  public instabilityPeriodInfo: InstabilityPeriodInfo;
 
   @ViewChild('componentTreeSvg')
   public componentTreeSvg: ElementRef;
@@ -50,22 +51,24 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.runtimeInMilliseconds = round2(
-      this.segment.endTimestamp - this.segment.startTimestamp - this.segment.drag,
+      this.instabilityPeriodInfo.endTimestamp -
+        this.instabilityPeriodInfo.startTimestamp -
+        this.instabilityPeriodInfo.drag,
     );
-    this.dragInMilliseconds = round2(this.segment.drag);
-    this.startTimeInMilliseconds = round2(this.segment.startTimestamp);
+    this.dragInMilliseconds = round2(this.instabilityPeriodInfo.drag);
+    this.startTimeInMilliseconds = round2(this.instabilityPeriodInfo.startTimestamp);
 
     this.componentTreeUI = new ComponentTreeUI(this.zone, this.componentTreeSvg.nativeElement);
 
-    if (!changes.segment.firstChange) {
+    if (!changes.instabilityPeriodInfo.firstChange) {
       this.subscription.unsubscribe();
     }
 
     this.subscription = this.bridgeService.subscribe(message => {
-      if (message.type === 'get_full_cd:response') {
+      if (message.type === 'query-change-detection-tree:response') {
         // @todo: mark new/removed nodes
         this.componentTreeUI.updateData(
-          createHierarchyDataFromTree(message.data.mergedComponentTree),
+          createHierarchyDataFromTree(message.payload.mergedComponentTree),
         );
       }
     });
@@ -73,9 +76,9 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
     // @todo: get just component trees
     //        full CD reducer should use before/after component tree reducer
     this.bridgeService.send({
-      type: 'get_full_cd',
-      startEventId: this.segment.startEventId + 10, // @todo: hack because of above ^
-      endEventId: this.segment.endEventId - 10,
+      type: 'query-change-detection-tree',
+      startEventId: this.instabilityPeriodInfo.startEventId + 10, // @todo: hack because of above ^
+      endEventId: this.instabilityPeriodInfo.endEventId - 10,
     });
   }
 

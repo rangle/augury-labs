@@ -1,11 +1,13 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
+import { ChangeDetectionInfo } from '@augury/core';
+import { Subscription } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
 import { FlameGraphNode } from '../../types/flame-graph-node/flame-graph-node.interface';
 import { round2 } from '../../util/misc-utils';
 
-function getComponentChangeDetections(componentInstances) {
+function getComponentChangeDetections(componentInstances): any[] {
   const componentChangeDetections = new Map();
   componentInstances.forEach((checkTime, instance) => {
     if (!componentChangeDetections.has(instance.constructor)) {
@@ -30,42 +32,44 @@ function getComponentChangeDetections(componentInstances) {
 })
 export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
   @Input()
-  public segment: any;
+  public changeDetectionInfo: ChangeDetectionInfo;
 
-  public componentChangeDetections = null;
+  public componentChangeDetections: any[] = null;
   public rootFlameGraphNode: FlameGraphNode = null;
   public runtimeInMilliseconds: number;
 
-  private subscription: any = null;
+  private subscription: Subscription = null;
 
   constructor(private bridge: BridgeService) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.segment.firstChange) {
+    if (!changes.changeDetectionInfo.firstChange) {
       this.subscription.unsubscribe();
     }
 
     this.subscription = this.bridge.subscribe(message => {
-      if (message.type === 'get_full_cd:response') {
+      if (message.type === 'query-change-detection-tree:response') {
         this.componentChangeDetections = getComponentChangeDetections(
-          message.data.checkTimePerInstance,
+          message.payload.checkTimePerInstance,
         );
 
         this.rootFlameGraphNode = mapComponentTreeToFlameGraphTree(
-          message.data.mergedComponentTree,
-          message.data.checkTimePerInstance,
+          message.payload.mergedComponentTree,
+          message.payload.checkTimePerInstance,
         )[0];
       }
     });
 
     this.bridge.send({
-      type: 'get_full_cd',
-      startEventId: this.segment.startEventId,
-      endEventId: this.segment.endEventId,
+      type: 'query-change-detection-tree',
+      startEventId: this.changeDetectionInfo.startEventId,
+      endEventId: this.changeDetectionInfo.endEventId,
     });
 
     this.runtimeInMilliseconds = round2(
-      this.segment.endTimestamp - this.segment.startTimestamp - this.segment.drag,
+      this.changeDetectionInfo.endTimestamp -
+        this.changeDetectionInfo.startTimestamp -
+        this.changeDetectionInfo.drag,
     );
   }
 

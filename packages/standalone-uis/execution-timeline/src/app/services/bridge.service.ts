@@ -10,7 +10,7 @@ declare const bridge: AuguryBridge;
 export class BridgeService {
   constructor(private ngZone: NgZone) {}
 
-  public subscribe(callback: (message: AuguryBridgeMessage) => void) {
+  public subscribe(callback: (message: AuguryBridgeMessage<any>) => void) {
     return bridge.listenToMessages(message => this.ngZone.run(() => callback(message)));
   }
 
