@@ -46,79 +46,28 @@ _NOTE: This tool is still experimental. Feedback is greatly appreciated :smile:_
 
 ## Installation
 
-To setup `augury-labs` in your application you'll need to follow a few manual steps for now
-(should only take a few minutes).
+To setup `augury-labs` in your application you have two alternatives.
 
 _NOTE: The following assumes your application is a standard [Angular CLI](https://cli.angular.io/) setup._
 
-1. Install the [npm packages](https://www.npmjs.com/org/augury/) as development dependencies.
+**Angular Devkit 6+**
 
-   ```shell
-   npm install -D @augury/core @augury/performance-profiler-plugin
-   ```
+Using the Angular CLI `ng add` command will install the correct dependencies, perform the necessary configuration and execute initialization code.
 
-2. Create a `src/main.augury.ts` file in your application with the following content:
+```
+ng add @augury/schematics
+```
 
-   ```ts
-   import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-   import { NgZone } from '@angular/core';
+**Angular Devkit _below_ 6**
 
-   import { AppModule } from './app/app.module';
-
-   import { auguryBootstrap } from '@augury/core';
-   import { PerformanceProfilerPlugin } from '@augury/performance-profiler-plugin';
-
-   auguryBootstrap({
-     platform: platformBrowserDynamic,
-     ngModule: AppModule,
-     NgZone,
-     plugins: [new PerformanceProfilerPlugin()],
-   });
-   ```
-
-3. Create new project `build` & `serve` configurations in the `angular.json` file.
-
-   Under `projects / [project-name] / architect / build / configurations` add:
-
-   ```json
-   "augury": {
-     "fileReplacements": [
-       {
-         "replace": "src/main.ts",
-         "with": "src/main.augury.ts"
-       }
-     ]
-   }
-   ```
-
-   Under `projects / [project-name] / architect / serve / configurations` add:
-
-   ```json
-   "augury": {
-     "browserTarget": "<your-project>:build:augury"
-   }
-   ```
-
-4. Add a new npm script in your `package.json` to run the `Angular` application with the augury
-   serve configuration you setup in the previous step.
-
-   ```json
-   "scripts": {
-     "start:augury": "ng serve --configuration augury"
-   }
-   ```
-
-5. Run your application with:
-
-   ```shell
-   npm run start:augury
-   ```
+To setup and install Augury manually, follow the [manual installation](docs/manual-installation.md).
 
 ## Guides
 
 - [How to Use](docs/how-to-use.md)
 - [Architecture](docs/architecture.md)
 - [Development Guide](docs/development-guide.md)
+- [Manual Installation](docs/manual-installation.md)
 
 ## Demos
 
