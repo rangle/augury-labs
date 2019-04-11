@@ -25,6 +25,12 @@ module.exports = {
   },
 
   externals: {
+    /**
+     *  Needed here to solve build error related to
+     *  dependency of node-pre-gyp which is occurring
+     *  because webpack is trying to parse dependencies of
+     *  node_modules
+     */
     'aws-sdk': 'aws-sdk',
   },
 
