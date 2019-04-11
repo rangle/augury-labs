@@ -40,6 +40,7 @@ import { isD3ZoomByBrush, updateD3RectangleData } from '../../util/d3-utils.func
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineComponent implements OnChanges {
+  private static readonly MinimumElapsedTimeToRepaintInMilliseconds = 500;
   private static readonly BrushSpacingMarginTopAndBottom = 3;
   private static readonly SegmentPadding = 2;
 
@@ -65,9 +66,10 @@ export class TimelineComponent implements OnChanges {
   @ViewChild('timelineDetailViewGraph') public timelineDetailViewGraphElement: ElementRef;
 
   private timelineSelection: [number, number] = [0, 200];
+  private lastPaintedTimestamp = performance.now();
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.segments || changes.timelineOptions) {
+    if (changes.segments && this.enoughTimeHasElapsedSinceLastPaint() || changes.timelineOptions) {
       this.paint();
     } else if (changes.selectedSegment) {
       this.refreshSegmentColors();
@@ -111,11 +113,11 @@ export class TimelineComponent implements OnChanges {
     this.paintSelectionMask(boundaries.overview);
   }
 
-  private deleteTimelineDetailViewDragSegments() {
-    d3.select(this.timelineDetailViewGraphElement.nativeElement)
-      .select('#timeline-detail-drag-segments')
-      .selectAll('*')
-      .remove();
+  private enoughTimeHasElapsedSinceLastPaint() {
+    return (
+      performance.now() - this.lastPaintedTimestamp >
+      TimelineComponent.MinimumElapsedTimeToRepaintInMilliseconds
+    );
   }
 
   private paintTimelineGraphsBrushAndZoom(
@@ -391,6 +393,13 @@ export class TimelineComponent implements OnChanges {
           )
           .attr('height', boundaries.height),
     );
+  }
+
+  private deleteTimelineDetailViewDragSegments() {
+    d3.select(this.timelineDetailViewGraphElement.nativeElement)
+      .select('#timeline-detail-drag-segments')
+      .selectAll('*')
+      .remove();
   }
 
   private paintSelectionMask(boundaries: TimelineOverviewGraphBoundaries) {
