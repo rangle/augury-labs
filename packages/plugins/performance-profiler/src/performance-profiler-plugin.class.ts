@@ -1,11 +1,13 @@
 import {
-  LastElapsedCDReducer,
-  LastElapsedCycleReducer,
-  LastElapsedEventReducer,
-  LastElapsedTaskReducer,
+  AuguryBridgeRequest,
+  ChangeDetectionInfoAssembler,
+  EventDragInfoProjection,
+  hasDragOccured,
+  InstabilityPeriodInfoAssembler,
+  NgTaskInfoAssembler,
   Plugin,
+  RootTaskInfoAssembler,
 } from '@augury/core';
-import { AuguryBridgeRequest } from '@augury/core';
 import { PerformanceProfilerController } from './performance-profiler-controller.class';
 import {
   deriveCheckTimePerInstance,
@@ -22,30 +24,42 @@ export class PerformanceProfilerPlugin extends Plugin {
 
   public doInitialize() {
     this.getAugury()
-      .createLiveChannel(new LastElapsedTaskReducer())
-      .subscribe(lastElapsedTask => this.bridge.sendMessage({ type: 'task', lastElapsedTask }));
+      .createAssemblyChannel(new RootTaskInfoAssembler())
+      .subscribe(rootTaskInfo => this.bridge.sendMessage({ type: 'task', payload: rootTaskInfo }));
 
     this.getAugury()
-      .createLiveChannel(new LastElapsedCycleReducer())
-      .subscribe(lastElapsedCD => this.bridge.sendMessage({ type: 'cd', lastElapsedCD }));
+      .createAssemblyChannel(new NgTaskInfoAssembler())
+      .subscribe(ngTaskInfo => this.bridge.sendMessage({ type: 'task', payload: ngTaskInfo }));
 
     this.getAugury()
-      .createLiveChannel(new LastElapsedCDReducer())
-      .subscribe(lastElapsedCycle => this.bridge.sendMessage({ type: 'cycle', lastElapsedCycle }));
+      .createAssemblyChannel(new InstabilityPeriodInfoAssembler())
+      .subscribe(instabilityPeriodInfo =>
+        this.bridge.sendMessage({ type: 'instability-period', payload: instabilityPeriodInfo }),
+      );
 
     this.getAugury()
-      .createLiveChannel(new LastElapsedEventReducer())
-      .subscribe(lastElapsedEvent =>
+      .createAssemblyChannel(new ChangeDetectionInfoAssembler())
+      .subscribe(changeDetectionInfo =>
         this.bridge.sendMessage({
-          type: 'drag',
-          start: lastElapsedEvent.creationAtTimestamp,
-          finish: lastElapsedEvent.completedAtTimestamp,
+          type: 'change-detection',
+          payload: changeDetectionInfo,
         }),
       );
 
+    this.getAugury()
+      .createSimpleChannel(new EventDragInfoProjection())
+      .subscribe(eventDragInfo => {
+        if (hasDragOccured(eventDragInfo)) {
+          this.bridge.sendMessage({
+            type: 'drag',
+            payload: eventDragInfo,
+          });
+        }
+      });
+
     this.bridge.listenToRequests(request => {
       switch (request.type) {
-        case 'get_full_cd':
+        case 'query-change-detection-tree':
           this.handleGetFullChangeDetectionRequest(request);
           break;
       }
@@ -71,8 +85,8 @@ export class PerformanceProfilerPlugin extends Plugin {
     );
 
     this.bridge.sendMessage({
-      type: 'get_full_cd:response',
-      data: {
+      type: 'query-change-detection-tree:response',
+      payload: {
         lastComponentTree,
         nextComponentTree,
         mergedComponentTree,

@@ -1,10 +1,9 @@
-import { ChannelManager } from './channels';
+import { AuguryEventAssembler, ChannelManager } from './channels';
 import { HistoryManager } from './history';
 import { PluginManager } from './plugins';
 import { Plugin } from './plugins';
 import { Probe, ProbeManager } from './probes';
-import { Reducer } from './reducers';
-import { Scanner } from './scanner';
+import { AuguryEventProjection } from './projections';
 
 export class AuguryCore {
   public readonly historyManager: HistoryManager;
@@ -17,18 +16,14 @@ export class AuguryCore {
     this.channelManager = new ChannelManager();
     this.historyManager = new HistoryManager();
     this.pluginManager = new PluginManager(plugins, this);
-
-    this.probeManager.subscribe(event => {
-      event.markComplete();
-
-      this.historyManager.addEvent(event);
-    });
+    this.probeManager.subscribe(event => this.historyManager.addEvent(event));
   }
 
-  public createLiveChannel(reducer: Reducer) {
-    const scanner = new Scanner(reducer, this.historyManager);
-    scanner.scan(this.probeManager);
+  public createSimpleChannel(projection: AuguryEventProjection<any>) {
+    return this.channelManager.createSimpleChannel(this.probeManager, projection);
+  }
 
-    return this.channelManager.createScannerChannel(scanner);
+  public createAssemblyChannel(assembler: AuguryEventAssembler<any>) {
+    return this.channelManager.createAssemblyChannel(this.probeManager, assembler);
   }
 }

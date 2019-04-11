@@ -12,12 +12,12 @@ export class AuguryBridge {
   }
   private static auguryBridge;
 
-  private in = new EventEmitter<AuguryBridgeMessage>();
+  private in = new EventEmitter<AuguryBridgeMessage<any>>();
   private out = new EventEmitter<AuguryBridgeRequest>();
 
   private constructor() {}
 
-  public sendMessage(message: AuguryBridgeMessage) {
+  public sendMessage(message: AuguryBridgeMessage<any>) {
     this.in.emit(message);
   }
 
@@ -25,8 +25,10 @@ export class AuguryBridge {
     this.out.emit(message);
   }
 
-  public listenToMessages(handleRequest: (message: AuguryBridgeMessage) => void): Subscription {
-    return this.in.subscribe(handleRequest);
+  public listenToMessages(
+    handleMessage: (message: AuguryBridgeMessage<any>) => void,
+  ): Subscription {
+    return this.in.subscribe(handleMessage);
   }
 
   public listenToRequests(handleRequest: (request: AuguryBridgeRequest) => void): Subscription {

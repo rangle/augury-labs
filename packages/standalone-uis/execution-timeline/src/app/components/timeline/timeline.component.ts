@@ -45,19 +45,19 @@ export class TimelineComponent implements OnChanges {
   private static readonly SegmentPadding = 2;
 
   @Input()
-  public segments: Segment[];
+  public segments: Array<Segment<any>>;
 
   @Input()
-  public dragSegments: Segment[];
+  public dragSegments: Array<Segment<any>>;
 
   @Input()
-  public selectedSegment: Segment = null;
+  public selectedSegment: Segment<any> = null;
 
   @Input()
   public timelineOptions: TimelineOptions;
 
   @Output()
-  public segmentSelected = new EventEmitter<Segment>();
+  public segmentSelected = new EventEmitter<Segment<any>>();
 
   @Output()
   public timelineOptionsChange = new EventEmitter<TimelineOptions>();

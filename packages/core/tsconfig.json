@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "lib": ["es2018", "dom"],
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strictNullChecks": false
   },
   "include": ["src/**/*.ts"],
   "exclude": ["**/*.spec.ts"]

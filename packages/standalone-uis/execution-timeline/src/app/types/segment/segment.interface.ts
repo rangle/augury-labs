@@ -1,10 +1,11 @@
+import { AuguryBridgeMessage } from '@augury/core';
 import { SegmentRowType } from './segment-row-type.type';
 import { SegmentType } from './segment-type.type';
 
-export interface Segment {
+export interface Segment<PayloadType> {
   type: SegmentType;
-  originalMessage?: any;
   start: number;
   end: number;
   row: SegmentRowType;
+  originalMessage?: AuguryBridgeMessage<PayloadType>;
 }
