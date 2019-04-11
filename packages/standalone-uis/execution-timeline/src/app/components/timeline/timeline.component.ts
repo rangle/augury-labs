@@ -6,7 +6,6 @@ import {
   Input,
   OnChanges,
   Output,
-  SimpleChange,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -17,14 +16,13 @@ import {
   getMaximumEndTimestamp,
   getMinimumStartTimestamp,
   getSegmentClasses,
-  getUnpaintedSegments,
 } from '../../types/segment/segment.functions';
 import { Segment } from '../../types/segment/segment.interface';
 import { TimelineGraphAxes } from '../../types/timeline-graph/timeline-graph-axes.interface';
 import { TimelineGraphRowTypes } from '../../types/timeline-graph/timeline-graph-row-types.constant';
+import { scaleSelectionOnXAxis } from '../../types/timeline-graph/timeline-graph-scales.functions';
 import { TimelineGraphScales } from '../../types/timeline-graph/timeline-graph-scales.interface';
 import { getTimelineGraphsAxes } from '../../types/timeline-graph/timeline-graphs-axes.functions';
-import { TimelineGraphsAxes } from '../../types/timeline-graph/timeline-graphs-axes.interface';
 import {
   canTimelineGraphsPaint,
   getTimelineGraphsBoundaries,
@@ -33,9 +31,7 @@ import { TimelineGraphsBoundaries } from '../../types/timeline-graph/timeline-gr
 import { getTimelineGraphsScales } from '../../types/timeline-graph/timeline-graphs-scales.functions';
 import { TimelineGraphsScales } from '../../types/timeline-graph/timeline-graphs-scales.interface';
 import { TimelineOptions } from '../../types/timeline-options/timeline-options.interface';
-import { deleteAllD3ChildElements, isD3ZoomByBrush } from '../../util/d3-utils.functions';
-
-const horizontalScrollScaleFactor = 4;
+import { isD3ZoomByBrush, updateD3RectangleData } from '../../util/d3-utils.functions';
 
 @Component({
   selector: 'ag-timeline',
@@ -44,7 +40,6 @@ const horizontalScrollScaleFactor = 4;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineComponent implements OnChanges {
-  private static readonly TimeSelectionStartSize = 1000;
   private static readonly BrushSpacingMarginTopAndBottom = 3;
   private static readonly SegmentPadding = 2;
 
@@ -69,27 +64,21 @@ export class TimelineComponent implements OnChanges {
   @ViewChild('timelineOverviewGraph') public timelineOverviewGraphElement: ElementRef;
   @ViewChild('timelineDetailViewGraph') public timelineDetailViewGraphElement: ElementRef;
 
-  private timelineSelection = [0, 40];
+  private timelineSelection: [number, number] = [0, 200];
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.segments || changes.timelineOptions) {
-      this.repaint(
-        this.getLastSegmentIndex(changes.segments),
-        this.getLastSegmentIndex(changes.dragSegments),
-      );
+      this.paint();
     } else if (changes.selectedSegment) {
       this.refreshSegmentColors();
     }
   }
 
-  private getLastSegmentIndex(segments: SimpleChange) {
-    return (
-      (segments && segments.previousValue ? segments.previousValue.length : this.segments.length) -
-      1
-    );
+  public onResize() {
+    this.paint();
   }
 
-  private repaint(lastSegmentIndex: number, lastDragSegmentIndex: number) {
+  private paint() {
     const boundaries = getTimelineGraphsBoundaries(
       this.timelineOverviewGraphElement.nativeElement,
       this.timelineDetailViewGraphElement.nativeElement,
@@ -99,12 +88,18 @@ export class TimelineComponent implements OnChanges {
       return;
     }
 
-    const minimumStartTimestamp = getMinimumStartTimestamp(this.segments);
-    const maximumEndTimestamp = getMaximumEndTimestamp(this.segments);
+    const minimumStartTimestamp = Math.min(
+      getMinimumStartTimestamp(this.segments),
+      getMinimumStartTimestamp(this.dragSegments),
+    );
+    const maximumEndTimestamp = Math.max(
+      getMaximumEndTimestamp(this.segments),
+      getMaximumEndTimestamp(this.dragSegments),
+    );
+
     const scales = getTimelineGraphsScales(boundaries, minimumStartTimestamp, maximumEndTimestamp);
     const axes = getTimelineGraphsAxes(scales);
 
-    this.paintTimelineGraphsBrushAndZoom(boundaries, scales, axes, maximumEndTimestamp);
     this.paintTimelineOverviewAxes(boundaries.overview, axes.overview);
     this.paintTimelineDetailViewAxes(boundaries.detailView, axes.detailView);
     this.paintTimelineOverviewSegments(boundaries.overview, scales.overview, minimumStartTimestamp);
@@ -112,22 +107,27 @@ export class TimelineComponent implements OnChanges {
       boundaries.detailView,
       scales.detailView,
       minimumStartTimestamp,
-      lastSegmentIndex,
     );
-    this.paintTimelineDetailViewDragSegments(
+    this.refreshTimelineDetailViewDragSegments(
       boundaries.detailView,
       scales.detailView,
       minimumStartTimestamp,
-      lastDragSegmentIndex,
     );
+    this.paintTimelineGraphsBrushAndZoom(boundaries, scales, axes.detailView);
     this.paintSelectionMask(boundaries.overview);
+  }
+
+  private deleteTimelineDetailViewDragSegments() {
+    d3.select(this.timelineDetailViewGraphElement.nativeElement)
+      .select('#timeline-detail-drag-segments')
+      .selectAll('*')
+      .remove();
   }
 
   private paintTimelineGraphsBrushAndZoom(
     boundaries: TimelineGraphsBoundaries,
     scales: TimelineGraphsScales,
-    axes: TimelineGraphsAxes,
-    maximumEndTimestamp: number,
+    axes: TimelineGraphAxes,
   ) {
     const brushBehaviour = d3
       .brushX()
@@ -143,6 +143,7 @@ export class TimelineComponent implements OnChanges {
       ])
       .on('brush end', () => {
         const selection = d3.event.selection || scales.overview.xScale.range();
+
         d3.select(this.timelineOverviewGraphElement.nativeElement)
           .select('#selectionMaskBackground')
           .attr('width', selection[1] - selection[0])
@@ -176,17 +177,15 @@ export class TimelineComponent implements OnChanges {
             boundaries.detailView.width) /
           boundaries.overview.width;
 
-        d3.select(this.timelineOverviewGraphElement.nativeElement)
-          .select('#timeline-overview-content')
-          .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
-
         d3.select(this.timelineDetailViewGraphElement.nativeElement)
           .select('#timeline-detail-container')
           .call(zoomBehavior.transform, transformation);
 
         d3.select(this.timelineDetailViewGraphElement.nativeElement)
-          .select('#timeline-detail-axis')
-          .call(axes.detailView.xAxis);
+          .select('#timeline-detail-content')
+          .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
+
+        this.paintTimelineDetailViewAxes(boundaries.detailView, axes);
       });
 
     const zoomBehavior = d3
@@ -213,24 +212,19 @@ export class TimelineComponent implements OnChanges {
           .select('#timeline-detail-content')
           .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
 
-        d3.select(this.timelineDetailViewGraphElement.nativeElement)
-          .select('#timeline-detail-axis')
-          .call(axes.detailView.xAxis);
-
         d3.select(this.timelineOverviewGraphElement.nativeElement)
           .select('#timeline-overview-brush')
           .call(brushBehaviour.move, [
             scales.overview.xScale(scales.detailView.xScale.domain()[0]),
             scales.overview.xScale(scales.detailView.xScale.domain()[1]),
           ]);
+
+        this.paintTimelineDetailViewAxes(boundaries.detailView, axes);
       });
 
     d3.select(this.timelineOverviewGraphElement.nativeElement)
       .select('#timeline-overview-brush')
-      .call(brushBehaviour);
-
-    d3.select(this.timelineOverviewGraphElement.nativeElement)
-      .select('#timeline-overview-brush')
+      .call(brushBehaviour)
       .select('.brush .overlay')
       .attr('mask', 'url(#selectionMask)');
 
@@ -239,7 +233,7 @@ export class TimelineComponent implements OnChanges {
       .call(zoomBehavior);
 
     this.paintTimelineDetailViewMouseWheel(scales, brushBehaviour);
-    this.setCurrentBrushPosition(scales.overview, brushBehaviour, maximumEndTimestamp);
+    this.setDefaultBrushPosition(scales.overview, brushBehaviour);
   }
 
   private paintTimelineDetailViewMouseWheel(
@@ -248,7 +242,7 @@ export class TimelineComponent implements OnChanges {
   ) {
     d3.select(this.timelineDetailViewGraphElement.nativeElement).on('wheel.zoom', () => {
       if (d3.event.shiftKey) {
-        const scaledDelta = d3.event.deltaX / horizontalScrollScaleFactor;
+        const scaledDelta = d3.event.deltaX / 4;
         const selectionRange = [
           scales.overview.xScale(scales.detailView.xScale.domain()[0]),
           scales.overview.xScale(scales.detailView.xScale.domain()[1]),
@@ -270,26 +264,16 @@ export class TimelineComponent implements OnChanges {
     });
   }
 
-  private setCurrentBrushPosition(
-    scales: TimelineGraphScales,
-    brushBehaviour: BrushBehavior<any>,
-    maximumEndTimestamp: number,
-  ) {
-    if (this.segments.length > 0) {
-      const brushEndSelection =
-        maximumEndTimestamp > TimelineComponent.TimeSelectionStartSize + 10
-          ? TimelineComponent.TimeSelectionStartSize
-          : maximumEndTimestamp * 0.8;
+  private setDefaultBrushPosition(scales: TimelineGraphScales, brushBehaviour: BrushBehavior<any>) {
+    const noCurrentBrushSelection = !d3.brushSelection(d3
+      .select(this.timelineOverviewGraphElement.nativeElement)
+      .select('#timeline-overview-brush')
+      .node() as SVGGElement);
 
-      const scaleFactor =
-        scales.xScale.range()[1] / (scales.xScale.domain()[1] - scales.xScale.domain()[0]);
-
+    if (noCurrentBrushSelection) {
       d3.select(this.timelineOverviewGraphElement.nativeElement)
         .select('#timeline-overview-brush')
-        .call(brushBehaviour.move, [
-          scaleFactor * (this.timelineSelection ? this.timelineSelection[0] : 0),
-          scaleFactor * (this.timelineSelection ? this.timelineSelection[1] : brushEndSelection),
-        ]);
+        .call(brushBehaviour.move, scaleSelectionOnXAxis(scales, this.timelineSelection));
     }
   }
 
@@ -318,100 +302,102 @@ export class TimelineComponent implements OnChanges {
     scales: TimelineGraphScales,
     minimumStartTimestamp: number,
   ) {
-    d3.select(this.timelineOverviewGraphElement.nativeElement)
-      .select('#timeline-overview-content')
-      .selectAll('rect')
-      .data(this.segments)
-      .enter()
-      .append('rect')
-      .attr('class', d => getSegmentClasses(d, this.selectedSegment))
-      .attr('x', d => scales.xScale(d.start - minimumStartTimestamp))
-      .attr('y', d => scales.yScale(d.row) + TimelineComponent.SegmentPadding + 20)
-      .attr(
-        'width',
-        d =>
-          scales.xScale(d.end - minimumStartTimestamp) -
-          scales.xScale(d.start - minimumStartTimestamp),
-      )
-      .attr(
-        'height',
-        Math.max(0, boundaries.innerHeight / TimelineGraphRowTypes.length) -
-          TimelineComponent.SegmentPadding,
-      );
+    updateD3RectangleData(
+      d3
+        .select(this.timelineOverviewGraphElement.nativeElement)
+        .select('#timeline-overview-content'),
+      this.segments,
+      selection =>
+        selection
+          .attr('class', d => getSegmentClasses(d, this.selectedSegment))
+          .attr('x', d => scales.xScale(d.start - minimumStartTimestamp))
+          .attr('y', d => scales.yScale(d.row) + TimelineComponent.SegmentPadding + 20)
+          .attr(
+            'width',
+            d =>
+              scales.xScale(d.end - minimumStartTimestamp) -
+              scales.xScale(d.start - minimumStartTimestamp),
+          )
+          .attr(
+            'height',
+            Math.max(0, boundaries.innerHeight / TimelineGraphRowTypes.length) -
+              TimelineComponent.SegmentPadding,
+          ),
+    );
   }
 
   private paintTimelineDetailViewSegments(
     boundaries: TimelineDetailViewGraphBoundaries,
     scales: TimelineGraphScales,
     minimumStartTimestamp: number,
-    lastSegmentIndex: number,
   ) {
-    d3.select(this.timelineDetailViewGraphElement.nativeElement)
-      .select('#timeline-detail-segments')
-      .selectAll('rect')
-      // .data(getUnpaintedSegments(this.segments, lastSegmentIndex))
-      .data(this.segments)
-      .enter()
-      .append('rect')
-      .attr('class', segment => getSegmentClasses(segment, this.selectedSegment))
-      .attr(
-        'x',
-        segment =>
-          scales.xScale(segment.start - minimumStartTimestamp) + TimelineComponent.SegmentPadding,
-      )
-      .attr('y', d => scales.yScale(d.row))
-      .attr(
-        'width',
-        segment =>
-          scales.xScale(segment.end - minimumStartTimestamp) -
-          scales.xScale(segment.start - minimumStartTimestamp),
-      )
-      .attr(
-        'height',
-        Math.max(
-          0,
-          boundaries.height / TimelineGraphRowTypes.length - TimelineComponent.SegmentPadding,
-        ),
-      )
-      .on('click', segment => this.segmentSelected.emit(segment));
+    updateD3RectangleData(
+      d3
+        .select(this.timelineDetailViewGraphElement.nativeElement)
+        .select('#timeline-detail-segments'),
+      this.segments,
+      selection =>
+        selection
+          .attr('class', segment => getSegmentClasses(segment, this.selectedSegment))
+          .attr(
+            'x',
+            segment =>
+              scales.xScale(segment.start - minimumStartTimestamp) +
+              TimelineComponent.SegmentPadding,
+          )
+          .attr('y', d => scales.yScale(d.row))
+          .attr(
+            'width',
+            segment =>
+              scales.xScale(segment.end - minimumStartTimestamp) -
+              scales.xScale(segment.start - minimumStartTimestamp),
+          )
+          .attr(
+            'height',
+            Math.max(
+              0,
+              boundaries.height / TimelineGraphRowTypes.length - TimelineComponent.SegmentPadding,
+            ),
+          ),
+      segment => this.segmentSelected.emit(segment),
+    );
+  }
+
+  private refreshTimelineDetailViewDragSegments(
+    boundaries: TimelineDetailViewGraphBoundaries,
+    scales: TimelineGraphScales,
+    minimumStartTimestamp: number,
+  ) {
+    if (this.timelineOptions.showAuguryDrag) {
+      this.paintTimelineDetailViewDragSegments(boundaries, scales, minimumStartTimestamp);
+    } else {
+      this.deleteTimelineDetailViewDragSegments();
+    }
   }
 
   private paintTimelineDetailViewDragSegments(
     boundaries: TimelineDetailViewGraphBoundaries,
     scales: TimelineGraphScales,
     minimumStartTimestamp: number,
-    lastSegmentIndex: number,
   ) {
-    if (this.timelineOptions.showAuguryDrag) {
-      d3.select(this.timelineDetailViewGraphElement.nativeElement)
-        .select('#timeline-detail-drag-segments')
-        .selectAll('rect')
-        .data(this.dragSegments)
-        .enter()
-        .append('rect')
-        .classed('augury-segment', true)
-        .attr('x', d => scales.xScale(d.start - minimumStartTimestamp))
-        .attr('y', 0)
-        .attr(
-          'width',
-          d =>
-            scales.xScale(d.end - minimumStartTimestamp) -
-            scales.xScale(d.start - minimumStartTimestamp),
-        )
-        .attr('height', boundaries.height);
-    }
-  }
-
-  private refreshSegmentColors() {
-    /*
-    [this.focusContentGElement.nativeElement, this.contextContentGElement.nativeElement].forEach(
-      element => {
-        d3.select(element)
-          .selectAll('.segment')
-          .attr('class', (d: Segment) => getSegmentClasses(d, this.selectedSegment));
-      },
+    updateD3RectangleData(
+      d3
+        .select(this.timelineDetailViewGraphElement.nativeElement)
+        .select('#timeline-detail-drag-segments'),
+      this.dragSegments,
+      selection =>
+        selection
+          .classed('augury-segment', true)
+          .attr('x', segment => scales.xScale(segment.start - minimumStartTimestamp))
+          .attr('y', 0)
+          .attr(
+            'width',
+            segment =>
+              scales.xScale(segment.end - minimumStartTimestamp) -
+              scales.xScale(segment.start - minimumStartTimestamp),
+          )
+          .attr('height', boundaries.height),
     );
-     */
   }
 
   private paintSelectionMask(boundaries: TimelineOverviewGraphBoundaries) {
@@ -420,5 +406,17 @@ export class TimelineComponent implements OnChanges {
       .style('width', boundaries.width)
       .style('height', boundaries.innerHeight)
       .attr('y', 20);
+  }
+
+  private refreshSegmentColors() {
+    [
+      this.timelineOverviewGraphElement.nativeElement,
+      this.timelineDetailViewGraphElement.nativeElement,
+    ].forEach(element =>
+      d3
+        .select(element)
+        .selectAll('.segment')
+        .attr('class', (segment: Segment) => getSegmentClasses(segment, this.selectedSegment)),
+    );
   }
 }

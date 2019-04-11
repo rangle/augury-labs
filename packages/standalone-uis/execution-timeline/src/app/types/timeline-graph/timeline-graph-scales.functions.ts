@@ -8,3 +8,13 @@ export function getTimelineGraphScales(xDomain, width, height): TimelineGraphSca
     yScale: createD3BandScale(TimelineGraphRowTypes, [0, height]),
   };
 }
+
+export function scaleSelectionOnXAxis(
+  scales: TimelineGraphScales,
+  selection: [number, number],
+): [number, number] {
+  const scaleFactor =
+    scales.xScale.range()[1] / (scales.xScale.domain()[1] - scales.xScale.domain()[0]);
+
+  return [selection[0] * scaleFactor, selection[1] * scaleFactor];
+}
