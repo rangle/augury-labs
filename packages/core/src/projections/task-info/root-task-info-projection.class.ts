@@ -1,6 +1,6 @@
-import { TaskInfoAssembler } from './task-info.class';
+import { TaskInfoProjection } from './task-info-projection.class';
 
-export class RootTaskInfoAssembler extends TaskInfoAssembler {
+export class RootTaskInfoProjection extends TaskInfoProjection {
   protected getExecutingEventName(): string {
     return 'root_task_executing';
   }

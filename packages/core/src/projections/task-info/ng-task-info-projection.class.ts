@@ -1,6 +1,6 @@
-import { TaskInfoAssembler } from './task-info.class';
+import { TaskInfoProjection } from './task-info-projection.class';
 
-export class NgTaskInfoAssembler extends TaskInfoAssembler {
+export class NgTaskInfoProjection extends TaskInfoProjection {
   protected getExecutingEventName(): string {
     return 'onInvokeTask_executing';
   }

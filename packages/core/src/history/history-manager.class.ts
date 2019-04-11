@@ -1,4 +1,5 @@
 import { AuguryEvent } from '../events';
+import { AuguryEventProjection } from '../projections';
 
 export class HistoryManager {
   public elapsedEvents: AuguryEvent[] = [];
@@ -9,6 +10,28 @@ export class HistoryManager {
 
   public clear() {
     this.elapsedEvents = [];
+  }
+
+  public project<Output>(
+    projection: AuguryEventProjection<Output>,
+    startEventId: number = null,
+    endEventId: number = null,
+  ): Output[] {
+    return this.elapsedEvents.reduce(
+      (results, event) => {
+        if (
+          (projection.process(event) && (startEventId === endEventId) === null) ||
+          (event.id >= startEventId && event.id <= endEventId)
+        ) {
+          const result = projection.finish();
+
+          return result ? results.concat([result]) : results;
+        }
+
+        return results;
+      },
+      [] as Output[],
+    );
   }
 
   public scan(startEventId: number, endEventId: number) {

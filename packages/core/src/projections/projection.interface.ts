@@ -1,3 +1,4 @@
 export interface Projection<Input, Output> {
-  transform(input: Input): Output | null;
+  process(input: Input): boolean;
+  finish(): Output | null;
 }

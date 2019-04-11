@@ -1,8 +1,8 @@
-import { AuguryEvent } from '../../../events';
-import { AuguryEventAssembler } from '../augury-event-assembler.class';
+import { AuguryEvent } from '../../events';
+import { AuguryEventProjection } from '../augury-event-projection.class';
 import { InstabilityPeriodInfo } from './instability-period-info.interface';
 
-export class InstabilityPeriodInfoAssembler extends AuguryEventAssembler<InstabilityPeriodInfo> {
+export class InstabilityPeriodInfoProjection extends AuguryEventProjection<InstabilityPeriodInfo> {
   private instabilityPeriodInfo: Partial<InstabilityPeriodInfo> = {};
   private isDuringInstabilityPeriod = false;
 

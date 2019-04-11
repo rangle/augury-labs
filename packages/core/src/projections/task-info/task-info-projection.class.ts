@@ -1,8 +1,8 @@
-import { AuguryEvent } from '../../../events';
-import { AuguryEventAssembler } from '../augury-event-assembler.class';
+import { AuguryEvent } from '../../events';
+import { AuguryEventProjection } from '../augury-event-projection.class';
 import { TaskInfo } from './task-info.interface';
 
-export abstract class TaskInfoAssembler extends AuguryEventAssembler<TaskInfo> {
+export abstract class TaskInfoProjection extends AuguryEventProjection<TaskInfo> {
   private taskInfo: Partial<TaskInfo> = {};
   private isTaskExecuting = false;
 

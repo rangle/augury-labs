@@ -1,12 +1,13 @@
 import {
   AuguryBridgeRequest,
-  ChangeDetectionInfoAssembler,
+  ChangeDetectionInfoProjection,
+  EventDragInfo,
   EventDragInfoProjection,
   hasDragOccured,
-  InstabilityPeriodInfoAssembler,
-  NgTaskInfoAssembler,
+  InstabilityPeriodInfoProjection,
+  NgTaskInfoProjection,
   Plugin,
-  RootTaskInfoAssembler,
+  RootTaskInfoProjection,
 } from '@augury/core';
 import { PerformanceProfilerController } from './performance-profiler-controller.class';
 import {
@@ -23,39 +24,38 @@ export class PerformanceProfilerPlugin extends Plugin {
   private window = new PerformanceProfilerController(this.bridge);
 
   public doInitialize() {
-    this.getAugury()
-      .createAssemblyChannel(new RootTaskInfoAssembler())
-      .subscribe(rootTaskInfo => this.bridge.sendMessage({ type: 'task', payload: rootTaskInfo }));
+    this.getAugury().subscribeToEvents(new RootTaskInfoProjection(), rootTaskInfo =>
+      this.bridge.sendMessage({ type: 'task', payload: rootTaskInfo }),
+    );
 
-    this.getAugury()
-      .createAssemblyChannel(new NgTaskInfoAssembler())
-      .subscribe(ngTaskInfo => this.bridge.sendMessage({ type: 'task', payload: ngTaskInfo }));
+    this.getAugury().subscribeToEvents(new NgTaskInfoProjection(), ngTaskInfo =>
+      this.bridge.sendMessage({ type: 'task', payload: ngTaskInfo }),
+    );
 
-    this.getAugury()
-      .createAssemblyChannel(new InstabilityPeriodInfoAssembler())
-      .subscribe(instabilityPeriodInfo =>
+    this.getAugury().subscribeToEvents(
+      new InstabilityPeriodInfoProjection(),
+      instabilityPeriodInfo =>
         this.bridge.sendMessage({ type: 'instability-period', payload: instabilityPeriodInfo }),
-      );
+    );
 
-    this.getAugury()
-      .createAssemblyChannel(new ChangeDetectionInfoAssembler())
-      .subscribe(changeDetectionInfo =>
-        this.bridge.sendMessage({
-          type: 'change-detection',
-          payload: changeDetectionInfo,
-        }),
-      );
+    this.getAugury().subscribeToEvents(new ChangeDetectionInfoProjection(), changeDetectionInfo =>
+      this.bridge.sendMessage({
+        type: 'change-detection',
+        payload: changeDetectionInfo,
+      }),
+    );
 
-    this.getAugury()
-      .createSimpleChannel(new EventDragInfoProjection())
-      .subscribe(eventDragInfo => {
+    this.getAugury().subscribeToEvents(
+      new EventDragInfoProjection(),
+      (eventDragInfo: EventDragInfo) => {
         if (hasDragOccured(eventDragInfo)) {
           this.bridge.sendMessage({
             type: 'drag',
             payload: eventDragInfo,
           });
         }
-      });
+      },
+    );
 
     this.bridge.listenToRequests(request => {
       switch (request.type) {

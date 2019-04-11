@@ -1,8 +1,8 @@
-import { AuguryEvent } from '../../../events';
-import { AuguryEventAssembler } from '../augury-event-assembler.class';
+import { AuguryEvent } from '../../events';
+import { AuguryEventProjection } from '../augury-event-projection.class';
 import { ChangeDetectionInfo } from './change-detection-info.interface';
 
-export class ChangeDetectionInfoAssembler extends AuguryEventAssembler<ChangeDetectionInfo> {
+export class ChangeDetectionInfoProjection extends AuguryEventProjection<ChangeDetectionInfo> {
   private changeDetectionInfo: Partial<ChangeDetectionInfo> = {
     drag: 0,
   };

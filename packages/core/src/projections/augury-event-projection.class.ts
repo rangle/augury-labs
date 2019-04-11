@@ -1,7 +1,7 @@
-import { AuguryEvent } from '../../events';
-import { Assembler } from './assembler.interface';
+import { AuguryEvent } from '../events';
+import { Projection } from './projection.interface';
 
-export abstract class AuguryEventAssembler<Output> implements Assembler<AuguryEvent, Output> {
+export abstract class AuguryEventProjection<Output> implements Projection<AuguryEvent, Output> {
   public abstract process(event: AuguryEvent): boolean;
 
   public finish(): Output | null {
