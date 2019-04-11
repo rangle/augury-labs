@@ -418,7 +418,7 @@ export class TimelineComponent implements OnChanges {
       d3
         .select(element)
         .selectAll('.segment')
-        .attr('class', (segment: Segment) => getSegmentClasses(segment, this.selectedSegment)),
+        .attr('class', (segment: Segment<any>) => getSegmentClasses(segment, this.selectedSegment)),
     );
   }
 }

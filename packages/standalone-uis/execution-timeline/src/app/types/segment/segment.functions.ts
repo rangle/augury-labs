@@ -57,10 +57,10 @@ export function getSegmentClasses(segment: Segment<any>, selectedSegment: Segmen
   return classes.join(' ');
 }
 
-export function getMinimumStartTimestamp(segments: Segment[]) {
+export function getMinimumStartTimestamp(segments: Array<Segment<any>>) {
   return Math.min(...segments.map(segment => segment.start));
 }
 
-export function getMaximumEndTimestamp(segments: Segment[]) {
+export function getMaximumEndTimestamp(segments: Array<Segment<any>>) {
   return Math.max(...segments.map(segment => segment.end));
 }
