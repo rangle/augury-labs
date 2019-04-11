@@ -1,5 +1,6 @@
 :host {
   display: block;
+  flex-shrink: 0;
   margin-right: 1rem;
   width: 65%;
 
@@ -7,12 +8,12 @@
     margin-bottom: 1rem;
   }
 
-  #focus-chart,
-  #focus-chart g {
-    width: 100%;
+  #timeline-overview-axis,
+  #timeline-detail-axis {
+    font-size: 8px;
   }
 
-  ::ng-deep .brush {
+  ::ng-deep #timeline-overview-brush {
     > .selection {
       fill: none;
       stroke: #e1e9ee;
@@ -94,7 +95,7 @@
     }
   }
 
-  ::ng-deep .augury-segment {
+  ::ng-deep #timeline-detail-drag-segments rect {
     fill: grey;
     opacity: 0.2;
     pointer-events: none;

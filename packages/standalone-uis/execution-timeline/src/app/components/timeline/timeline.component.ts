@@ -6,27 +6,32 @@ import {
   Input,
   OnChanges,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 
 import * as d3 from 'd3';
-
-import { SegmentRowType } from '../../types/segment/segment-row-type.type';
-import { getSegmentClasses } from '../../types/segment/segment.functions';
+import { BrushBehavior } from 'd3';
+import {
+  getMaximumEndTimestamp,
+  getMinimumStartTimestamp,
+  getSegmentClasses,
+} from '../../types/segment/segment.functions';
 import { Segment } from '../../types/segment/segment.interface';
+import { TimelineGraphAxes } from '../../types/timeline-graph/timeline-graph-axes.interface';
+import { TimelineGraphRowTypes } from '../../types/timeline-graph/timeline-graph-row-types.constant';
+import { scaleSelectionOnXAxis } from '../../types/timeline-graph/timeline-graph-scales.functions';
+import { TimelineGraphScales } from '../../types/timeline-graph/timeline-graph-scales.interface';
+import { getTimelineGraphsAxes } from '../../types/timeline-graph/timeline-graphs-axes.functions';
+import {
+  canTimelineGraphsPaint,
+  getTimelineGraphsBoundaries,
+} from '../../types/timeline-graph/timeline-graphs-boundaries.functions';
+import { TimelineGraphsBoundaries } from '../../types/timeline-graph/timeline-graphs-boundaries.interface';
+import { getTimelineGraphsScales } from '../../types/timeline-graph/timeline-graphs-scales.functions';
+import { TimelineGraphsScales } from '../../types/timeline-graph/timeline-graphs-scales.interface';
 import { TimelineOptions } from '../../types/timeline-options/timeline-options.interface';
-
-const spacingFocus = { marginBottom: 20, paddingInner: 2, tickSize: 10 };
-const spacingContext = {
-  marginTop: 20,
-  marginBottom: 50,
-  paddingInner: 2,
-  xAxisOffset: 30,
-  tickSize: 10,
-};
-const spacingBrush = { marginTopAndBottom: 3 };
-const focusStartSize = 1000;
-const horizontalScrollScaleFactor = 4;
+import { isD3ZoomByBrush, updateD3RectangleData } from '../../util/d3-utils.functions';
 
 @Component({
   selector: 'ag-timeline',
@@ -36,11 +41,8 @@ const horizontalScrollScaleFactor = 4;
 })
 export class TimelineComponent implements OnChanges {
   private static readonly MinimumElapsedTimeToRepaintInMilliseconds = 500;
-  private static readonly RowTypes: SegmentRowType[] = [
-    'zone task',
-    'angular instability',
-    'change detection',
-  ];
+  private static readonly BrushSpacingMarginTopAndBottom = 3;
+  private static readonly SegmentPadding = 2;
 
   @Input()
   public segments: Array<Segment<any>>;
@@ -60,36 +62,55 @@ export class TimelineComponent implements OnChanges {
   @Output()
   public timelineOptionsChange = new EventEmitter<TimelineOptions>();
 
-  @ViewChild('contextOuterContainer') public contextOuterContainerElement: ElementRef;
-  @ViewChild('contextContainer') public contextContainerSVGElement: ElementRef;
-  @ViewChild('contextContent') public contextContentGElement: ElementRef;
-  @ViewChild('contextAxis') public contextAxisGElement: ElementRef;
-  @ViewChild('contextBrush') public contextBrushGElement: ElementRef;
+  @ViewChild('timelineOverviewGraph') public timelineOverviewGraphElement: ElementRef;
+  @ViewChild('timelineDetailViewGraph') public timelineDetailViewGraphElement: ElementRef;
 
-  @ViewChild('focusOuterContainer') public focusOuterContainerElement: ElementRef;
-  @ViewChild('focusContainer') public focusContainerSVGElement: ElementRef;
-  @ViewChild('focusContent') public focusContentGElement: ElementRef;
-  @ViewChild('focusMainContent') public focusContentMainGElement: ElementRef;
-  @ViewChild('focusAuguryContent') public focusContentAuguryGElement: ElementRef;
-  @ViewChild('focusAxis') public focusAxisGElement: ElementRef;
-
-  private timelineSelection = [0, 40];
+  private timelineSelection: [number, number] = [0, 200];
   private lastPaintedTimestamp = performance.now();
 
-  public ngOnChanges(changes) {
-    if (
-      (changes.segments && this.enoughTimeHasElapsedSinceLastPaint()) ||
-      changes.timelineOptions
-    ) {
-      this.repaint();
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes.segments && this.enoughTimeHasElapsedSinceLastPaint() || changes.timelineOptions) {
+      this.paint();
     } else if (changes.selectedSegment) {
       this.refreshSegmentColors();
     }
   }
 
-  public repaint() {
-    this.lastPaintedTimestamp = performance.now();
+  public onResize() {
     this.paint();
+  }
+
+  private paint() {
+    const boundaries = getTimelineGraphsBoundaries(
+      this.timelineOverviewGraphElement.nativeElement,
+      this.timelineDetailViewGraphElement.nativeElement,
+    );
+
+    if (!canTimelineGraphsPaint(boundaries)) {
+      return;
+    }
+
+    const minimumStartTimestamp = getMinimumStartTimestamp(this.segments);
+    const maximumEndTimestamp = getMaximumEndTimestamp(this.segments);
+
+    const scales = getTimelineGraphsScales(boundaries, minimumStartTimestamp, maximumEndTimestamp);
+    const axes = getTimelineGraphsAxes(scales);
+
+    this.paintTimelineOverviewAxes(boundaries.overview, axes.overview);
+    this.paintTimelineDetailViewAxes(boundaries.detailView, axes.detailView);
+    this.paintTimelineOverviewSegments(boundaries.overview, scales.overview, minimumStartTimestamp);
+    this.paintTimelineDetailViewSegments(
+      boundaries.detailView,
+      scales.detailView,
+      minimumStartTimestamp,
+    );
+    this.refreshTimelineDetailViewDragSegments(
+      boundaries.detailView,
+      scales.detailView,
+      minimumStartTimestamp,
+    );
+    this.paintTimelineGraphsBrushAndZoom(boundaries, scales, axes.detailView);
+    this.paintSelectionMask(boundaries.overview);
   }
 
   private enoughTimeHasElapsedSinceLastPaint() {
@@ -99,72 +120,27 @@ export class TimelineComponent implements OnChanges {
     );
   }
 
-  private paint() {
-    this.clearGraphs();
-
-    const focusWidth = this.focusOuterContainerElement.nativeElement.clientWidth;
-    const contextWidth = this.contextOuterContainerElement.nativeElement.clientWidth;
-
-    if (focusWidth <= 0 || contextWidth <= 0 || this.segments.length === 0) {
-      return;
-    }
-
-    const focusHeight = Math.max(
-      0,
-      this.focusOuterContainerElement.nativeElement.clientHeight - spacingFocus.marginBottom,
-    );
-    const contextOuterHeight = Math.max(
-      0,
-      this.contextOuterContainerElement.nativeElement.clientHeight,
-    );
-    const contextInnerHeight = Math.max(
-      0,
-      contextOuterHeight - spacingContext.marginBottom - spacingContext.marginTop,
-    );
-
-    const minStart = d3.min(this.segments, d => d.start);
-    const maxEnd = d3.max(this.segments, d => d.end);
-
-    const scaleXFocus = d3
-      .scaleLinear()
-      .domain([0, maxEnd - minStart])
-      .range([0, focusWidth] as ReadonlyArray<number>);
-
-    const scaleXContext = d3
-      .scaleLinear()
-      .domain(scaleXFocus.domain())
-      .range([0, contextWidth] as ReadonlyArray<number>);
-
-    const scaleYFocus = d3
-      .scaleBand()
-      .domain(TimelineComponent.RowTypes as ReadonlyArray<string>)
-      .range([0, focusHeight]);
-
-    const scaleYContext = d3
-      .scaleBand()
-      .domain(scaleYFocus.domain())
-      .range([0, contextInnerHeight]);
-
-    const axisXFocus = d3.axisBottom(scaleXFocus).tickFormat((d: number) => `${d} ms`);
-
-    const axisXContext = d3
-      .axisBottom(scaleXContext)
-      .tickSize(spacingContext.tickSize)
-      .tickFormat((d: number) => `${d} ms`);
-
-    d3.select(this.focusAxisGElement.nativeElement)
-      .attr('transform', 'translate(0, ' + focusHeight + ')')
-      .call(axisXFocus);
-
-    const brush = d3
+  private paintTimelineGraphsBrushAndZoom(
+    boundaries: TimelineGraphsBoundaries,
+    scales: TimelineGraphsScales,
+    axes: TimelineGraphAxes,
+  ) {
+    const brushBehaviour = d3
       .brushX()
       .extent([
-        [0, spacingBrush.marginTopAndBottom],
-        [contextWidth, Math.max(0, contextOuterHeight - spacingBrush.marginTopAndBottom)],
+        [0, TimelineComponent.BrushSpacingMarginTopAndBottom],
+        [
+          boundaries.overview.width,
+          Math.max(
+            0,
+            boundaries.overview.height - TimelineComponent.BrushSpacingMarginTopAndBottom,
+          ),
+        ],
       ])
       .on('brush end', () => {
-        const selection = d3.event.selection || scaleXContext.range();
-        d3.select(this.contextContainerSVGElement.nativeElement)
+        const selection = d3.event.selection || scales.overview.xScale.range();
+
+        d3.select(this.timelineOverviewGraphElement.nativeElement)
           .select('#selectionMaskBackground')
           .attr('width', selection[1] - selection[0])
           .attr('x', selection[0]);
@@ -174,182 +150,275 @@ export class TimelineComponent implements OnChanges {
             case 'zoom':
               return;
             case 'end':
-              this.timelineSelection = [scaleXContext(selection[0]), scaleXContext(selection[1])];
+              this.timelineSelection = [
+                scales.overview.xScale(selection[0]),
+                scales.overview.xScale(selection[1]),
+              ];
           }
         }
 
         const transformation = d3.zoomIdentity
-          .scale(contextWidth / (selection[1] - selection[0]))
+          .scale(boundaries.overview.width / (selection[1] - selection[0]))
           .translate(-selection[0], 0);
 
         if (transformation.x === 0 && transformation.k === 1) {
           return;
         }
 
-        scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain());
+        scales.detailView.xScale.domain(transformation.rescaleX(scales.overview.xScale).domain());
 
         const translation =
-          (transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidth) / contextWidth;
-        const scale = transformation.k;
+          (transformation.k *
+            scales.overview.xScale(-scales.detailView.xScale.domain()[0]) *
+            boundaries.detailView.width) /
+          boundaries.overview.width;
 
-        d3.select(this.focusContentGElement.nativeElement).attr(
-          'transform',
-          `translate(${translation}) scale(${scale}, 1)`,
-        );
+        d3.select(this.timelineDetailViewGraphElement.nativeElement)
+          .select('#timeline-detail-container')
+          .call(zoomBehavior.transform, transformation);
 
-        d3.select(this.focusContainerSVGElement.nativeElement).call(zoom.transform, transformation);
+        d3.select(this.timelineDetailViewGraphElement.nativeElement)
+          .select('#timeline-detail-content')
+          .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
 
-        d3.select(this.focusAxisGElement.nativeElement).call(axisXFocus);
+        this.paintTimelineDetailViewAxes(boundaries.detailView, axes);
       });
 
-    const zoom = d3
+    const zoomBehavior = d3
       .zoom()
       .scaleExtent([1, Infinity])
-      .translateExtent([[0, 0], [focusWidth, focusHeight]])
-      .extent([[0, 0], [focusWidth, focusHeight]])
+      .translateExtent([[0, 0], [boundaries.detailView.width, boundaries.detailView.height]])
+      .extent([[0, 0], [boundaries.detailView.width, boundaries.detailView.height]])
       .on('zoom', () => {
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'brush') {
+        if (isD3ZoomByBrush()) {
           return;
-        } // ignore zoom-by-brush
+        }
+
         const transformation = d3.event.transform;
 
-        scaleXFocus.domain(transformation.rescaleX(scaleXContext).domain());
+        scales.detailView.xScale.domain(transformation.rescaleX(scales.overview.xScale).domain());
 
         const translation =
-          (transformation.k * scaleXContext(-scaleXFocus.domain()[0]) * focusWidth) / contextWidth;
-        const scale = transformation.k;
+          (transformation.k *
+            scales.overview.xScale(-scales.detailView.xScale.domain()[0]) *
+            boundaries.detailView.width) /
+          boundaries.overview.width;
 
-        d3.select(this.focusContentGElement.nativeElement).attr(
-          'transform',
-          `translate(${translation}) scale(${scale}, 1)`,
-        );
+        d3.select(this.timelineDetailViewGraphElement.nativeElement)
+          .select('#timeline-detail-content')
+          .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
 
-        d3.select(this.focusAxisGElement.nativeElement).call(axisXFocus);
+        d3.select(this.timelineOverviewGraphElement.nativeElement)
+          .select('#timeline-overview-brush')
+          .call(brushBehaviour.move, [
+            scales.overview.xScale(scales.detailView.xScale.domain()[0]),
+            scales.overview.xScale(scales.detailView.xScale.domain()[1]),
+          ]);
 
-        d3.select(this.contextBrushGElement.nativeElement).call(brush.move, [
-          scaleXContext(scaleXFocus.domain()[0]),
-          scaleXContext(scaleXFocus.domain()[1]),
-        ]);
+        this.paintTimelineDetailViewAxes(boundaries.detailView, axes);
       });
 
-    d3.select(this.focusContentMainGElement.nativeElement)
-      .selectAll('rect')
-      .data(this.segments)
-      .enter()
-      .append('rect')
-      .attr('class', d => getSegmentClasses(d, this.selectedSegment))
-      .attr('x', d => scaleXFocus(d.start - minStart) + spacingFocus.paddingInner)
-      .attr('y', d => scaleYFocus(d.row))
-      .attr('width', d => scaleXFocus(d.end - minStart) - scaleXFocus(d.start - minStart))
-      .attr(
-        'height',
-        Math.max(0, focusHeight / TimelineComponent.RowTypes.length - spacingFocus.paddingInner),
-      )
-      .on('click', segment => this.segmentSelected.emit(segment));
-
-    if (this.timelineOptions.showAuguryDrag) {
-      d3.select(this.focusContentAuguryGElement.nativeElement)
-        .selectAll('rect')
-        .data(this.dragSegments)
-        .enter()
-        .append('rect')
-        .classed('augury-segment', true)
-        .attr('x', d => scaleXFocus(d.start - minStart))
-        .attr('y', 0)
-        .attr('width', d => scaleXFocus(d.end - minStart) - scaleXFocus(d.start - minStart))
-        .attr('height', focusHeight);
-    }
-
-    d3.select(this.contextContentGElement.nativeElement)
-      .selectAll('rect')
-      .data(this.segments)
-      .enter()
-      .append('rect')
-      .attr('class', d => getSegmentClasses(d, this.selectedSegment))
-      .attr('x', d => scaleXContext(d.start - minStart))
-      .attr('y', d => scaleYContext(d.row) + spacingContext.paddingInner + spacingContext.marginTop)
-      .attr('width', d => scaleXContext(d.end - minStart) - scaleXContext(d.start - minStart))
-      .attr(
-        'height',
-        Math.max(0, contextInnerHeight / TimelineComponent.RowTypes.length) -
-          spacingFocus.paddingInner,
-      );
-
-    d3.select(this.contextAxisGElement.nativeElement)
-      .style('font', '8px times')
-      .attr('class', 'axis axis--x')
-      .attr('transform', `translate(0, ${contextInnerHeight + spacingContext.xAxisOffset})`)
-      .call(axisXContext);
-
-    const lastSegment = this.segments[this.segments.length - 1];
-
-    d3.select(this.contextBrushGElement.nativeElement).call(brush);
-
-    d3.select(this.focusContainerSVGElement.nativeElement).call(zoom);
-
-    d3.select(this.focusOuterContainerElement.nativeElement).on('wheel.zoom', () => {
-      if (d3.event.shiftKey) {
-        const scaledDelta = d3.event.deltaX / horizontalScrollScaleFactor;
-        const selectionRange = [
-          scaleXContext(scaleXFocus.domain()[0]),
-          scaleXContext(scaleXFocus.domain()[1]),
-        ];
-        const constrainedDelta =
-          scaledDelta > 0
-            ? Math.min(scaleXContext.range()[1] - selectionRange[1], scaledDelta)
-            : Math.max(scaledDelta, -selectionRange[0]);
-        if (scaledDelta !== 0) {
-          d3.select(this.contextBrushGElement.nativeElement).call(brush.move, [
-            selectionRange[0] + constrainedDelta,
-            selectionRange[1] + constrainedDelta,
-          ]);
-        }
-      }
-    });
-
-    if (lastSegment) {
-      const hasPassedMin = lastSegment.end > focusStartSize + 100;
-      const endMs = hasPassedMin ? focusStartSize : lastSegment.end * 0.8;
-      const scaleFactor =
-        scaleXContext.range()[1] / (scaleXContext.domain()[1] - scaleXContext.domain()[0]);
-      const pos: [number, number] = [
-        scaleFactor * (this.timelineSelection ? this.timelineSelection[0] : 0),
-        scaleFactor * (this.timelineSelection ? this.timelineSelection[1] : endMs),
-      ];
-
-      d3.select(this.contextBrushGElement.nativeElement).call(brush.move, pos);
-    }
-
-    d3.select(this.contextContainerSVGElement.nativeElement)
+    d3.select(this.timelineOverviewGraphElement.nativeElement)
+      .select('#timeline-overview-brush')
+      .call(brushBehaviour)
       .select('.brush .overlay')
       .attr('mask', 'url(#selectionMask)');
 
-    d3.select(this.contextContainerSVGElement.nativeElement)
-      .select('#selectionMaskCutout')
-      .style('width', contextWidth)
-      .style('height', contextInnerHeight)
-      .attr('y', spacingContext.marginTop);
+    d3.select(this.timelineDetailViewGraphElement.nativeElement)
+      .select('#timeline-detail-container')
+      .call(zoomBehavior);
+
+    this.paintTimelineDetailViewMouseWheel(scales, brushBehaviour);
+    this.setDefaultBrushPosition(scales.overview, brushBehaviour);
   }
 
-  private refreshSegmentColors() {
-    [this.focusContentGElement.nativeElement, this.contextContentGElement.nativeElement].forEach(
-      element => {
-        d3.select(element)
-          .selectAll('.segment')
-          .attr('class', (d: Segment<any>) => getSegmentClasses(d, this.selectedSegment));
-      },
+  private paintTimelineDetailViewMouseWheel(
+    scales: TimelineGraphsScales,
+    brushBehaviour: BrushBehavior<any>,
+  ) {
+    d3.select(this.timelineDetailViewGraphElement.nativeElement).on('wheel.zoom', () => {
+      if (d3.event.shiftKey) {
+        const scaledDelta = d3.event.deltaX / 4;
+        const selectionRange = [
+          scales.overview.xScale(scales.detailView.xScale.domain()[0]),
+          scales.overview.xScale(scales.detailView.xScale.domain()[1]),
+        ];
+        const constrainedDelta =
+          scaledDelta > 0
+            ? Math.min(scales.overview.xScale.range()[1] - selectionRange[1], scaledDelta)
+            : Math.max(scaledDelta, -selectionRange[0]);
+
+        if (scaledDelta !== 0) {
+          d3.select(this.timelineOverviewGraphElement.nativeElement)
+            .select('#timeline-overview-brush')
+            .call(brushBehaviour.move, [
+              selectionRange[0] + constrainedDelta,
+              selectionRange[1] + constrainedDelta,
+            ]);
+        }
+      }
+    });
+  }
+
+  private setDefaultBrushPosition(scales: TimelineGraphScales, brushBehaviour: BrushBehavior<any>) {
+    const noCurrentBrushSelection = !d3.brushSelection(d3
+      .select(this.timelineOverviewGraphElement.nativeElement)
+      .select('#timeline-overview-brush')
+      .node() as SVGGElement);
+
+    if (noCurrentBrushSelection) {
+      d3.select(this.timelineOverviewGraphElement.nativeElement)
+        .select('#timeline-overview-brush')
+        .call(brushBehaviour.move, scaleSelectionOnXAxis(scales, this.timelineSelection));
+    }
+  }
+
+  private paintTimelineOverviewAxes(
+    boundaries: TimelineOverviewGraphBoundaries,
+    axes: TimelineGraphAxes,
+  ) {
+    d3.select(this.timelineOverviewGraphElement.nativeElement)
+      .select('#timeline-overview-axis')
+      .attr('transform', `translate(0, ${boundaries.height - 22})`)
+      .call(axes.xAxis);
+  }
+
+  private paintTimelineDetailViewAxes(
+    boundaries: TimelineDetailViewGraphBoundaries,
+    axes: TimelineGraphAxes,
+  ) {
+    d3.select(this.timelineDetailViewGraphElement.nativeElement)
+      .select('#timeline-detail-axis')
+      .attr('transform', `translate(0, ${boundaries.height - 2})`)
+      .call(axes.xAxis);
+  }
+
+  private paintTimelineOverviewSegments(
+    boundaries: TimelineOverviewGraphBoundaries,
+    scales: TimelineGraphScales,
+    minimumStartTimestamp: number,
+  ) {
+    updateD3RectangleData(
+      d3
+        .select(this.timelineOverviewGraphElement.nativeElement)
+        .select('#timeline-overview-content'),
+      this.segments,
+      selection =>
+        selection
+          .attr('class', d => getSegmentClasses(d, this.selectedSegment))
+          .attr('x', d => scales.xScale(d.start - minimumStartTimestamp))
+          .attr('y', d => scales.yScale(d.row) + TimelineComponent.SegmentPadding + 20)
+          .attr(
+            'width',
+            d =>
+              scales.xScale(d.end - minimumStartTimestamp) -
+              scales.xScale(d.start - minimumStartTimestamp),
+          )
+          .attr(
+            'height',
+            Math.max(0, boundaries.innerHeight / TimelineGraphRowTypes.length) -
+              TimelineComponent.SegmentPadding,
+          ),
     );
   }
 
-  private clearGraphs() {
-    this.clearGElement(this.contextContentGElement);
-    this.clearGElement(this.focusContentAuguryGElement);
-    this.clearGElement(this.focusContentMainGElement);
+  private paintTimelineDetailViewSegments(
+    boundaries: TimelineDetailViewGraphBoundaries,
+    scales: TimelineGraphScales,
+    minimumStartTimestamp: number,
+  ) {
+    updateD3RectangleData(
+      d3
+        .select(this.timelineDetailViewGraphElement.nativeElement)
+        .select('#timeline-detail-segments'),
+      this.segments,
+      selection =>
+        selection
+          .attr('class', segment => getSegmentClasses(segment, this.selectedSegment))
+          .attr(
+            'x',
+            segment =>
+              scales.xScale(segment.start - minimumStartTimestamp) +
+              TimelineComponent.SegmentPadding,
+          )
+          .attr('y', d => scales.yScale(d.row))
+          .attr(
+            'width',
+            segment =>
+              scales.xScale(segment.end - minimumStartTimestamp) -
+              scales.xScale(segment.start - minimumStartTimestamp),
+          )
+          .attr(
+            'height',
+            Math.max(
+              0,
+              boundaries.height / TimelineGraphRowTypes.length - TimelineComponent.SegmentPadding,
+            ),
+          ),
+      segment => this.segmentSelected.emit(segment),
+    );
   }
 
-  private clearGElement(elementRef: ElementRef) {
-    d3.select(elementRef.nativeElement)
+  private refreshTimelineDetailViewDragSegments(
+    boundaries: TimelineDetailViewGraphBoundaries,
+    scales: TimelineGraphScales,
+    minimumStartTimestamp: number,
+  ) {
+    if (this.timelineOptions.showAuguryDrag) {
+      this.paintTimelineDetailViewDragSegments(boundaries, scales, minimumStartTimestamp);
+    } else {
+      this.deleteTimelineDetailViewDragSegments();
+    }
+  }
+
+  private paintTimelineDetailViewDragSegments(
+    boundaries: TimelineDetailViewGraphBoundaries,
+    scales: TimelineGraphScales,
+    minimumStartTimestamp: number,
+  ) {
+    updateD3RectangleData(
+      d3
+        .select(this.timelineDetailViewGraphElement.nativeElement)
+        .select('#timeline-detail-drag-segments'),
+      this.dragSegments,
+      selection =>
+        selection
+          .attr('x', segment => scales.xScale(segment.start - minimumStartTimestamp))
+          .attr('y', 0)
+          .attr(
+            'width',
+            segment =>
+              scales.xScale(segment.end - minimumStartTimestamp) -
+              scales.xScale(segment.start - minimumStartTimestamp),
+          )
+          .attr('height', boundaries.height),
+    );
+  }
+
+  private deleteTimelineDetailViewDragSegments() {
+    d3.select(this.timelineDetailViewGraphElement.nativeElement)
+      .select('#timeline-detail-drag-segments')
       .selectAll('*')
       .remove();
+  }
+
+  private paintSelectionMask(boundaries: TimelineOverviewGraphBoundaries) {
+    d3.select(this.timelineOverviewGraphElement.nativeElement)
+      .select('#selectionMaskCutout')
+      .style('width', boundaries.width)
+      .style('height', boundaries.innerHeight)
+      .attr('y', 20);
+  }
+
+  private refreshSegmentColors() {
+    [
+      this.timelineOverviewGraphElement.nativeElement,
+      this.timelineDetailViewGraphElement.nativeElement,
+    ].forEach(element =>
+      d3
+        .select(element)
+        .selectAll('.segment')
+        .attr('class', (segment: Segment<any>) => getSegmentClasses(segment, this.selectedSegment)),
+    );
   }
 }
