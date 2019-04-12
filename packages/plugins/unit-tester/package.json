@@ -1,7 +1,7 @@
 {
   "name": "@augury/unit-tester-plugin",
   "private": true,
-  "version": "0.5.2",
+  "version": "0.6.0-beta.0",
   "description": "Unit testing plugin for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -35,7 +35,6 @@
     "lint:fix": "tslint --project . --fix"
   },
   "dependencies": {
-    "@augury/core": "^0.5.2"
-  },
-  "devDependencies": {}
+    "@augury/core": "^0.6.0-beta.0"
+  }
 }

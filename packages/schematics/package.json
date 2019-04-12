@@ -1,6 +1,6 @@
 {
   "name": "@augury/schematics",
-  "version": "0.5.3-beta.13",
+  "version": "0.6.0-beta.0",
   "description": "Schematics for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -33,7 +33,5 @@
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

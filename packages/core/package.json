@@ -1,6 +1,6 @@
 {
   "name": "@augury/core",
-  "version": "0.5.2",
+  "version": "0.6.0-beta.0",
   "description": "Provides the core infrastructure for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -31,7 +31,5 @@
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }
