@@ -1,55 +1,5 @@
-const path = require('path');
-const webpack = require('webpack');
-const ProgressPlugin = require('webpack/lib/ProgressPlugin');
+const merge = require('webpack-merge');
 
-/*
- * Config
- */
-module.exports = {
-  mode: 'development',
-  devtool: 'source-map',
-  cache: true,
-  context: __dirname,
-  stats: {
-    colors: true,
-    reasons: true,
-  },
+const webpackConfigBase = require('../../../webpack.config.base');
 
-  entry: './src/index.ts',
-
-  // Config for our build files
-  output: {
-    libraryTarget: 'commonjs',
-    path: path.resolve('./dist'),
-    filename: 'index.js',
-    sourceMapFilename: 'index.js.map',
-  },
-
-  resolve: {
-    extensions: ['.ts', '.js', '.json'],
-    modules: ['./node_modules'],
-  },
-
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-      },
-      {
-        test: /\.css$/,
-        use: ['to-string-loader', 'css-loader', 'postcss-loader'],
-      },
-      {
-        test: /\.png$/,
-        use: 'url-loader?mimetype=image/png',
-      },
-      {
-        test: /\.html$/,
-        use: 'raw-loader',
-      },
-    ],
-  },
-
-  plugins: [new ProgressPlugin()],
-};
+module.exports = merge(webpackConfigBase);

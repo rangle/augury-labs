@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:augury": "ng serve -c augury",
+    "start:augury": "ng serve -c augury --vendorSourceMap",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",

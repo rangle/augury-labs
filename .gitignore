@@ -1,27 +1,44 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+dist
+build
+tmp
+out-tsc
+
 # dependencies
 node_modules
 
-# testing
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - vscode
+/.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Misc
+.sass-cache
 coverage
-
-# production
-build
-dist
-
-# no npm lock files
-package-lock.json
-
-# npm/yarn/lerna
-npm-debug.log*
+npm-debug.log
+testem.log
+typings
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
-# os/misc
-.DS_Store
-
-# output of 'npm pack'
 *.tgz
 
-# IDES
-.idea
+# No npm lock files
+package-lock.json
+
+# System files
+.DS_Store
+Thumbs.db

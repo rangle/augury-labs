@@ -17,20 +17,21 @@
     "url": "https://github.com/rangle/augury-labs/issues"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/typings/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "npm run clean && tsc",
-    "build:watch": "tsc --watch",
-    "clean": "rimraf ./dist",
+    "build": "cross-env NODE_ENV=development webpack",
+    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:watch": "cross-env NODE_ENV=development webpack --watch",
+    "clean": "rimraf dist",
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
-    "lint:fix": "tslint --project . --fix",
-    "precommit": "lint-staged",
-    "link": "yarn link"
+    "lint:fix": "tslint --project . --fix"
   },
-  "devDependencies": {
-    "@augury/tools": "^0.5.2"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

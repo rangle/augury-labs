@@ -17,6 +17,7 @@
   "bugs": {
     "url": "https://github.com/rangle/augury-labs/issues"
   },
+  "types": "dist/typings/index.d.ts",
   "schematics": "./dist/collection.json",
   "files": [
     "dist"
@@ -34,7 +35,5 @@
     "lint:fix": "tslint --project . --fix"
   },
   "dependencies": {},
-  "devDependencies": {
-    "@augury/tools": "^0.5.2"
-  }
+  "devDependencies": {}
 }

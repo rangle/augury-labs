@@ -1,11 +1,12 @@
 {
-  "extends": "../../tools/tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
     "lib": ["es2018", "dom"],
     "noImplicitAny": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "declarationDir": "./dist/typings"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["**/*.spec.ts"]

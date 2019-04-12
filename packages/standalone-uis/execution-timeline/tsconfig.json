@@ -1,8 +1,7 @@
 {
-  "compileOnSave": false,
-  "buildOnSave": false,
   "compilerOptions": {
-    "lib": ["dom", "es7"],
+    "baseUrl": "./src",
+    "lib": ["dom", "es2018"],
     "target": "es5",
     "moduleResolution": "node",
     "declaration": false,
@@ -10,8 +9,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
-    "baseUrl": "./src"
+    "sourceMap": true
   },
   "exclude": ["node_modules", "build"]
 }
