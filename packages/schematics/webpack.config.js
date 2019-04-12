@@ -1,28 +1,15 @@
 const path = require('path');
 const ProgressPlugin = require('webpack/lib/ProgressPlugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// Environment config
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const isProduction = NODE_ENV === 'production';
 
-console.log(`
-  Building Augury Labs Schematics in ${NODE_ENV} mode
-`);
-
-/*
- * Config
- */
 module.exports = {
   mode: isProduction ? 'production' : 'development',
   devtool: isProduction ? false : ' source-map',
   target: 'node',
-  cache: true,
-  context: __dirname,
-  stats: {
-    colors: true,
-    reasons: true,
-  },
 
   externals: {
     /**
@@ -38,7 +25,6 @@ module.exports = {
     'schematics/ng-add/index': './src/schematics/ng-add/index.ts',
   },
 
-  // Config for our build files
   output: {
     libraryTarget: 'commonjs',
     path: path.resolve(__dirname, 'dist'),
@@ -62,6 +48,7 @@ module.exports = {
 
   plugins: [
     new ProgressPlugin(),
+    new CleanWebpackPlugin(DIST_PATH),
     new CopyWebpackPlugin([
       {
         from: './src/collection.json',
@@ -77,6 +64,4 @@ module.exports = {
       },
     ]),
   ],
-
-  optimization: {},
 };
