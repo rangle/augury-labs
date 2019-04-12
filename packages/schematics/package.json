@@ -17,9 +17,6 @@
   "bugs": {
     "url": "https://github.com/rangle/augury-labs/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "files": ["dist"],
   "scripts": {
     "prebuild": "npm run clean",
