@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const isProduction = NODE_ENV === 'production';
+const DIST_PATH = './dist';
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
