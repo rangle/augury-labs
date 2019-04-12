@@ -9,7 +9,7 @@ import { NgAddSchema } from '../../types/ng-add.schema';
 const testProjectName = 'test-project';
 
 describe('Rules', () => {
-  const collectionPath = path.join(__dirname, '../collection.json');
+  const collectionPath = path.join(__dirname, '../../collection.json');
   const schematicRunner = new SchematicTestRunner('schematics', collectionPath);
 
   const workspaceOptions: any = {
