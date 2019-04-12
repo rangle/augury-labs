@@ -1,14 +1,15 @@
 {
   "name": "@augury/schematics",
-  "version": "0.5.3-beta.13",
+  "version": "0.6.0-beta.0",
   "description": "Schematics for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
   "homepage": "https://github.com/rangle/augury-labs#readme",
   "keywords": [
-    "schematics",
     "angular",
-    "augury"
+    "augury",
+    "schematics",
+    "angular cli"
   ],
   "repository": {
     "type": "git",
@@ -17,11 +18,11 @@
   "bugs": {
     "url": "https://github.com/rangle/augury-labs/issues"
   },
-  "types": "dist/typings/index.d.ts",
-  "schematics": "./dist/collection.json",
   "files": [
     "dist"
   ],
+  "types": "dist/typings/index.d.ts",
+  "schematics": "./dist/collection.json",
   "scripts": {
     "start": "npm-run-all clean build:watch",
     "build": "cross-env NODE_ENV=development webpack",
@@ -33,7 +34,5 @@
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
-  },
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

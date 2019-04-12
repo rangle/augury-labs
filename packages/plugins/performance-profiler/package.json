@@ -1,6 +1,6 @@
 {
   "name": "@augury/performance-profiler-plugin",
-  "version": "0.5.2",
+  "version": "0.6.0-beta.0",
   "description": "Performance profiler plugin for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -8,7 +8,8 @@
   "keywords": [
     "angular",
     "augury",
-    "profiler"
+    "profiler",
+    "performance"
   ],
   "repository": {
     "type": "git",
@@ -17,11 +18,11 @@
   "bugs": {
     "url": "https://github.com/rangle/augury-labs/issues"
   },
-  "main": "dist/index.js",
-  "types": "dist/typings/index.d.ts",
   "files": [
     "dist"
   ],
+  "main": "dist/index.js",
+  "types": "dist/typings/index.d.ts",
   "scripts": {
     "build": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
@@ -34,9 +35,9 @@
     "lint:fix": "tslint --project . --fix"
   },
   "dependencies": {
-    "@augury/core": "^0.5.2"
+    "@augury/core": "^0.6.0-beta.0"
   },
   "devDependencies": {
-    "@augury/execution-timeline-ui": "^0.5.2"
+    "@augury/execution-timeline-ui": "^0.6.0-beta.0"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@augury/unit-tester-plugin",
   "private": true,
-  "version": "0.5.2",
+  "version": "0.6.0-beta.0",
   "description": "Unit testing plugin for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -9,7 +9,12 @@
   "keywords": [
     "angular",
     "augury",
-    "profiler"
+    "profiler",
+    "performance",
+    "test",
+    "testing",
+    "integration",
+    "e2e"
   ],
   "repository": {
     "type": "git",
@@ -18,11 +23,11 @@
   "bugs": {
     "url": "https://github.com/rangle/augury-labs/issues"
   },
-  "main": "dist/index.js",
-  "types": "dist/typings/index.d.ts",
   "files": [
     "dist"
   ],
+  "main": "dist/index.js",
+  "types": "dist/typings/index.d.ts",
   "scripts": {
     "build": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
@@ -35,7 +40,6 @@
     "lint:fix": "tslint --project . --fix"
   },
   "dependencies": {
-    "@augury/core": "^0.5.2"
-  },
-  "devDependencies": {}
+    "@augury/core": "^0.6.0-beta.0"
+  }
 }
