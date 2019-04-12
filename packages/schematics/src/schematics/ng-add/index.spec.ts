@@ -1,10 +1,10 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-import * as path from 'path';
-
 import { getWorkspace } from '@schematics/angular/utility/config';
 import { getProject } from '@schematics/angular/utility/project';
 import { getProjectTargets } from '@schematics/angular/utility/project-targets';
-import { Schema } from './schema';
+import * as path from 'path';
+
+import { NgAddSchema } from '../../types/ng-add.schema';
 
 const testProjectName = 'test-project';
 
@@ -22,7 +22,7 @@ describe('Rules', () => {
     name: testProjectName,
   };
 
-  const schemaOptions: Schema = {
+  const schemaOptions: NgAddSchema = {
     project: testProjectName,
   };
 

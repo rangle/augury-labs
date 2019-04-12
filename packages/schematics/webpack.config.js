@@ -35,7 +35,7 @@ module.exports = {
   },
 
   entry: {
-    'ng-add/index': './src/ng-add/index.ts',
+    'schematics/ng-add/index': './src/schematics/ng-add/index.ts',
   },
 
   // Config for our build files
@@ -68,12 +68,12 @@ module.exports = {
         to: './collection.json',
       },
       {
-        from: './src/ng-add/files',
-        to: './ng-add/files',
+        from: './src/schematics/ng-add/files',
+        to: './schematics/ng-add/files',
       },
       {
-        from: './src/ng-add/schema.json',
-        to: './ng-add/schema.json',
+        from: './src/schematics/ng-add/schema.json',
+        to: './schematics/ng-add/schema.json',
       },
     ]),
   ],

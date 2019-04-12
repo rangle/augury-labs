@@ -1,8 +1,24 @@
+import { Tree } from '@angular-devkit/schematics';
+import { getWorkspace } from '@schematics/angular/utility/config';
+import { getProject } from '@schematics/angular/utility/project';
+import { WorkspaceTargets } from '@schematics/angular/utility/workspace-models';
 import { get } from 'http';
 
-export interface NpmRegistryPackage {
-  name: string;
-  version: string;
+import { NpmRegistryPackage } from '../types/npm-registry-package';
+
+export function getWorkspaceProject(tree: Tree, projectName: string = '') {
+  const workspace = getWorkspace(tree);
+  const project = getProject(workspace, projectName || workspace.defaultProject!);
+  return { workspace, project };
+}
+
+export function projectTargetsConfigurationFound(projectTargets: WorkspaceTargets): boolean {
+  return !!(
+    projectTargets.build! &&
+    projectTargets.build!.configurations! &&
+    projectTargets.serve! &&
+    projectTargets.serve!.configurations!
+  );
 }
 
 export function getLatestNodeVersion(packageName: string): Promise<NpmRegistryPackage> {

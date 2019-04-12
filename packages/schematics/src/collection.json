@@ -3,8 +3,8 @@
   "schematics": {
     "ng-add": {
       "description": "Adds Augury to the application",
-      "factory": "./ng-add/index",
-      "schema": "./ng-add/schema.json",
+      "factory": "./schematics/ng-add/index",
+      "schema": "./schematics/ng-add/schema.json",
       "aliases": ["install"]
     }
   }
