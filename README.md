@@ -50,15 +50,13 @@ To setup `augury-labs` in your application you have two alternatives.
 
 _NOTE: The following assumes your application is a standard [Angular CLI](https://cli.angular.io/) setup._
 
-**Angular Devkit 6+**
-
 Using the Angular CLI `ng add` command will install the correct dependencies, perform the necessary configuration and execute initialization code.
 
 ```
 ng add @augury/schematics
 ```
 
-**Angular Devkit _below_ 6**
+_DISCLAIMER: This assumes your application are using the Angular Devkit 6+_
 
 To setup and install Augury manually, follow the [manual installation](docs/manual-installation.md).
 
