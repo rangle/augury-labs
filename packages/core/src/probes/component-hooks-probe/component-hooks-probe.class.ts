@@ -1,6 +1,8 @@
-import { getRootComponentInstance } from '../../utils';
 import { Probe } from '../probe.class';
-import * as ngModuleHelpers from './shared-helpers/ng-module';
+import * as ngModuleHelpers from '../types/ng-module.functions';
+
+declare const ng;
+declare const getAllAngularRootElements;
 
 export const HookNames = [
   'ngOnChanges',
@@ -15,6 +17,7 @@ export const HookNames = [
 
 export class ComponentHooksProbe extends Probe {
   private ngModule;
+  private rootComponentInstance = null;
 
   public doInitialize(ngZone, ngModule) {
     this.ngModule = ngModule;
@@ -41,7 +44,7 @@ export class ComponentHooksProbe extends Probe {
             hook: name,
             componentType: component,
             componentInstance: this,
-            rootComponentInstance: getRootComponentInstance(),
+            rootComponentInstance: probe.getRootComponentInstance(),
             args,
           }));
 
@@ -57,5 +60,13 @@ export class ComponentHooksProbe extends Probe {
 
       HookNames.forEach(probeHookMethod);
     });
+  }
+
+  private getRootComponentInstance(): any {
+    if (this.rootComponentInstance === null) {
+      this.rootComponentInstance = ng.probe(getAllAngularRootElements()[0]).instance;
+    }
+
+    return this.rootComponentInstance;
   }
 }

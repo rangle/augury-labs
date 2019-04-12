@@ -23,7 +23,7 @@ export class ChangeDetectionInfoProjection extends AuguryEventProjection<ChangeD
             };
           }
 
-          this.changeDetectionInfo.componentsChecked.push(event.payload.componentInstance);
+          this.changeDetectionInfo.componentsChecked.push(event.payload.instance);
 
           break;
         case 'ngAfterViewChecked':

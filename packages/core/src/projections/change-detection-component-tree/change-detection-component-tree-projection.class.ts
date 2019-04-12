@@ -1,11 +1,14 @@
 import { AuguryEvent } from '../../events';
+import { mergeComponentTrees } from '../../probes/types/component-tree-node';
 import { AuguryEventProjection } from '../augury-event-projection.class';
-import { ChangeDetectionComponentTree } from './change-detection-component-tree.interface';
+import { ChangeDetectionComponentTreeInfo } from './change-detection-component-tree-info.interface';
+import { ChangeDetectionMergedComponentTree } from './change-detection-merged-component-tree.interface';
+import { deriveCheckTimePerInstance, groupLifecycleHooksByInstance } from './utils';
 
 export class ChangeDetectionComponentTreeProjection extends AuguryEventProjection<
-  ChangeDetectionComponentTree
+  ChangeDetectionMergedComponentTree
 > {
-  private result: ChangeDetectionComponentTree = this.createInitialResultValue();
+  private result: ChangeDetectionComponentTreeInfo = this.createInitialResultValue();
 
   constructor(private startEventId: number, private endEventId: number) {
     super();
@@ -14,7 +17,7 @@ export class ChangeDetectionComponentTreeProjection extends AuguryEventProjectio
   public process(event: AuguryEvent): boolean {
     if (event.name === 'onStable') {
       if (event.id < this.startEventId) {
-        this.result.lastComponentTree = event.payload.componentTree;
+        this.result.previousComponentTree = event.payload.componentTree;
       } else if (event.id >= this.endEventId) {
         if (this.result.nextComponentTree.length === 0) {
           this.result.nextComponentTree = event.payload.componentTree;
@@ -32,17 +35,28 @@ export class ChangeDetectionComponentTreeProjection extends AuguryEventProjectio
     return false;
   }
 
-  protected getOutput(): ChangeDetectionComponentTree | null {
-    return this.result as ChangeDetectionComponentTree;
+  protected getOutput(): ChangeDetectionMergedComponentTree | null {
+    const mergedComponentTree = mergeComponentTrees(
+      this.result.previousComponentTree,
+      this.result.nextComponentTree,
+    );
+
+    return {
+      mergedComponentTree,
+      checkTimePerInstance: deriveCheckTimePerInstance(
+        groupLifecycleHooksByInstance(this.result.lifecycleHooksTriggered),
+        mergedComponentTree,
+      ),
+    };
   }
 
   protected cleanup() {
     this.result = this.createInitialResultValue();
   }
 
-  private createInitialResultValue(): ChangeDetectionComponentTree {
+  private createInitialResultValue(): ChangeDetectionComponentTreeInfo {
     return {
-      lastComponentTree: [],
+      previousComponentTree: [],
       nextComponentTree: [],
       lifecycleHooksTriggered: [],
     };

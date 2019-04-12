@@ -1,30 +1,18 @@
 import { NgZone } from '@angular/core';
+import { MergedComponentTreeNode } from '@augury/core';
 import * as d3 from 'd3';
 
 export class ComponentTreeUI {
   private readonly containerEl: SVGElement;
-  private data: any;
 
   constructor(private zone: NgZone, svgEl: SVGElement) {
     this.containerEl = svgEl;
   }
 
-  public hasData() {
-    return !!this.data;
-  }
-
-  public updateData(data: any) {
-    this.data = data;
-    this.repaint();
-  }
-
-  public repaint() {
+  public repaint(data: MergedComponentTreeNode[]) {
     this.containerEl.innerHTML = '';
-    this.paint();
-  }
 
-  private paint() {
-    if (this.data.length === 0) {
+    if (data.length === 0) {
       return;
     }
 
@@ -41,11 +29,9 @@ export class ComponentTreeUI {
 
     const treemap = d3.tree().size([width, height]);
 
-    root = d3.hierarchy(this.data, (d: any) => d.children);
+    root = d3.hierarchy(data[0], (d: any) => d.children);
     root.x0 = 0;
     root.y0 = width / 3;
-
-    // root.children.forEach(collapse)
 
     draw(root);
 
@@ -86,26 +72,21 @@ export class ComponentTreeUI {
       }
 
       function circleColor(componentData) {
-        const childrenAreCollapsed = componentData._children;
-        if (childrenAreCollapsed) {
+        if (componentData._children) {
           if (someChildWas(componentWasAdded, componentData)) {
             return 'lightgreen';
-          }
-          if (someChildWas(componentWasRemoved, componentData)) {
-            return 'rgb(251, 159, 159)';
+          } else if (someChildWas(componentWasRemoved, componentData)) {
+            return 'LightCoral';
           } else {
             return 'lightsteelblue';
           }
-        }
-
-        if (componentWasAdded(componentData)) {
+        } else if (componentWasAdded(componentData)) {
           return 'green';
-        }
-        if (componentWasRemoved(componentData)) {
+        } else if (componentWasRemoved(componentData)) {
           return 'red';
+        } else {
+          return 'white';
         }
-
-        return '#fff';
       }
 
       nodeEnter
@@ -126,7 +107,7 @@ export class ComponentTreeUI {
         .attr('dy', '.35em')
         .attr('x', (d: any) => (d.children || d._children ? -13 : 13))
         .attr('text-anchor', (d: any) => (d.children || d._children ? 'end' : 'start'))
-        .text((d: any) => d.data.name); // @todo: name on hover, always or if squeezeds?
+        .text((d: any) => d.data.type); // @todo: name on hover, always or if squeezeds?
 
       const nodeUpdate = nodeEnter.merge(node);
 

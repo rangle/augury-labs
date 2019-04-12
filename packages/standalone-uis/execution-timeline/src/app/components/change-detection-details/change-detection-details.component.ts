@@ -1,7 +1,10 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
-import { ChangeDetectionInfo } from '@augury/core';
-import { Subscription } from '@augury/core';
+import {
+  ChangeDetectionInfo,
+  ChangeDetectionMergedComponentTree,
+  Subscription,
+} from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
 import { FlameGraphNode } from '../../types/flame-graph-node/flame-graph-node.interface';
@@ -49,13 +52,15 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
 
     this.subscription = this.bridge.subscribe(message => {
       if (message.type === 'query-change-detection-tree:response') {
+        const changeDetectionMergedComponentTree = message.payload as ChangeDetectionMergedComponentTree;
+
         this.componentChangeDetections = getComponentChangeDetections(
-          message.payload.checkTimePerInstance,
+          changeDetectionMergedComponentTree.checkTimePerInstance,
         );
 
         this.rootFlameGraphNode = mapComponentTreeToFlameGraphTree(
-          message.payload.mergedComponentTree,
-          message.payload.checkTimePerInstance,
+          changeDetectionMergedComponentTree.mergedComponentTree,
+          changeDetectionMergedComponentTree.checkTimePerInstance,
         )[0];
       }
     });

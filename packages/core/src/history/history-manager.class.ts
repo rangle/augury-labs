@@ -12,7 +12,24 @@ export class HistoryManager {
     this.elapsedEvents = [];
   }
 
-  public project<Output>(
+  public projectFirstResult<Output>(
+    projection: AuguryEventProjection<Output>,
+    startEventId: number = null,
+    endEventId: number = null,
+  ): Output {
+    for (let index = 0; index < this.elapsedEvents.length; index++) {
+      if (
+        this.eventFallsWithinRange(this.elapsedEvents[index], startEventId, endEventId) &&
+        this.shouldCollectResult(this.elapsedEvents[index], projection, index)
+      ) {
+        return projection.collectResult();
+      }
+    }
+
+    return null;
+  }
+
+  public projectAllResults<Output>(
     projection: AuguryEventProjection<Output>,
     startEventId: number = null,
     endEventId: number = null,
@@ -47,6 +64,8 @@ export class HistoryManager {
     startEventId: number,
     endEventId: number,
   ): boolean {
-    return (startEventId === endEventId) === null || event.isIdInRange(startEventId, endEventId);
+    return (
+      (startEventId === null && endEventId === null) || event.isIdInRange(startEventId, endEventId)
+    );
   }
 }

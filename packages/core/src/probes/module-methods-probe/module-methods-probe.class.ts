@@ -1,5 +1,5 @@
 import { Probe } from '../probe.class';
-import * as helpers from './shared-helpers/ng-module';
+import * as helpers from '../types/ng-module.functions';
 
 export class ModuleMethodsProbe extends Probe {
   // actions

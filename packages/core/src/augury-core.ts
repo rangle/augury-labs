@@ -1,4 +1,4 @@
-import { Subscription } from './event-emitters';
+import { Subscription } from './events/event-emitters';
 import { HistoryManager } from './history';
 import { PluginManager } from './plugins';
 import { Plugin } from './plugins';
@@ -32,11 +32,19 @@ export class AuguryCore {
     });
   }
 
-  public project<Output>(
+  public projectFirstResult<Output>(
+    projection: AuguryEventProjection<Output>,
+    startEventId: number = null,
+    endEventId: number = null,
+  ): Output {
+    return this.historyManager.projectFirstResult(projection, startEventId, endEventId);
+  }
+
+  public projectAllResults<Output>(
     projection: AuguryEventProjection<Output>,
     startEventId: number = null,
     endEventId: number = null,
   ): Output[] {
-    return this.historyManager.project(projection, startEventId, endEventId);
+    return this.historyManager.projectAllResults(projection, startEventId, endEventId);
   }
 }

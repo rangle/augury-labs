@@ -5,10 +5,8 @@ export function mapComponentTreeToFlameGraphTree(
   checkTimePerInstance = new Map(),
 ): FlameGraphNode[] {
   return tree.map(node => ({
-    name: node.componentInstance.constructor.name,
-    value: checkTimePerInstance.has(node.componentInstance)
-      ? checkTimePerInstance.get(node.componentInstance)
-      : 0,
-    children: mapComponentTreeToFlameGraphTree(node.childNodes, checkTimePerInstance),
+    name: node.instance.constructor.name,
+    value: checkTimePerInstance.has(node.instance) ? checkTimePerInstance.get(node.instance) : 0,
+    children: mapComponentTreeToFlameGraphTree(node.children, checkTimePerInstance),
   }));
 }

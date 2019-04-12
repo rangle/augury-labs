@@ -1,6 +1,6 @@
 import { AuguryEvent } from '../events';
 
-import { EventEmitter } from '../event-emitters';
+import { EventEmitter } from '../events/event-emitters';
 import { Probe } from './probe.class';
 
 export class ProbeManager extends EventEmitter<AuguryEvent> {

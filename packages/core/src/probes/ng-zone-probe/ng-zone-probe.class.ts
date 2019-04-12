@@ -1,5 +1,5 @@
-import { getComponentTree } from '../../utils';
 import { Probe } from '../probe.class';
+import { getComponentTree } from '../types/component-tree-node';
 
 export class NgZoneProbe extends Probe {
   private ngZone;
