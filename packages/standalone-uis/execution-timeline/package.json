@@ -1,7 +1,7 @@
 {
   "name": "@augury/execution-timeline-ui",
   "private": true,
-  "version": "0.5.2",
+  "version": "0.6.0-beta.0",
   "description": "",
   "license": "MIT",
   "repository": {
@@ -17,15 +17,14 @@
     "url": "https://github.com/rangle/augury-labs/issues"
   },
   "scripts": {
+    "start": "npm run clean && npm run build:watch",
     "build": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:watch": "cross-env NODE_ENV=development webpack --watch",
-    "build:watch:prod": "webpack --watch",
     "clean": "rimraf dist",
-    "start": "rimraf dist && cross-env NODE_ENV=development webpack --watch",
     "test": "npm run lint",
-    "lint": "tslint 'src/**/*.ts'",
-    "lint:fix": "tslint 'src/**/*.ts' --fix "
+    "lint": "tslint --project .",
+    "lint:fix": "tslint --project . --fix"
   },
   "dependencies": {
     "@angular/common": "^7.2.11",
@@ -33,7 +32,7 @@
     "@angular/forms": "^7.2.11",
     "@angular/platform-browser": "^7.2.11",
     "@angular/platform-browser-dynamic": "^7.2.11",
-    "@augury/core": "^0.5.2",
+    "@augury/core": "^0.6.0-beta.0",
     "core-js": "^2.5.4",
     "d3": "^5.9.2",
     "d3-flame-graph": "^2.0.7",
@@ -49,7 +48,6 @@
     "@angular/cli": "^7.3.7",
     "@angular/compiler": "^7.2.11",
     "@angular/compiler-cli": "^7.2.11",
-    "@augury/tools": "^0.5.2",
     "@ngtools/webpack": "^7.3.7",
     "@types/d3": "^5.7.1",
     "@types/d3-tip": "^3.5.5",

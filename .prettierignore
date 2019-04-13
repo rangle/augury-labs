@@ -1,6 +1,4 @@
-.git
 dist
 build
-package.json
-package-lock.json
-tslint.json
+tmp
+*.html
