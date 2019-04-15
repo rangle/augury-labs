@@ -2,7 +2,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "kitchen-sink-demo": {
+    "augury-demo": {
       "root": "",
       "projectType": "application",
       "architect": {
@@ -64,21 +64,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "kitchen-sink-demo:build"
+            "browserTarget": "augury-demo:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "kitchen-sink-demo:build:production"
+              "browserTarget": "augury-demo:build:production"
             },
             "augury": {
-              "browserTarget": "kitchen-sink-demo:build:augury"
+              "browserTarget": "augury-demo:build:augury"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "kitchen-sink-demo:build"
+            "browserTarget": "augury-demo:build"
           }
         },
         "test": {
@@ -117,7 +117,7 @@
         }
       }
     },
-    "kitchen-sink-demo-e2e": {
+    "augury-demo-e2e": {
       "root": "",
       "projectType": "application",
       "cli": {},
@@ -127,7 +127,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "kitchen-sink-demo:serve"
+            "devServerTarget": "augury-demo:serve"
           }
         },
         "lint": {
