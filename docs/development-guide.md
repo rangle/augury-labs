@@ -7,9 +7,6 @@ The [tools package](./packages/tools) also provides common dev dependencies and 
 ## Local Setup
 
 ```shell
-# Install lerna globally
-yarn global add lerna
-
 # Install dependencies
 yarn install
 
@@ -42,19 +39,20 @@ For more info see `demos/README.md` (TLDR: go to demo directory and do `yarn; ya
 ## Referencing local packages from other local projects
 
 If you want to use your local version of the Augury Labs projects in another project that you have
-locally you can run the `lerna run link` command to run `yarn link` on the public packages of the
+locally you can run the `lerna link` command to run `yarn link` on the public packages of the
 monorepo. After doing this you can go to the project where you want to use them and run `yarn link`
 for each package that you want to reference. For example, if you want to reference both the
 `@augury/core` and `@augury/performance-profiler-plugin` packages:
 
 ```sh
-# In the Augury Labs root:
+# In the root of augury-labs
 yarn build
-lerna run link
 
-# In the root of your local Angular app:
-yarn link @augury/core
-yarn link @augury/performance-profiler-plugin
+# Make packages available for linking locally
+npx lerna link
+
+# In the root of your local Angular app
+yarn link @augury/core @augury/performance-profiler-plugin
 ```
 
 After doing this you can `import ... from '@angular/core'` or
@@ -67,10 +65,6 @@ be used.
 We will be providing more documentation and guidance on how to build plugins to Augury Labs.
 For now, please check the plugins provided in the repository.
 
-## Publishing (Maintainers)
+## Contributing
 
-Lerna helps managing versions across packages along with publishing them.
-
-```shell
-yarn publish
-```
+Please see the [contributing guide](../CONTRIBUTING.md).
