@@ -4,13 +4,11 @@ import {
   getComponentTypeChangeDetectionFrequency,
   getLifeCycleChecksPerComponentInstance,
 } from '../../probes/types/component-tree-node/merged-component-tree-node.functions';
-import { AuguryEventProjection } from '../augury-event-projection.class';
+import { EventProjection } from '../event-projection.class';
 import { CollectedComponentTreeChangeInfo } from './collected-component-tree-change-info.interface';
 import { ComponentTreeChangesInfo } from './component-tree-changes-info.interface';
 
-export class ComponentTreeChangesInfoProjection extends AuguryEventProjection<
-  ComponentTreeChangesInfo
-> {
+export class ComponentTreeChangesInfoProjection extends EventProjection<ComponentTreeChangesInfo> {
   private result: CollectedComponentTreeChangeInfo = this.createInitialResultValue();
 
   constructor(private startEventId: number, private endEventId: number) {
@@ -38,7 +36,7 @@ export class ComponentTreeChangesInfoProjection extends AuguryEventProjection<
     return false;
   }
 
-  protected getOutput(): ComponentTreeChangesInfo | null {
+  protected getResult(): ComponentTreeChangesInfo | null {
     const mergedComponentTree = mergeComponentTrees(
       this.result.previousComponentTree,
       this.result.nextComponentTree,

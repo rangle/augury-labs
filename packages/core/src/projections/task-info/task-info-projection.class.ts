@@ -1,8 +1,8 @@
 import { AuguryEvent } from '../../events';
-import { AuguryEventProjection } from '../augury-event-projection.class';
+import { EventProjection } from '../event-projection.class';
 import { TaskInfo } from './task-info.interface';
 
-export abstract class TaskInfoProjection extends AuguryEventProjection<TaskInfo> {
+export abstract class TaskInfoProjection extends EventProjection<TaskInfo> {
   private taskInfo: Partial<TaskInfo> = {};
   private isTaskExecuting = false;
 
@@ -35,7 +35,7 @@ export abstract class TaskInfoProjection extends AuguryEventProjection<TaskInfo>
     return false;
   }
 
-  protected getOutput(): TaskInfo {
+  protected getResult(): TaskInfo {
     return this.taskInfo as TaskInfo;
   }
 

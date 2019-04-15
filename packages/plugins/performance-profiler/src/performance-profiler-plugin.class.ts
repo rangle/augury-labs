@@ -19,21 +19,21 @@ export class PerformanceProfilerPlugin extends Plugin {
   private controller = new PerformanceProfilerController(this.bridge);
 
   public doInitialize() {
-    this.getAugury().projectRealTimeEvents(new RootTaskInfoProjection(), rootTaskInfo =>
+    this.getAugury().registerEventProjection(new RootTaskInfoProjection(), rootTaskInfo =>
       this.bridge.sendMessage({ type: 'task', payload: rootTaskInfo }),
     );
 
-    this.getAugury().projectRealTimeEvents(new NgTaskInfoProjection(), ngTaskInfo =>
+    this.getAugury().registerEventProjection(new NgTaskInfoProjection(), ngTaskInfo =>
       this.bridge.sendMessage({ type: 'task', payload: ngTaskInfo }),
     );
 
-    this.getAugury().projectRealTimeEvents(
+    this.getAugury().registerEventProjection(
       new InstabilityPeriodInfoProjection(),
       instabilityPeriodInfo =>
         this.bridge.sendMessage({ type: 'instability-period', payload: instabilityPeriodInfo }),
     );
 
-    this.getAugury().projectRealTimeEvents(
+    this.getAugury().registerEventProjection(
       new ChangeDetectionInfoProjection(),
       changeDetectionInfo =>
         this.bridge.sendMessage({
@@ -42,7 +42,7 @@ export class PerformanceProfilerPlugin extends Plugin {
         }),
     );
 
-    this.getAugury().projectRealTimeEvents(
+    this.getAugury().registerEventProjection(
       new EventDragInfoProjection(),
       (eventDragInfo: EventDragInfo) => {
         if (hasDragOccured(eventDragInfo)) {

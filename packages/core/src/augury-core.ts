@@ -3,7 +3,7 @@ import { HistoryManager } from './history';
 import { PluginManager } from './plugins';
 import { Plugin } from './plugins';
 import { Probe, ProbeManager } from './probes';
-import { AuguryEventProjection } from './projections';
+import { EventProjection } from './projections';
 
 export class AuguryCore {
   private readonly probeManager: ProbeManager;
@@ -17,34 +17,37 @@ export class AuguryCore {
     this.probeManager.subscribe(event => this.historyManager.addEvent(event));
   }
 
-  public projectRealTimeEvents<Output>(
-    projection: AuguryEventProjection<Output>,
-    handleOutput: (output: Output) => void,
+  public registerEventProjection<Result>(
+    projection: EventProjection<Result>,
+    handleResult: (result: Result) => void,
   ): Subscription {
     return this.probeManager.subscribe(event => {
       if (projection.process(event)) {
-        const output = projection.collectResult();
+        const result = projection.collectResult();
 
-        if (output) {
-          handleOutput(output);
+        if (result) {
+          handleResult(result);
         }
       }
     });
   }
 
-  public projectFirstResultFromHistory<Output>(
-    projection: AuguryEventProjection<Output>,
+  public projectFirstResultFromHistory<Result>(
+    projection: EventProjection<Result>,
     startEventId: number = null,
     endEventId: number = null,
-  ): Output {
-    return this.historyManager.projectFirstResult(projection, startEventId, endEventId);
+  ): Result {
+    const results = this.projectResultsFromHistory(projection, 1, startEventId, endEventId);
+
+    return results.length > 0 ? results[0] : null;
   }
 
-  public projectAllResultsFromHistory<Output>(
-    projection: AuguryEventProjection<Output>,
+  public projectResultsFromHistory<Result>(
+    projection: EventProjection<Result>,
+    maxResults: number = null,
     startEventId: number = null,
     endEventId: number = null,
-  ): Output[] {
-    return this.historyManager.projectAllResults(projection, startEventId, endEventId);
+  ): Result[] {
+    return this.historyManager.projectResults(projection, maxResults, startEventId, endEventId);
   }
 }

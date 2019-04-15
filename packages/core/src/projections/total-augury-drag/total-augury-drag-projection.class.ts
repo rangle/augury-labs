@@ -1,7 +1,7 @@
 import { AuguryEvent } from '../../events';
-import { AuguryEventProjection } from '../augury-event-projection.class';
+import { EventProjection } from '../event-projection.class';
 
-export class TotalAuguryDragProjection extends AuguryEventProjection<number> {
+export class TotalAuguryDragProjection extends EventProjection<number> {
   private result = 0;
 
   constructor(private startEventId: number, private endEventId: number) {
@@ -16,7 +16,7 @@ export class TotalAuguryDragProjection extends AuguryEventProjection<number> {
     return false;
   }
 
-  protected getOutput(): number | null {
+  protected getResult(): number | null {
     return this.result;
   }
 

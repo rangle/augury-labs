@@ -1,5 +1,5 @@
 import { AuguryEvent } from '../events';
-import { AuguryEventProjection } from '../projections';
+import { EventProjection } from '../projections';
 
 export class HistoryManager {
   public elapsedEvents: AuguryEvent[] = [];
@@ -12,48 +12,37 @@ export class HistoryManager {
     this.elapsedEvents = [];
   }
 
-  public projectFirstResult<Output>(
-    projection: AuguryEventProjection<Output>,
+  public projectResults<Result>(
+    projection: EventProjection<Result>,
+    maxResults: number = null,
     startEventId: number = null,
     endEventId: number = null,
-  ): Output {
+  ): Result[] {
+    const results: Result[] = [];
+
     for (let index = 0; index < this.elapsedEvents.length; index++) {
+      if (maxResults !== null && results.length >= maxResults) {
+        break;
+      }
+
       if (
         this.eventFallsWithinRange(this.elapsedEvents[index], startEventId, endEventId) &&
         this.shouldCollectResult(this.elapsedEvents[index], projection, index)
       ) {
-        return projection.collectResult();
+        const result = projection.collectResult();
+
+        if (result) {
+          results.push(result);
+        }
       }
     }
 
-    return null;
+    return results;
   }
 
-  public projectAllResults<Output>(
-    projection: AuguryEventProjection<Output>,
-    startEventId: number = null,
-    endEventId: number = null,
-  ): Output[] {
-    return this.elapsedEvents.reduce(
-      (results, event, index) => {
-        if (
-          this.eventFallsWithinRange(event, startEventId, endEventId) &&
-          this.shouldCollectResult(event, projection, index)
-        ) {
-          const result = projection.collectResult();
-
-          return result ? results.concat([result]) : results;
-        }
-
-        return results;
-      },
-      [] as Output[],
-    );
-  }
-
-  private shouldCollectResult<Output>(
+  private shouldCollectResult<Result>(
     event: AuguryEvent,
-    projection: AuguryEventProjection<Output>,
+    projection: EventProjection<Result>,
     currentIndex: number,
   ) {
     return currentIndex === this.elapsedEvents.length - 1 || projection.process(event);

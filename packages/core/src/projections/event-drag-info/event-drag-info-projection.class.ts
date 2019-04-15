@@ -1,8 +1,8 @@
 import { AuguryEvent } from '../../events';
-import { AuguryEventProjection } from '../augury-event-projection.class';
+import { EventProjection } from '../event-projection.class';
 import { EventDragInfo } from './event-drag-info.interface';
 
-export class EventDragInfoProjection extends AuguryEventProjection<EventDragInfo> {
+export class EventDragInfoProjection extends EventProjection<EventDragInfo> {
   private eventDragInfo: EventDragInfo;
 
   public process(event: AuguryEvent): boolean {
@@ -14,7 +14,7 @@ export class EventDragInfoProjection extends AuguryEventProjection<EventDragInfo
     return true;
   }
 
-  protected getOutput(): EventDragInfo | null {
+  protected getResult(): EventDragInfo | null {
     return this.eventDragInfo;
   }
 

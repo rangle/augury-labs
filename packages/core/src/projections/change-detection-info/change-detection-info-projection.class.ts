@@ -1,8 +1,8 @@
 import { AuguryEvent } from '../../events';
-import { AuguryEventProjection } from '../augury-event-projection.class';
+import { EventProjection } from '../event-projection.class';
 import { ChangeDetectionInfo } from './change-detection-info.interface';
 
-export class ChangeDetectionInfoProjection extends AuguryEventProjection<ChangeDetectionInfo> {
+export class ChangeDetectionInfoProjection extends EventProjection<ChangeDetectionInfo> {
   private changeDetectionInfo: Partial<ChangeDetectionInfo> = {
     drag: 0,
   };
@@ -44,7 +44,7 @@ export class ChangeDetectionInfoProjection extends AuguryEventProjection<ChangeD
     return false;
   }
 
-  protected getOutput(): ChangeDetectionInfo | null {
+  protected getResult(): ChangeDetectionInfo | null {
     return this.changeDetectionInfo as ChangeDetectionInfo;
   }
 

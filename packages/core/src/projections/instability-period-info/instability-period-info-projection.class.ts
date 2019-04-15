@@ -1,8 +1,8 @@
 import { AuguryEvent } from '../../events';
-import { AuguryEventProjection } from '../augury-event-projection.class';
+import { EventProjection } from '../event-projection.class';
 import { InstabilityPeriodInfo } from './instability-period-info.interface';
 
-export class InstabilityPeriodInfoProjection extends AuguryEventProjection<InstabilityPeriodInfo> {
+export class InstabilityPeriodInfoProjection extends EventProjection<InstabilityPeriodInfo> {
   private instabilityPeriodInfo: Partial<InstabilityPeriodInfo> = {};
   private isDuringInstabilityPeriod = false;
 
@@ -35,7 +35,7 @@ export class InstabilityPeriodInfoProjection extends AuguryEventProjection<Insta
     return false;
   }
 
-  protected getOutput(): InstabilityPeriodInfo {
+  protected getResult(): InstabilityPeriodInfo {
     return this.instabilityPeriodInfo as InstabilityPeriodInfo;
   }
 
