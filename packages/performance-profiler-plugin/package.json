@@ -38,6 +38,6 @@
     "@augury/core": "^0.6.0-beta.0"
   },
   "devDependencies": {
-    "@augury/execution-timeline-ui": "^0.6.0-beta.0"
+    "@augury/frontend": "^0.6.0-beta.0"
   }
 }

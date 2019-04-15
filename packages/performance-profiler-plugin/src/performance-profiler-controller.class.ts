@@ -9,8 +9,8 @@ export class PerformanceProfilerController extends AuguryPluginController {
   constructor(bridge: AuguryBridge) {
     super(PerformanceProfilerController.WindowName, bridge);
 
-    this.writeHtml(require('!!raw-loader!@augury/execution-timeline-ui/dist/index.html'));
-    this.addScript(require('!!raw-loader!@augury/execution-timeline-ui/dist/polyfills.js'));
-    this.addScript(require('!!raw-loader!@augury/execution-timeline-ui/dist/main.js'));
+    this.writeHtml(require('!!raw-loader!@augury/frontend/dist/index.html'));
+    this.addScript(require('!!raw-loader!@augury/frontend/dist/polyfills.js'));
+    this.addScript(require('!!raw-loader!@augury/frontend/dist/main.js'));
   }
 }
