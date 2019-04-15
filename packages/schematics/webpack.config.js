@@ -20,6 +20,8 @@ module.exports = {
      *  node_modules
      */
     'aws-sdk': 'aws-sdk',
+    fsevents: 'fsevents',
+    'node-pre-gyp': 'node-pre-gyp',
   },
 
   entry: {

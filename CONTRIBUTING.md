@@ -14,7 +14,8 @@ contributor, you'll be expected to uphold this code as well as report unacceptab
 
 If you have a general question reach out to us using one of the following methods:
 
-- Open a [question issue](https://github.com/rangle/augury-labs/issues/new?template=question.md) in GitHub issues.
+- Open a [question issue](https://github.com/rangle/augury-labs/issues/new?template=question.md)
+  in GitHub issues.
 - Join us on the Augury [Slack](https://augury-slack.herokuapp.com/).
 
 ## Found a Bug?
@@ -26,12 +27,45 @@ If you have a general question reach out to us using one of the following method
 
 ## Missing a Feature?
 
-You can request a new feature by [submitting a feature request](https://github.com/rangle/augury-labs/issues/new?template=feature_request.md).
-If you would like to implement a new feature, please submit an issue with a proposal for your work
-first.
+You can request a new feature by
+[submitting a feature request](https://github.com/rangle/augury-labs/issues/new?template=feature_request.md).
+If you would like to implement a new feature, please submit an issue with a
+proposal for your work first.
 
 ## Submitting a Pull Request (PR)
 
-Pull requests are welcome. Make sure you read the [development guide](docs/development-guide.md) guide for details on how
-to setup the development environment. Before submitting a pull request please discuss the change
-via [issue](https://github.com/rangle/augury-labs/issues) first and then open a [pull request](https://github.com/rangle/augury-labs/pulls).
+Pull requests are welcome. Make sure you read the [development guide](docs/development-guide.md)
+guide for details on how to setup the development environment. Before submitting a pull request
+please discuss the change via [issue](https://github.com/rangle/augury-labs/issues) first and then
+open a [pull request](https://github.com/rangle/augury-labs/pulls).
+
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## Cutting a Release
+
+Publishing to `npm` is handled with `lerna`, which will update version numbers, create tagged
+releases in GitHub and also publish the packages to npm.
+
+**In order to publish to `npm` you'll need to be part of the `@augury` organization.**
+
+Here are some examples for releasing different versions updates:
+
+```sh
+# release a patch (e.g. from 0.5.2 -> 0.5.3)
+yarn release patch
+
+# release a minor update (e.g. from 0.5.3 -> 0.6.0)
+yarn release minor
+
+# release a minor beta update (e.g. from 0.5.0 -> 0.6.0-beta.0)
+yarn release preminor --preid beta --dist-tag beta
+
+# patch a beta a minor beta patch (e.g. from 0.6.0-beta.0 -> 0.6.0-beta.1)
+yarn release patch --preid beta --dist-tag beta
+
+# release a major update (e.g. from 1.6.2 -> 2.0.0)
+yarn release major
+```
+
+_See [`lerna publish`](https://github.com/lerna/lerna/tree/master/commands/publish)
+for more details._
