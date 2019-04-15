@@ -5,11 +5,11 @@ import {
   getLifeCycleChecksPerComponentInstance,
 } from '../../probes/types/component-tree-node/merged-component-tree-node.functions';
 import { EventProjection } from '../event-projection.class';
-import { CollectedComponentTreeChangeInfo } from './collected-component-tree-change-info.interface';
+import { CollectedComponentTreeChangeEventData } from './collected-component-tree-change-event-data.interface';
 import { ComponentTreeChangesInfo } from './component-tree-changes-info.interface';
 
 export class ComponentTreeChangesInfoProjection extends EventProjection<ComponentTreeChangesInfo> {
-  private result: CollectedComponentTreeChangeInfo = this.createInitialResultValue();
+  private result: CollectedComponentTreeChangeEventData = this.createInitialResultValue();
 
   constructor(private startEventId: number, private endEventId: number) {
     super();
@@ -60,7 +60,7 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
     this.result = this.createInitialResultValue();
   }
 
-  private createInitialResultValue(): CollectedComponentTreeChangeInfo {
+  private createInitialResultValue(): CollectedComponentTreeChangeEventData {
     return {
       previousComponentTree: [],
       nextComponentTree: [],
