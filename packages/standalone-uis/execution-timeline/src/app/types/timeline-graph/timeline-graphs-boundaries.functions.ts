@@ -2,6 +2,8 @@ import { getTimelineDetailViewGraphBoundaries } from './timeline-detail-view-gra
 import { TimelineGraphsBoundaries } from './timeline-graphs-boundaries.interface';
 import { getTimelineOverviewGraphBoundaries } from './timeline-overview-graph-boundaries.functions';
 
+const MinimumWidthToPaint = 100;
+
 export function getTimelineGraphsBoundaries(
   timelineOverviewGraphElement: Element,
   timelineDetailViewGraphElement: Element,
@@ -13,5 +15,8 @@ export function getTimelineGraphsBoundaries(
 }
 
 export function canTimelineGraphsPaint(boundaries: TimelineGraphsBoundaries): boolean {
-  return boundaries.overview.width > 0 && boundaries.detailView.width > 0;
+  return (
+    boundaries.overview.width > MinimumWidthToPaint &&
+    boundaries.detailView.width > MinimumWidthToPaint
+  );
 }

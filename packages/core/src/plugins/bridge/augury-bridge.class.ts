@@ -1,4 +1,4 @@
-import { EventEmitter, Subscription } from '../../event-emitters';
+import { EventEmitter, Subscription } from '../../events/event-emitters';
 import { AuguryBridgeMessage } from './augury-bridge-message.interface';
 import { AuguryBridgeRequest } from './augury-bridge-request.interface';
 

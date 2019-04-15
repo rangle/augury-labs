@@ -8,25 +8,10 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-
-import { InstabilityPeriodInfo } from '@augury/core';
+import { InstabilityPeriodInfo, Subscription } from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { round2 } from '../../util/misc-utils';
 import { ComponentTreeUI } from './component-tree-ui';
-
-function createHierarchyDataFromNodeArray(nodes = [] as any[]) {
-  return nodes.map(node => ({
-    name: node.componentInstance.constructor.name,
-    change: node.change,
-    children: createHierarchyDataFromNodeArray(node.childNodes),
-  }));
-}
-
-function createHierarchyDataFromTree(mergedComponentTree = [] as any[]) {
-  return mergedComponentTree.length > 0
-    ? createHierarchyDataFromNodeArray(mergedComponentTree)[0]
-    : [];
-}
 
 @Component({
   selector: 'ag-instability-details',
@@ -45,7 +30,7 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
   public dragInMilliseconds: number;
   public startTimeInMilliseconds: number;
 
-  private subscription: any;
+  private subscription: Subscription;
 
   constructor(private bridgeService: BridgeService, private zone: NgZone) {}
 
@@ -65,18 +50,15 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
     }
 
     this.subscription = this.bridgeService.subscribe(message => {
-      if (message.type === 'query-change-detection-tree:response') {
-        // @todo: mark new/removed nodes
-        this.componentTreeUI.updateData(
-          createHierarchyDataFromTree(message.payload.mergedComponentTree),
-        );
+      if (message.type === 'component-tree-changes:response') {
+        this.componentTreeUI.repaint(message.payload.mergedComponentTree);
       }
     });
 
     // @todo: get just component trees
     //        full CD reducer should use before/after component tree reducer
     this.bridgeService.send({
-      type: 'query-change-detection-tree',
+      type: 'component-tree-changes',
       startEventId: this.instabilityPeriodInfo.startEventId + 10, // @todo: hack because of above ^
       endEventId: this.instabilityPeriodInfo.endEventId - 10,
     });

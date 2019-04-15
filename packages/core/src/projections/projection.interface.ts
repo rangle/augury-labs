@@ -1,3 +1,4 @@
-export interface Projection<Input, Output> {
-  transform(input: Input): Output | null;
+export interface Projection<Input, Result> {
+  process(input: Input): boolean;
+  collectResult(): Result | null;
 }

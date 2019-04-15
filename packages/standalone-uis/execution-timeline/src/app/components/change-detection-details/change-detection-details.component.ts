@@ -1,29 +1,15 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
-import { ChangeDetectionInfo } from '@augury/core';
-import { Subscription } from '@augury/core';
+import {
+  ChangeDetectionInfo,
+  ComponentTreeChangesInfo,
+  ComponentTypeChangeDetectionFrequency,
+  Subscription,
+} from '@augury/core';
 import { BridgeService } from '../../services/bridge.service';
 import { mapComponentTreeToFlameGraphTree } from '../../types/flame-graph-node/flame-graph-node.functions';
 import { FlameGraphNode } from '../../types/flame-graph-node/flame-graph-node.interface';
 import { round2 } from '../../util/misc-utils';
-
-function getComponentChangeDetections(componentInstances): any[] {
-  const componentChangeDetections = new Map();
-  componentInstances.forEach((checkTime, instance) => {
-    if (!componentChangeDetections.has(instance.constructor)) {
-      componentChangeDetections.set(instance.constructor, { numChecks: 0 });
-    }
-
-    const entry = componentChangeDetections.get(instance.constructor);
-
-    entry.numChecks++;
-  });
-
-  return Array.from(componentChangeDetections.entries()).map(([componentType, entry]) => ({
-    componentType,
-    entry,
-  }));
-}
 
 @Component({
   selector: 'ag-change-detection-details',
@@ -34,7 +20,7 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
   @Input()
   public changeDetectionInfo: ChangeDetectionInfo;
 
-  public componentChangeDetections: any[] = null;
+  public componentTypeChangeDetectionFrequencies: ComponentTypeChangeDetectionFrequency[] = null;
   public rootFlameGraphNode: FlameGraphNode = null;
   public runtimeInMilliseconds: number;
 
@@ -48,20 +34,21 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
     }
 
     this.subscription = this.bridge.subscribe(message => {
-      if (message.type === 'query-change-detection-tree:response') {
-        this.componentChangeDetections = getComponentChangeDetections(
-          message.payload.checkTimePerInstance,
-        );
+      if (message.type === 'component-tree-changes:response') {
+        const componentTreeChangesInfo = message.payload as ComponentTreeChangesInfo;
+
+        this.componentTypeChangeDetectionFrequencies =
+          componentTreeChangesInfo.componentTypeChangeDetectionFrequencies;
 
         this.rootFlameGraphNode = mapComponentTreeToFlameGraphTree(
-          message.payload.mergedComponentTree,
-          message.payload.checkTimePerInstance,
+          componentTreeChangesInfo.mergedComponentTree,
+          componentTreeChangesInfo.lifeCycleChecksPerComponentInstance,
         )[0];
       }
     });
 
     this.bridge.send({
-      type: 'query-change-detection-tree',
+      type: 'component-tree-changes',
       startEventId: this.changeDetectionInfo.startEventId,
       endEventId: this.changeDetectionInfo.endEventId,
     });
