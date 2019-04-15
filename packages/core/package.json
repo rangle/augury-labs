@@ -1,13 +1,18 @@
 {
   "name": "@augury/core",
-  "version": "0.5.2",
+  "version": "0.6.0-beta.0",
   "description": "Provides the core infrastructure for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
   "homepage": "https://github.com/rangle/augury-labs#readme",
   "keywords": [
     "angular",
-    "augury"
+    "augury",
+    "devtool",
+    "debugger",
+    "inspector",
+    "profiler",
+    "performance"
   ],
   "repository": {
     "type": "git",
@@ -16,21 +21,22 @@
   "bugs": {
     "url": "https://github.com/rangle/augury-labs/issues"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/typings/index.d.ts",
   "scripts": {
-    "build": "npm run clean && tsc",
-    "build:watch": "tsc --watch",
-    "clean": "rimraf ./dist",
+    "build": "cross-env NODE_ENV=development webpack",
+    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:watch": "cross-env NODE_ENV=development webpack --watch",
+    "clean": "rimraf dist",
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
-    "lint:fix": "tslint --project . --fix",
-    "precommit": "lint-staged",
-    "link": "yarn link"
+    "lint:fix": "tslint --project . --fix"
   },
-  "devDependencies": {
-    "@augury/tools": "^0.5.2"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

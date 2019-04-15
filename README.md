@@ -5,7 +5,7 @@
 
 [![CircleCI](https://circleci.com/gh/rangle/augury-labs.svg?style=svg&circle-token=3b4d4e15a644445f9bf5d449fa5746ba774bfcdf)](https://circleci.com/gh/rangle/augury-labs) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](./LICENSE) [![Slack Status](https://augury-slack.herokuapp.com/badge.svg)](https://augury-slack.herokuapp.com) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
-![Angular Performance Profiler](screenshot.png 'Angular Performance Profiler')
+![Angular Performance Profiler](docs/screenshot.png 'Angular Performance Profiler')
 
 ## About
 
@@ -46,79 +46,26 @@ _NOTE: This tool is still experimental. Feedback is greatly appreciated :smile:_
 
 ## Installation
 
-To setup `augury-labs` in your application you'll need to follow a few manual steps for now
-(should only take a few minutes).
+To setup `augury-labs` in your application you have two alternatives.
 
 _NOTE: The following assumes your application is a standard [Angular CLI](https://cli.angular.io/) setup._
 
-1. Install the [npm packages](https://www.npmjs.com/org/augury/) as development dependencies.
+Using the Angular CLI `ng add` command will install the correct dependencies, perform the necessary configuration and execute initialization code.
 
-   ```shell
-   npm install -D @augury/core @augury/performance-profiler-plugin
-   ```
+```
+ng add @augury/schematics
+```
 
-2. Create a `src/main.augury.ts` file in your application with the following content:
+_DISCLAIMER: This assumes your application are using the Angular Devkit 6+_
 
-   ```ts
-   import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-   import { NgZone } from '@angular/core';
-
-   import { AppModule } from './app/app.module';
-
-   import { auguryBootstrap } from '@augury/core';
-   import { PerformanceProfilerPlugin } from '@augury/performance-profiler-plugin';
-
-   auguryBootstrap({
-     platform: platformBrowserDynamic,
-     ngModule: AppModule,
-     NgZone,
-     plugins: [new PerformanceProfilerPlugin()],
-   });
-   ```
-
-3. Create new project `build` & `serve` configurations in the `angular.json` file.
-
-   Under `projects / [project-name] / architect / build / configurations` add:
-
-   ```json
-   "augury": {
-     "fileReplacements": [
-       {
-         "replace": "src/main.ts",
-         "with": "src/main.augury.ts"
-       }
-     ]
-   }
-   ```
-
-   Under `projects / [project-name] / architect / serve / configurations` add:
-
-   ```json
-   "augury": {
-     "browserTarget": "<your-project>:build:augury"
-   }
-   ```
-
-4. Add a new npm script in your `package.json` to run the `Angular` application with the augury
-   serve configuration you setup in the previous step.
-
-   ```json
-   "scripts": {
-     "start:augury": "ng serve --configuration augury"
-   }
-   ```
-
-5. Run your application with:
-
-   ```shell
-   npm run start:augury
-   ```
+To setup and install Augury manually, follow the [manual installation](docs/manual-installation.md).
 
 ## Guides
 
 - [How to Use](docs/how-to-use.md)
 - [Architecture](docs/architecture.md)
 - [Development Guide](docs/development-guide.md)
+- [Manual Installation](docs/manual-installation.md)
 
 ## Demos
 

@@ -1,24 +1,19 @@
 {
-  "name": "@augury/unit-tester-plugin",
-  "private": true,
+  "name": "@augury/schematics",
   "version": "0.6.0-beta.0",
-  "description": "Unit testing plugin for Augury Labs",
+  "description": "Schematics for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
   "homepage": "https://github.com/rangle/augury-labs#readme",
   "keywords": [
     "angular",
     "augury",
-    "profiler",
-    "performance",
-    "test",
-    "testing",
-    "integration",
-    "e2e"
+    "schematics",
+    "angular cli"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rangle/augury-labs"
+    "url": "git+https://github.com/rangle/augury-labs.git"
   },
   "bugs": {
     "url": "https://github.com/rangle/augury-labs/issues"
@@ -26,9 +21,10 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
   "types": "dist/typings/index.d.ts",
+  "schematics": "./dist/collection.json",
   "scripts": {
+    "start": "npm-run-all clean build:watch",
     "build": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:watch": "cross-env NODE_ENV=development webpack --watch",
@@ -38,8 +34,5 @@
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
-  },
-  "dependencies": {
-    "@augury/core": "^0.6.0-beta.0"
   }
 }

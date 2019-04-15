@@ -2,12 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "moduleResolution": "node",
     "outDir": "./dist",
-    "lib": ["es2018", "dom"],
-    "noImplicitAny": false,
-    "strictNullChecks": false,
+    "skipLibCheck": true,
     "declarationDir": "./dist/typings"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["src/**/files/*", "**/*.spec.ts"]
 }

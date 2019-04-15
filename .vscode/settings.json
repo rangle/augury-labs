@@ -2,6 +2,6 @@
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
-  "editor.trimAutoWhitespace": true,
-  "tslint.autoFixOnSave": true
+  "editor.formatOnSave": true,
+  "editor.trimAutoWhitespace": true
 }
