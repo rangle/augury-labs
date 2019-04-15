@@ -24,10 +24,14 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
   "types": "dist/typings/index.d.ts",
   "scripts": {
-    "build": "cross-env NODE_ENV=development webpack",
+    "build": "npm run build:rollup",
+    "prebuild": "npm run clean",
+    "build:rollup": "rollup -c",
+    "build:webpack": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:watch": "cross-env NODE_ENV=development webpack --watch",
     "clean": "rimraf dist",
