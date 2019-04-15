@@ -1,1 +1,1 @@
-export type AuguryBridgeRequestType = 'query-change-detection-tree';
+export type AuguryBridgeRequestType = 'component-tree-changes';

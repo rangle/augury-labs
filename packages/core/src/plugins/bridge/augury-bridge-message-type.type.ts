@@ -3,4 +3,4 @@ export type AuguryBridgeMessageType =
   | 'instability-period'
   | 'change-detection'
   | 'drag'
-  | 'query-change-detection-tree:response';
+  | 'component-tree-changes:response';

@@ -50,7 +50,7 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
     }
 
     this.subscription = this.bridgeService.subscribe(message => {
-      if (message.type === 'query-change-detection-tree:response') {
+      if (message.type === 'component-tree-changes:response') {
         this.componentTreeUI.repaint(message.payload.mergedComponentTree);
       }
     });
@@ -58,7 +58,7 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
     // @todo: get just component trees
     //        full CD reducer should use before/after component tree reducer
     this.bridgeService.send({
-      type: 'query-change-detection-tree',
+      type: 'component-tree-changes',
       startEventId: this.instabilityPeriodInfo.startEventId + 10, // @todo: hack because of above ^
       endEventId: this.instabilityPeriodInfo.endEventId - 10,
     });

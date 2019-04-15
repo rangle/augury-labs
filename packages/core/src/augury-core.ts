@@ -17,8 +17,8 @@ export class AuguryCore {
     this.probeManager.subscribe(event => this.historyManager.addEvent(event));
   }
 
-  public subscribeToEvents<Output>(
-    projection: AuguryEventProjection<any>,
+  public projectRealTimeEvents<Output>(
+    projection: AuguryEventProjection<Output>,
     handleOutput: (output: Output) => void,
   ): Subscription {
     return this.probeManager.subscribe(event => {
@@ -32,7 +32,7 @@ export class AuguryCore {
     });
   }
 
-  public projectFirstResult<Output>(
+  public projectFirstResultFromHistory<Output>(
     projection: AuguryEventProjection<Output>,
     startEventId: number = null,
     endEventId: number = null,
@@ -40,7 +40,7 @@ export class AuguryCore {
     return this.historyManager.projectFirstResult(projection, startEventId, endEventId);
   }
 
-  public projectAllResults<Output>(
+  public projectAllResultsFromHistory<Output>(
     projection: AuguryEventProjection<Output>,
     startEventId: number = null,
     endEventId: number = null,

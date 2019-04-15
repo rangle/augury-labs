@@ -1,14 +1,17 @@
 import { AuguryEvent } from '../../events';
 import { mergeComponentTrees } from '../../probes/types/component-tree-node';
+import {
+  getComponentTypeChangeDetectionFrequency,
+  getLifeCycleChecksPerComponentInstance,
+} from '../../probes/types/component-tree-node/merged-component-tree-node.functions';
 import { AuguryEventProjection } from '../augury-event-projection.class';
-import { ChangeDetectionComponentTreeInfo } from './change-detection-component-tree-info.interface';
-import { ChangeDetectionMergedComponentTree } from './change-detection-merged-component-tree.interface';
-import { deriveCheckTimePerInstance, groupLifecycleHooksByInstance } from './utils';
+import { CollectedComponentTreeChangeInfo } from './collected-component-tree-change-info.interface';
+import { ComponentTreeChangesInfo } from './component-tree-changes-info.interface';
 
-export class ChangeDetectionComponentTreeProjection extends AuguryEventProjection<
-  ChangeDetectionMergedComponentTree
+export class ComponentTreeChangesInfoProjection extends AuguryEventProjection<
+  ComponentTreeChangesInfo
 > {
-  private result: ChangeDetectionComponentTreeInfo = this.createInitialResultValue();
+  private result: CollectedComponentTreeChangeInfo = this.createInitialResultValue();
 
   constructor(private startEventId: number, private endEventId: number) {
     super();
@@ -29,23 +32,28 @@ export class ChangeDetectionComponentTreeProjection extends AuguryEventProjectio
       event.name === 'component_lifecycle_hook_invoked' &&
       event.isIdInRange(this.startEventId, this.endEventId)
     ) {
-      this.result.lifecycleHooksTriggered.push(event);
+      this.result.lifeCycleMethodCallEvents.push(event);
     }
 
     return false;
   }
 
-  protected getOutput(): ChangeDetectionMergedComponentTree | null {
+  protected getOutput(): ComponentTreeChangesInfo | null {
     const mergedComponentTree = mergeComponentTrees(
       this.result.previousComponentTree,
       this.result.nextComponentTree,
     );
 
+    const lifeCycleChecksPerComponentInstance = getLifeCycleChecksPerComponentInstance(
+      mergedComponentTree,
+      this.result.lifeCycleMethodCallEvents,
+    );
+
     return {
       mergedComponentTree,
-      checkTimePerInstance: deriveCheckTimePerInstance(
-        groupLifecycleHooksByInstance(this.result.lifecycleHooksTriggered),
-        mergedComponentTree,
+      lifeCycleChecksPerComponentInstance,
+      componentTypeChangeDetectionFrequencies: getComponentTypeChangeDetectionFrequency(
+        lifeCycleChecksPerComponentInstance,
       ),
     };
   }
@@ -54,11 +62,11 @@ export class ChangeDetectionComponentTreeProjection extends AuguryEventProjectio
     this.result = this.createInitialResultValue();
   }
 
-  private createInitialResultValue(): ChangeDetectionComponentTreeInfo {
+  private createInitialResultValue(): CollectedComponentTreeChangeInfo {
     return {
       previousComponentTree: [],
       nextComponentTree: [],
-      lifecycleHooksTriggered: [],
+      lifeCycleMethodCallEvents: [],
     };
   }
 }

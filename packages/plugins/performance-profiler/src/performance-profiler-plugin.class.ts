@@ -1,7 +1,7 @@
 import {
   AuguryBridgeRequest,
-  ChangeDetectionComponentTreeProjection,
   ChangeDetectionInfoProjection,
+  ComponentTreeChangesInfoProjection,
   EventDragInfo,
   EventDragInfoProjection,
   hasDragOccured,
@@ -19,28 +19,30 @@ export class PerformanceProfilerPlugin extends Plugin {
   private controller = new PerformanceProfilerController(this.bridge);
 
   public doInitialize() {
-    this.getAugury().subscribeToEvents(new RootTaskInfoProjection(), rootTaskInfo =>
+    this.getAugury().projectRealTimeEvents(new RootTaskInfoProjection(), rootTaskInfo =>
       this.bridge.sendMessage({ type: 'task', payload: rootTaskInfo }),
     );
 
-    this.getAugury().subscribeToEvents(new NgTaskInfoProjection(), ngTaskInfo =>
+    this.getAugury().projectRealTimeEvents(new NgTaskInfoProjection(), ngTaskInfo =>
       this.bridge.sendMessage({ type: 'task', payload: ngTaskInfo }),
     );
 
-    this.getAugury().subscribeToEvents(
+    this.getAugury().projectRealTimeEvents(
       new InstabilityPeriodInfoProjection(),
       instabilityPeriodInfo =>
         this.bridge.sendMessage({ type: 'instability-period', payload: instabilityPeriodInfo }),
     );
 
-    this.getAugury().subscribeToEvents(new ChangeDetectionInfoProjection(), changeDetectionInfo =>
-      this.bridge.sendMessage({
-        type: 'change-detection',
-        payload: changeDetectionInfo,
-      }),
+    this.getAugury().projectRealTimeEvents(
+      new ChangeDetectionInfoProjection(),
+      changeDetectionInfo =>
+        this.bridge.sendMessage({
+          type: 'change-detection',
+          payload: changeDetectionInfo,
+        }),
     );
 
-    this.getAugury().subscribeToEvents(
+    this.getAugury().projectRealTimeEvents(
       new EventDragInfoProjection(),
       (eventDragInfo: EventDragInfo) => {
         if (hasDragOccured(eventDragInfo)) {
@@ -53,7 +55,7 @@ export class PerformanceProfilerPlugin extends Plugin {
     );
 
     this.bridge.listenToRequests(request => {
-      if (request.type === 'query-change-detection-tree') {
+      if (request.type === 'component-tree-changes') {
         this.handleGetFullChangeDetectionRequest(request);
       }
     });
@@ -61,9 +63,9 @@ export class PerformanceProfilerPlugin extends Plugin {
 
   private handleGetFullChangeDetectionRequest(request: AuguryBridgeRequest) {
     this.bridge.sendMessage({
-      type: 'query-change-detection-tree:response',
-      payload: this.getAugury().projectFirstResult(
-        new ChangeDetectionComponentTreeProjection(request.startEventId, request.endEventId),
+      type: 'component-tree-changes:response',
+      payload: this.getAugury().projectFirstResultFromHistory(
+        new ComponentTreeChangesInfoProjection(request.startEventId, request.endEventId),
       ),
     });
   }

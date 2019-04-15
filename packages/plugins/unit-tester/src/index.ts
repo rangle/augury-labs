@@ -15,7 +15,7 @@ export class UnitTesterPlugin extends Plugin {
     let cdRuns: ChangeDetectionInfo[] = [];
 
     window.auguryUT.startMonitoringChangeDetection = () => {
-      subscription = this.getAugury().subscribeToEvents<ChangeDetectionInfo>(
+      subscription = this.getAugury().projectRealTimeEvents<ChangeDetectionInfo>(
         new ChangeDetectionInfoProjection(),
         changeDetectionInfo => {
           cdRuns.push(changeDetectionInfo);

@@ -4,12 +4,12 @@
   <ag-sub-section label="Runtime">
     {{ runtimeInMilliseconds }}ms
   </ag-sub-section>
-  <ag-sub-section label="Instance Check Counts">
+  <ag-sub-section label="Component Type Change Frequency">
     <table>
       <tbody>
-      <tr *ngFor="let component of componentChangeDetections">
-        <td> {{ component.componentType.name }} </td>
-        <td> {{ component.entry.numChecks }} </td>
+      <tr *ngFor="let componentTypeChangeDetectionFrequency of componentTypeChangeDetectionFrequencies">
+        <td> {{ componentTypeChangeDetectionFrequency.name }} </td>
+        <td> {{ componentTypeChangeDetectionFrequency.amount }} </td>
       </tr>
       </tbody>
     </table>

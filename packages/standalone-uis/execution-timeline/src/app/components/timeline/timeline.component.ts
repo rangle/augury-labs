@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import * as d3 from 'd3';
-import { BrushBehavior } from 'd3';
+import { BrushBehavior, ZoomTransform } from 'd3';
 import {
   getMaximumEndTimestamp,
   getMinimumStartTimestamp,
@@ -43,6 +43,7 @@ export class TimelineComponent implements OnChanges {
   private static readonly MinimumElapsedTimeToRepaintInMilliseconds = 500;
   private static readonly BrushSpacingMarginTopAndBottom = 3;
   private static readonly SegmentPadding = 2;
+  private static readonly DefaultBrushSelection: [number, number] = [0, 50];
 
   @Input()
   public segments: Array<Segment<any>>;
@@ -65,7 +66,6 @@ export class TimelineComponent implements OnChanges {
   @ViewChild('timelineOverviewGraph') public timelineOverviewGraphElement: ElementRef;
   @ViewChild('timelineDetailViewGraph') public timelineDetailViewGraphElement: ElementRef;
 
-  private timelineSelection: [number, number] = [0, 200];
   private lastPaintedTimestamp = performance.now();
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -141,50 +141,17 @@ export class TimelineComponent implements OnChanges {
         ],
       ])
       .on('brush end', () => {
-        const selection = d3.event.selection || scales.overview.xScale.range();
+        const selection = d3.event.selection;
 
-        d3.select(this.timelineOverviewGraphElement.nativeElement)
-          .select('#selectionMaskBackground')
-          .attr('width', selection[1] - selection[0])
-          .attr('x', selection[0]);
+        if (!d3.event.sourceEvent || d3.event.sourceEvent.type !== 'zoom') {
+          d3.select(this.timelineOverviewGraphElement.nativeElement)
+            .select('#selectionMaskBackground')
+            .attr('width', selection[1] - selection[0])
+            .attr('x', selection[0]);
 
-        if (d3.event.sourceEvent) {
-          switch (d3.event.sourceEvent.type) {
-            case 'zoom':
-              return;
-            case 'end':
-              this.timelineSelection = [
-                scales.overview.xScale(selection[0]),
-                scales.overview.xScale(selection[1]),
-              ];
-          }
+          this.paintTimelineDetailViewAxes(boundaries.detailView, axes);
+          this.zoomTimelineDetailsToSelection(zoomBehavior, selection, boundaries, scales);
         }
-
-        const transformation = d3.zoomIdentity
-          .scale(boundaries.overview.width / (selection[1] - selection[0]))
-          .translate(-selection[0], 0);
-
-        if (transformation.x === 0 && transformation.k === 1) {
-          return;
-        }
-
-        scales.detailView.xScale.domain(transformation.rescaleX(scales.overview.xScale).domain());
-
-        const translation =
-          (transformation.k *
-            scales.overview.xScale(-scales.detailView.xScale.domain()[0]) *
-            boundaries.detailView.width) /
-          boundaries.overview.width;
-
-        d3.select(this.timelineDetailViewGraphElement.nativeElement)
-          .select('#timeline-detail-container')
-          .call(zoomBehavior.transform, transformation);
-
-        d3.select(this.timelineDetailViewGraphElement.nativeElement)
-          .select('#timeline-detail-content')
-          .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
-
-        this.paintTimelineDetailViewAxes(boundaries.detailView, axes);
       });
 
     const zoomBehavior = d3
@@ -197,19 +164,7 @@ export class TimelineComponent implements OnChanges {
           return;
         }
 
-        const transformation = d3.event.transform;
-
-        scales.detailView.xScale.domain(transformation.rescaleX(scales.overview.xScale).domain());
-
-        const translation =
-          (transformation.k *
-            scales.overview.xScale(-scales.detailView.xScale.domain()[0]) *
-            boundaries.detailView.width) /
-          boundaries.overview.width;
-
-        d3.select(this.timelineDetailViewGraphElement.nativeElement)
-          .select('#timeline-detail-content')
-          .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
+        this.rescaleTimelineDetailViewContent(boundaries, scales, d3.event.transform);
 
         d3.select(this.timelineOverviewGraphElement.nativeElement)
           .select('#timeline-overview-brush')
@@ -232,7 +187,46 @@ export class TimelineComponent implements OnChanges {
       .call(zoomBehavior);
 
     this.paintTimelineDetailViewMouseWheel(scales, brushBehaviour);
-    this.setDefaultBrushPosition(scales.overview, brushBehaviour);
+    this.setDefaultBrushPosition(scales, brushBehaviour);
+  }
+
+  private zoomTimelineDetailsToSelection(
+    zoomBehavior,
+    selection: [number, number],
+    boundaries: TimelineGraphsBoundaries,
+    scales: TimelineGraphsScales,
+  ) {
+    const transformation = d3.zoomIdentity
+      .scale(boundaries.overview.width / (selection[1] - selection[0]))
+      .translate(-selection[0], 0);
+
+    if (transformation.x === 0 && transformation.k === 1) {
+      return;
+    }
+
+    d3.select(this.timelineDetailViewGraphElement.nativeElement)
+      .select('#timeline-detail-container')
+      .call(zoomBehavior.transform, transformation);
+
+    this.rescaleTimelineDetailViewContent(boundaries, scales, transformation);
+  }
+
+  private rescaleTimelineDetailViewContent(
+    boundaries: TimelineGraphsBoundaries,
+    scales: TimelineGraphsScales,
+    transformation: ZoomTransform,
+  ) {
+    scales.detailView.xScale.domain(transformation.rescaleX(scales.overview.xScale).domain());
+
+    const translation =
+      (transformation.k *
+        scales.overview.xScale(-scales.detailView.xScale.domain()[0]) *
+        boundaries.detailView.width) /
+      boundaries.overview.width;
+
+    d3.select(this.timelineDetailViewGraphElement.nativeElement)
+      .select('#timeline-detail-content')
+      .attr('transform', `translate(${translation}) scale(${transformation.k}, 1)`);
   }
 
   private paintTimelineDetailViewMouseWheel(
@@ -263,16 +257,22 @@ export class TimelineComponent implements OnChanges {
     });
   }
 
-  private setDefaultBrushPosition(scales: TimelineGraphScales, brushBehaviour: BrushBehavior<any>) {
-    const noCurrentBrushSelection = !d3.brushSelection(d3
+  private setDefaultBrushPosition(
+    scales: TimelineGraphsScales,
+    brushBehaviour: BrushBehavior<any>,
+  ) {
+    const currentSelection = d3.brushSelection(d3
       .select(this.timelineOverviewGraphElement.nativeElement)
       .select('#timeline-overview-brush')
       .node() as SVGGElement);
 
-    if (noCurrentBrushSelection) {
+    if (!currentSelection) {
       d3.select(this.timelineOverviewGraphElement.nativeElement)
         .select('#timeline-overview-brush')
-        .call(brushBehaviour.move, scaleSelectionOnXAxis(scales, this.timelineSelection));
+        .call(
+          brushBehaviour.move,
+          scaleSelectionOnXAxis(scales.overview, TimelineComponent.DefaultBrushSelection),
+        );
     }
   }
 
