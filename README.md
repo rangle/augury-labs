@@ -67,10 +67,10 @@ To setup and install Augury manually, follow the [manual installation](docs/manu
 - [Development Guide](docs/development-guide.md)
 - [Manual Installation](docs/manual-installation.md)
 
-## Demos
+## Examples
 
-- [RealWorld example app with Augury Demo](https://github.com/rangle/angular-realworld-example-app-with-augury/)
-- [Performance Profiler Demo](demos/README.md)
+- [Augury Examples](examples/README.md)
+- [RealWorld example app with Augury](https://github.com/rangle/angular-realworld-example-app-with-augury/)
 
 ## Other Experiments
 

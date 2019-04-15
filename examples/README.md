@@ -1,4 +1,4 @@
-# Augury Labs Demos
+# Examples
 
 ## Instructions
 
@@ -12,23 +12,23 @@
 - `yarn`
 - `yarn start:augury` or `yarn start`
 
-## Configuration patterns of Augury Labs demos
+## Configuration Patterns
 
-### These demos are not part of the Augury Labs yarn workspace.
+### These are not part of the Augury Labs yarn workspace.
 
-This is because, while all Augury Labs packages needs to interoperate and share dependencies, demos
+This is because, while all Augury Labs packages needs to interoperate and share dependencies, examples
 have particular individual needs that may clash with each other and cause various complications.
 Some Examples:
 
-- Demos might want to showcase Augury's compatibility with particular versions of Angular.
+- Examples might want to showcase Augury's compatibility with particular versions of Angular.
 - Projects built using the standard `@angular/cli` do not play nice with lerna/yarn workspaces.
 
 As such, they have their dependencies installed separately. Dependencies are kept in the demo's own
 `node_modules` folder.
 
-### Demos do not declare `@augury/*` packages in their package.json
+### Examples do not declare `@augury/*` packages in their package.json
 
-Since they are installed independently, in order for the demos to use the `@augury/*` modules
+Since they are installed independently, in order for the examples to use the `@augury/*` modules
 directly from `packages/*`, they do not declare these dependencies, as doing so would result in
 the `@augury/*` packages being fetched from the npm registry.
 
