@@ -1,4 +1,4 @@
-import { AuguryEvent } from '../../events';
+import { ComponentLifecycleMethodInvokedEvent } from '../../events/component-lifecycle-method-events';
 import { ComponentTreeNode } from '../../probes/types/component-tree-node';
 
 /**
@@ -8,5 +8,5 @@ import { ComponentTreeNode } from '../../probes/types/component-tree-node';
 export interface CollectedComponentTreeChangeEventData {
   previousComponentTree: ComponentTreeNode[];
   nextComponentTree: ComponentTreeNode[];
-  lifeCycleMethodCallEvents: AuguryEvent[];
+  lifeCycleMethodCallEvents: ComponentLifecycleMethodInvokedEvent[];
 }

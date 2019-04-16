@@ -1,5 +1,5 @@
 import { AuguryBootstrapParameters } from './augury-bootstrap-parameters.interface';
-import { AuguryCore } from './augury-core';
+import { AuguryCore } from './augury-core.class';
 import { defaultProbes } from './probes';
 
 export function auguryBootstrap({

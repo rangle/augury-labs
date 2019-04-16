@@ -1,5 +1,7 @@
+import { MethodCompletedEvent, MethodInvokedEvent } from '../../events/method-events';
 import { Probe } from '../probe.class';
 import * as helpers from '../types/ng-module.functions';
+import { AngularClassType } from './angular-class-type.enum';
 
 export class ModuleMethodsProbe extends Probe {
   // actions
@@ -18,6 +20,7 @@ export class ModuleMethodsProbe extends Probe {
   public doInitialize(ngZone, ngModule) {
     this.ngModule = ngModule;
 
+    // todo: get rid of functions. copy of component hooks probe
     function getAllRecursively(getAllFromModule: (module) => any[], module: any) {
       const allInModule = getAllFromModule(module);
       const recursiveImports = helpers.getImportedModulesFromModule(module);
@@ -32,38 +35,28 @@ export class ModuleMethodsProbe extends Probe {
     const services = getAllRecursively(helpers.getServicesFromModule, this.ngModule);
 
     const probe = this;
+
     function wrapMethod(
       Class: any,
       methodName: string,
-      classType: 'service' | 'component', // todo: there are other options
+      classType: AngularClassType, // todo: there are other options
     ) {
-      const original = Class.prototype[methodName];
-      Class.prototype[methodName] = function(...args) {
-        probe.emit('method_invoked', () => ({
-          perfstamp: performance.now(),
-          methodName,
-          classType,
-          Class,
-          instance: this,
-          args,
-          module: Class.__m,
-        }));
+      const originalMethod = Class.prototype[methodName];
 
-        const retVal = original.apply(this, args);
+      Class.prototype[methodName] = function(...parameters) {
+        probe.emit(
+          () => new MethodInvokedEvent(probe, classType, Class, this, methodName, parameters),
+        );
 
-        probe.emit('method_completed', () => ({
-          perfstamp: performance.now(),
-          hook: methodName,
-          classType,
-          Class,
-          instance: this,
-          args,
-          retVal,
-          module: Class.__m,
-        }));
+        const returnValue = originalMethod.apply(this, parameters);
 
-        return retVal;
+        probe.emit(
+          () => new MethodCompletedEvent(probe, classType, Class, this, methodName, returnValue),
+        );
+
+        return returnValue;
       };
+
       Class.prototype[methodName].__augury_wrapped__ = true;
     }
 
@@ -87,7 +80,7 @@ export class ModuleMethodsProbe extends Probe {
       );
     }
 
-    function wrapClassMethods(Class: () => any, classType: 'service' | 'component') {
+    function wrapClassMethods(Class: () => any, classType: AngularClassType) {
       Object.getOwnPropertyNames(Class.prototype).forEach(propertyName => {
         if (shouldWrapMethod(Class, propertyName)) {
           wrapMethod(Class, propertyName, classType);
@@ -95,7 +88,7 @@ export class ModuleMethodsProbe extends Probe {
       });
     }
 
-    services.forEach(Service => wrapClassMethods(Service, 'service'));
-    components.forEach(Component => wrapClassMethods(Component, 'component'));
+    services.forEach(Service => wrapClassMethods(Service, AngularClassType.Service));
+    components.forEach(Component => wrapClassMethods(Component, AngularClassType.Component));
   }
 }

@@ -1,4 +1,5 @@
 import { AuguryEvent } from '../../events';
+import { ZoneStabilizedEvent, ZoneUnstabilizedEvent } from '../../events/zone';
 import { EventProjection } from '../event-projection.class';
 import { InstabilityPeriodInfo } from './instability-period-info.interface';
 
@@ -7,10 +8,10 @@ export class InstabilityPeriodInfoProjection extends EventProjection<Instability
   private isDuringInstabilityPeriod = false;
 
   public process(event: AuguryEvent): boolean {
-    if (event.name === 'onUnstable') {
+    if (event instanceof ZoneUnstabilizedEvent) {
       this.instabilityPeriodInfo = {
         startEventId: event.id,
-        startTimestamp: event.creationAtTimestamp,
+        startTimestamp: event.dragPeriod.startTimestamp,
         drag: 0,
       };
 
@@ -20,12 +21,14 @@ export class InstabilityPeriodInfoProjection extends EventProjection<Instability
     if (this.isDuringInstabilityPeriod) {
       this.instabilityPeriodInfo.drag = event.getAuguryDrag();
 
-      if (event.name === 'onStable') {
+      if (event instanceof ZoneStabilizedEvent) {
+        const zoneStabilizedEvent = event as ZoneStabilizedEvent;
+
         this.instabilityPeriodInfo = {
           ...this.instabilityPeriodInfo,
           endEventId: event.id,
-          endTimestamp: event.creationAtTimestamp,
-          componentTree: event.payload.componentTree,
+          endTimestamp: event.dragPeriod.startTimestamp,
+          componentTree: zoneStabilizedEvent.componentTree,
         };
 
         return true;

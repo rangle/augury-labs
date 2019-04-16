@@ -1,3 +1,9 @@
+import {
+  ZoneStabilizedEvent,
+  ZoneTaskCompletedEvent,
+  ZoneTaskInvokedEvent,
+  ZoneUnstabilizedEvent,
+} from '../../events/zone';
 import { Probe } from '../probe.class';
 import { getComponentTree } from '../types/component-tree-node';
 
@@ -16,26 +22,20 @@ export class NgZoneProbe extends Probe {
     const probe = this;
     ngZone._inner = ngZone._inner.fork({
       onInvokeTask: (delegate, current, target, task, applyThis, applyArgs) => {
-        probe.emit('onInvokeTask_invoked', () => ({ task }));
-
-        // detain here
-
-        probe.emit('onInvokeTask_executing', () => ({ task }));
+        probe.emit(() => new ZoneTaskInvokedEvent(probe, task));
 
         try {
           return delegate.invokeTask(target, task, applyThis, applyArgs);
         } finally {
-          probe.emit('onInvokeTask_completed', () => ({ task }));
+          probe.emit(() => new ZoneTaskCompletedEvent(probe, task));
         }
       },
     });
 
     ngZone.onStable.subscribe(() =>
-      this.emit('onStable', () => ({
-        componentTree: getComponentTree(),
-      })),
+      probe.emit(() => new ZoneStabilizedEvent(probe, getComponentTree())),
     );
-    ngZone.onUnstable.subscribe(() => this.emit('onUnstable'));
+    ngZone.onUnstable.subscribe(() => probe.emit(() => new ZoneUnstabilizedEvent(probe)));
     ngZone._augury_instrumented_ = true;
 
     this.ngZone = ngZone;

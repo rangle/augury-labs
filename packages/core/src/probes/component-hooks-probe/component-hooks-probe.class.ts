@@ -1,19 +1,13 @@
+import { ComponentLifecycleMethodInvokedEvent } from '../../events/component-lifecycle-method-events';
 import { Probe } from '../probe.class';
 import * as ngModuleHelpers from '../types/ng-module.functions';
+import {
+  ComponentHookMethodName,
+  componentHookMethodNames,
+} from './component-hook-method-names.type';
 
 declare const ng;
 declare const getAllAngularRootElements;
-
-export const HookNames = [
-  'ngOnChanges',
-  'ngOnInit',
-  'ngDoCheck',
-  'ngAfterContentInit',
-  'ngAfterContentChecked',
-  'ngAfterViewInit',
-  'ngAfterViewChecked',
-  'ngOnDestroy',
-];
 
 export class ComponentHooksProbe extends Probe {
   private ngModule;
@@ -23,42 +17,53 @@ export class ComponentHooksProbe extends Probe {
     this.ngModule = ngModule;
     const probe = this;
 
-    function getAllRecursively(getAllFromModule: (module) => any[], module: any) {
+    // todo: get rid of functions
+    function getAllComponentTypes(getAllFromModule: (module) => any[], module: any) {
       const allInModule = getAllFromModule(module);
       const recursiveImports = ngModuleHelpers.getImportedModulesFromModule(module);
       const allInImports = recursiveImports.reduce(
         (all, importedModule) => all.concat(getAllFromModule(importedModule)),
         [],
       );
+
       return new Set(allInModule.concat(allInImports));
     }
 
-    const components = getAllRecursively(ngModuleHelpers.getComponentsFromModule, this.ngModule);
+    const componentTypes = getAllComponentTypes(
+      ngModuleHelpers.getComponentsFromModule,
+      this.ngModule,
+    );
 
-    components.forEach(component => {
-      const probeHookMethod = name => {
-        const original = component.prototype[name];
+    componentTypes.forEach(componentType => {
+      const probeHookMethod = (hookMethod: ComponentHookMethodName) => {
+        const original = componentType.prototype[hookMethod];
 
-        component.prototype[name] = function(...args) {
-          probe.emit('component_lifecycle_hook_invoked', () => ({
-            hook: name,
-            componentType: component,
-            componentInstance: this,
-            rootComponentInstance: probe.getRootComponentInstance(),
-            args,
-          }));
+        componentType.prototype[hookMethod] = function(...parameters) {
+          const componentInstance = this;
+
+          probe.emit(
+            () =>
+              new ComponentLifecycleMethodInvokedEvent(
+                probe,
+                hookMethod,
+                componentType,
+                componentInstance,
+                probe.getRootComponentInstance(),
+                parameters,
+              ),
+          );
 
           if (original) {
-            original.apply(this, args);
+            original.apply(this, parameters);
           }
         };
 
         if (!original) {
-          component.prototype[name].__added_by_augury__ = true;
+          componentType.prototype[hookMethod].__added_by_augury__ = true;
         }
       };
 
-      HookNames.forEach(probeHookMethod);
+      componentHookMethodNames.forEach(probeHookMethod);
     });
   }
 
