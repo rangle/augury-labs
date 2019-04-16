@@ -1,6 +1,5 @@
 import { ComponentLifecycleMethodInvokedEvent } from '../../../events/component-lifecycle-method-events';
 import { ComponentTypeChangeDetectionFrequency } from '../../../projections/component-tree-changes-info';
-import { ComponentHookMethodName } from '../../component-hooks-probe/component-hook-method-names.type';
 import { MergedComponentTreeNode } from './merged-component-tree-node.interface';
 
 function getComponentInstanceNgDoCheckTimestamps(

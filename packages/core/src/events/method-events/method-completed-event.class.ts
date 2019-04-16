@@ -1,5 +1,5 @@
 import { Probe } from '../../probes';
-import { AngularClassType } from '../../probes/module-methods-probe/angular-class-type.enum';
+import { AngularClassType } from '../../probes/module-methods-probe';
 import { MethodEventSupport } from './method-event-support.class';
 
 export class MethodCompletedEvent extends MethodEventSupport {

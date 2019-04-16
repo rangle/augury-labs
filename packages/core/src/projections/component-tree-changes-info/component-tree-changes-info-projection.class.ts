@@ -18,7 +18,7 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
   }
 
   public process(event: AuguryEvent): boolean {
-    if (event instanceof ZoneStabilizedEvent) {
+    if (event.isInstanceOf(ZoneStabilizedEvent)) {
       const zoneStabilizedEvent = event as ZoneStabilizedEvent;
 
       if (event.id < this.startEventId) {
@@ -31,10 +31,10 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
         }
       }
     } else if (
-      event instanceof ComponentLifecycleMethodInvokedEvent &&
+      event.isInstanceOf(ComponentLifecycleMethodInvokedEvent) &&
       event.isIdInRange(this.startEventId, this.endEventId)
     ) {
-      this.result.lifeCycleMethodInvokedEvents.push(event);
+      this.result.lifeCycleMethodInvokedEvents.push(event as ComponentLifecycleMethodInvokedEvent);
     }
 
     return false;

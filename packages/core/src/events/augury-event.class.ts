@@ -27,6 +27,10 @@ export class AuguryEvent {
     return this.timestamps;
   }
 
+  public isInstanceOf(clazz: any): boolean {
+    return this.constructor.name === clazz.name;
+  }
+
   public isIdInRange(startEventId: number, endEventId: number): boolean {
     return this.id >= startEventId && this.id <= endEventId;
   }

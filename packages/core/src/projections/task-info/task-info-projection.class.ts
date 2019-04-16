@@ -2,10 +2,10 @@ import {
   AuguryEvent,
   RootTaskCompletedEvent,
   RootTaskInvokedEvent,
+  TaskEventSupport,
   ZoneTaskCompletedEvent,
   ZoneTaskInvokedEvent,
 } from '../../events';
-import { TaskEventSupport } from '../../events/zone';
 import { EventProjection } from '../event-projection.class';
 import { TaskInfo } from './task-info.interface';
 
@@ -14,11 +14,11 @@ export class TaskInfoProjection extends EventProjection<TaskInfo> {
   private isTaskExecuting = false;
 
   public process(event: AuguryEvent): boolean {
-    if (event instanceof ZoneTaskInvokedEvent || event instanceof RootTaskInvokedEvent) {
+    if (event.isInstanceOf(ZoneTaskInvokedEvent) || event.isInstanceOf(RootTaskInvokedEvent)) {
       const taskEvent = event as TaskEventSupport;
 
       this.taskInfo = {
-        zone: event instanceof ZoneTaskInvokedEvent ? 'ng' : 'root',
+        zone: event.isInstanceOf(ZoneTaskInvokedEvent) ? 'ng' : 'root',
         task: taskEvent.task,
         startEventId: event.id,
         startTimestamp: event.dragPeriod.startTimestamp,
@@ -31,7 +31,10 @@ export class TaskInfoProjection extends EventProjection<TaskInfo> {
     if (this.isTaskExecuting) {
       this.taskInfo.drag += event.getAuguryDrag();
 
-      if (event instanceof ZoneTaskCompletedEvent || event instanceof RootTaskCompletedEvent) {
+      if (
+        event.isInstanceOf(ZoneTaskCompletedEvent) ||
+        event.isInstanceOf(RootTaskCompletedEvent)
+      ) {
         this.taskInfo = {
           ...this.taskInfo,
           endTimestamp: event.dragPeriod.startTimestamp,

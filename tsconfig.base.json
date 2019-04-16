@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "es2015",
     "lib": ["es2018", "dom"],
-    "module": "es2015",
+    "target": "es5",
+    "module": "commonjs",
+    "downlevelIteration": true,
     "moduleResolution": "node",
     "declaration": true,
     "noImplicitAny": false,

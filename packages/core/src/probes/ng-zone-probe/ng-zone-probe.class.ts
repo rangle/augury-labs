@@ -20,6 +20,7 @@ export class NgZoneProbe extends Probe {
     //        2 types of error: shutdown and emit warning
 
     const probe = this;
+
     ngZone._inner = ngZone._inner.fork({
       onInvokeTask: (delegate, current, target, task, applyThis, applyArgs) => {
         probe.emit(() => new ZoneTaskInvokedEvent(probe, task));

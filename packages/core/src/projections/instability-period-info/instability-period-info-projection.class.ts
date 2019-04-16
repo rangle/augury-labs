@@ -8,7 +8,7 @@ export class InstabilityPeriodInfoProjection extends EventProjection<Instability
   private isDuringInstabilityPeriod = false;
 
   public process(event: AuguryEvent): boolean {
-    if (event instanceof ZoneUnstabilizedEvent) {
+    if (event.isInstanceOf(ZoneUnstabilizedEvent)) {
       this.instabilityPeriodInfo = {
         startEventId: event.id,
         startTimestamp: event.dragPeriod.startTimestamp,
@@ -21,7 +21,7 @@ export class InstabilityPeriodInfoProjection extends EventProjection<Instability
     if (this.isDuringInstabilityPeriod) {
       this.instabilityPeriodInfo.drag = event.getAuguryDrag();
 
-      if (event instanceof ZoneStabilizedEvent) {
+      if (event.isInstanceOf(ZoneStabilizedEvent)) {
         const zoneStabilizedEvent = event as ZoneStabilizedEvent;
 
         this.instabilityPeriodInfo = {
