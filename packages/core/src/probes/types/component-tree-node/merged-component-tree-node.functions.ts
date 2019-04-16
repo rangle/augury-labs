@@ -57,12 +57,12 @@ function recursivelyDeriveCheckTimeForComponentSubTree(
 
 export function getLifeCycleChecksPerComponentInstance(
   mergedComponentTreeNodes: MergedComponentTreeNode[],
-  lifeCycleMethodCallEvents: ComponentLifecycleMethodInvokedEvent[],
+  lifeCycleMethodInvokedEvents: ComponentLifecycleMethodInvokedEvent[],
   lifeCycleChecksPerComponentInstance = new Map<any, number>(),
 ): Map<any, number> {
   recursivelyDeriveCheckTimeForComponentSubTree(
     mergedComponentTreeNodes,
-    getComponentInstanceNgDoCheckTimestamps(lifeCycleMethodCallEvents),
+    getComponentInstanceNgDoCheckTimestamps(lifeCycleMethodInvokedEvents),
     lifeCycleChecksPerComponentInstance,
   );
 

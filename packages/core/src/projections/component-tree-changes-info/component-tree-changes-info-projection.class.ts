@@ -34,7 +34,7 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
       event instanceof ComponentLifecycleMethodInvokedEvent &&
       event.isIdInRange(this.startEventId, this.endEventId)
     ) {
-      this.result.lifeCycleMethodCallEvents.push(event);
+      this.result.lifeCycleMethodInvokedEvents.push(event);
     }
 
     return false;
@@ -48,7 +48,7 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
 
     const lifeCycleChecksPerComponentInstance = getLifeCycleChecksPerComponentInstance(
       mergedComponentTree,
-      this.result.lifeCycleMethodCallEvents,
+      this.result.lifeCycleMethodInvokedEvents,
     );
 
     return {
@@ -68,7 +68,7 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
     return {
       previousComponentTree: [],
       nextComponentTree: [],
-      lifeCycleMethodCallEvents: [],
+      lifeCycleMethodInvokedEvents: [],
     };
   }
 }

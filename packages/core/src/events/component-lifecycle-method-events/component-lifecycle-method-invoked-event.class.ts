@@ -8,7 +8,6 @@ export class ComponentLifecycleMethodInvokedEvent extends AuguryEvent {
     public hookMethod: ComponentHookMethodName,
     public componentType: any,
     public componentInstance: any,
-    public rootComponentInstance: any,
     public parameters: any[],
   ) {
     super(probe);

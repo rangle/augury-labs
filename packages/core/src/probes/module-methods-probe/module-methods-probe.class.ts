@@ -1,6 +1,10 @@
 import { MethodCompletedEvent, MethodInvokedEvent } from '../../events/method-events';
 import { Probe } from '../probe.class';
-import * as helpers from '../types/ng-module.functions';
+import {
+  getAllObjectsInAngularApplication,
+  getComponentsFromModule,
+  getServicesFromModule,
+} from '../types';
 import { AngularClassType } from './angular-class-type.enum';
 
 export class ModuleMethodsProbe extends Probe {
@@ -20,19 +24,8 @@ export class ModuleMethodsProbe extends Probe {
   public doInitialize(ngZone, ngModule) {
     this.ngModule = ngModule;
 
-    // todo: get rid of functions. copy of component hooks probe
-    function getAllRecursively(getAllFromModule: (module) => any[], module: any) {
-      const allInModule = getAllFromModule(module);
-      const recursiveImports = helpers.getImportedModulesFromModule(module);
-      const allInImports = recursiveImports.reduce(
-        (all, importedModule) => all.concat(getAllFromModule(importedModule)),
-        [],
-      );
-      return allInModule.concat(allInImports);
-    }
-
-    const components = getAllRecursively(helpers.getComponentsFromModule, this.ngModule);
-    const services = getAllRecursively(helpers.getServicesFromModule, this.ngModule);
+    const components = getAllObjectsInAngularApplication(getComponentsFromModule, this.ngModule);
+    const services = getAllObjectsInAngularApplication(getServicesFromModule, this.ngModule);
 
     const probe = this;
 

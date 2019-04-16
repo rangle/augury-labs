@@ -8,5 +8,5 @@ import { ComponentTreeNode } from '../../probes/types/component-tree-node';
 export interface CollectedComponentTreeChangeEventData {
   previousComponentTree: ComponentTreeNode[];
   nextComponentTree: ComponentTreeNode[];
-  lifeCycleMethodCallEvents: ComponentLifecycleMethodInvokedEvent[];
+  lifeCycleMethodInvokedEvents: ComponentLifecycleMethodInvokedEvent[];
 }

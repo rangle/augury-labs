@@ -40,3 +40,17 @@ export const getServicesFromModule = module => {
     .filter(p => typeof p === 'function') // only classes
     .map(Service => Object.assign(Service, { __m: module }));
 };
+
+export function getAllObjectsInAngularApplication(
+  getAllFromModule: (module) => any[],
+  module: any,
+) {
+  const allInModule = getAllFromModule(module);
+  const recursiveImports = getImportedModulesFromModule(module);
+  const allInImports = recursiveImports.reduce(
+    (all, importedModule) => all.concat(getAllFromModule(importedModule)),
+    [],
+  );
+
+  return allInModule.concat(allInImports);
+}
