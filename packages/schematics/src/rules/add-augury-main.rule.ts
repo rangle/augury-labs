@@ -11,8 +11,8 @@ import {
   url,
 } from '@angular-devkit/schematics';
 import { normalize } from 'path';
-import { NgAddSchema } from 'src/types/ng-add.schema';
 
+import { NgAddSchema } from '../types/ng-add.schema';
 import { getWorkspaceProject } from './rule-helpers';
 
 export function addAuguryMain(options: NgAddSchema): Rule {

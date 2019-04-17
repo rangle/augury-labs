@@ -57,7 +57,10 @@
                   "replace": "src/main.ts",
                   "with": "src/main.augury.ts"
                 }
-              ]
+              ],
+              "sourceMap": {
+                "vendor": true
+              }
             }
           }
         },

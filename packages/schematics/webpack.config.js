@@ -1,6 +1,7 @@
 const path = require('path');
 const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
@@ -21,7 +22,6 @@ module.exports = {
      */
     'aws-sdk': 'aws-sdk',
     fsevents: 'fsevents',
-    'node-pre-gyp': 'node-pre-gyp',
   },
 
   entry: {
@@ -52,6 +52,12 @@ module.exports = {
   plugins: [
     new ProgressPlugin(),
     new CleanWebpackPlugin(DIST_PATH),
+    new FilterWarningsPlugin({
+      exclude: [
+        /Critical dependency: the request of a dependency is an expression/,
+        /require.extensions is not supported by webpack. Use a loader instead./,
+      ],
+    }),
     new CopyWebpackPlugin([
       {
         from: './src/collection.json',
