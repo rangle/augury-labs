@@ -4,6 +4,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const DIST_DIR = path.join(__dirname, 'dist');
@@ -25,6 +26,11 @@ module.exports = {
     chunkFilename: '[name].chunk.js',
   },
 
+  performance: {
+    maxAssetSize: 1250000,
+    maxEntrypointSize: 1250000,
+  },
+
   resolve: {
     extensions: ['.ts', '.js', '.json'],
   },
@@ -39,6 +45,7 @@ module.exports = {
         test: /\.js$/,
         use: ['source-map-loader'],
         enforce: 'pre',
+        exclude: [/\.ngfactory\.js$/, /\.ngstyle\.js$/],
       },
       {
         test: /\.css$/,
@@ -67,22 +74,18 @@ module.exports = {
       entryModule: './src/app/app.module#AppModule',
       sourceMap: true,
     }),
-    /**
-     *  this is here because of an @angular/core issue
-     *  https://github.com/angular/angular/issues/21560
-     */
     new FilterWarningsPlugin({
+      // @angular/core issue - https://github.com/angular/angular/issues/21560
       exclude: /System.import/,
     }),
     new CopyWebpackPlugin([
-      {
-        from: './src/index.html',
-        to: 'index.html',
-      },
       {
         from: './src/assets/fonts/rangle-font.woff2',
         to: 'rangle-font.woff2',
       },
     ]),
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
   ],
 };

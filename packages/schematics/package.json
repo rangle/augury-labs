@@ -34,5 +34,12 @@
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "@angular-devkit/core": "~7.3.7",
+    "@angular-devkit/schematics": "~7.3.7",
+    "@schematics/angular": "^7.3.7"
   }
 }

@@ -1,12 +1,12 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "rootDir": "./src",
     "outDir": "./dist",
+    "declarationDir": "./dist/typings",
     "noImplicitAny": false,
-    "strictNullChecks": false,
-    "declarationDir": "./dist/typings"
+    "strictNullChecks": false
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src"],
   "exclude": ["**/*.spec.ts"]
 }

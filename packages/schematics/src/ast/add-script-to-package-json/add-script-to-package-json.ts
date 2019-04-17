@@ -4,7 +4,8 @@ import {
   findPropertyInAstObject,
   insertPropertyInAstObjectInOrder,
 } from '@schematics/angular/utility/json-utils';
-import { NpmScript } from 'src/types/npm-script';
+
+import { NpmScript } from '../../types/npm-script';
 import { readPackageJson } from '../ast-helpers';
 
 export function addScriptToPackageJson(
