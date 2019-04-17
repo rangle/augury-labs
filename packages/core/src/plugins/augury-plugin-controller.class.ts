@@ -1,11 +1,10 @@
 import { AuguryPluginWindow } from './augury-plugin-window.interface';
-import { AuguryBridge } from './bridge';
 
 export class AuguryPluginController {
-  private readonly window: AuguryPluginWindow;
+  public readonly window: AuguryPluginWindow;
   private readonly onUnload: () => void;
 
-  constructor(protected readonly name: string, private readonly bridge: AuguryBridge) {
+  constructor(protected readonly name: string) {
     this.onUnload = this.kill.bind(this);
     this.window = this.initializeWindow();
   }
@@ -32,7 +31,6 @@ export class AuguryPluginController {
 
     pluginWindow.moveTo(0, 0);
     pluginWindow.resizeTo(screen.width, screen.height);
-    pluginWindow.bridge = this.bridge;
 
     window.addEventListener('unload', this.onUnload);
 

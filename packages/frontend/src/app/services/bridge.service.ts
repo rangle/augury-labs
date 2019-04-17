@@ -1,20 +1,22 @@
 import { Injectable, NgZone } from '@angular/core';
-import { AuguryBridge, AuguryBridgeMessage, AuguryBridgeRequest } from '@augury/core';
-
-declare const bridge: AuguryBridge;
+import { BridgeConnection, BridgeMessage, BridgeRequest, Subscription } from '@augury/core';
 
 // @todo: put bridgeService in service that runs inside ngzone
 //        add to @augury/ui-tools
 
 @Injectable()
 export class BridgeService {
-  constructor(private ngZone: NgZone) {}
+  private connection: BridgeConnection<BridgeMessage<any>, BridgeRequest>;
 
-  public subscribe(callback: (message: AuguryBridgeMessage<any>) => void) {
-    return bridge.listenToMessages(message => this.ngZone.run(() => callback(message)));
+  constructor(private ngZone: NgZone) {
+    this.connection = (window as any).bridgeConnection;
   }
 
-  public send(request: AuguryBridgeRequest) {
-    bridge.sendRequest(request);
+  public subscribe(callback: (message: BridgeMessage<any>) => void): Subscription {
+    return this.connection.listen(message => this.ngZone.run(() => callback(message)));
+  }
+
+  public send(request: BridgeRequest) {
+    this.connection.send(request);
   }
 }

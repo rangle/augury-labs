@@ -1,5 +1,5 @@
-import { AuguryBridge } from './bridge';
+import { BridgeConnection, BridgeMessage, BridgeRequest } from '../bridge';
 
 export interface AuguryPluginWindow extends Window {
-  bridge: AuguryBridge;
+  bridgeConnection: BridgeConnection<BridgeMessage<any>, BridgeRequest>;
 }

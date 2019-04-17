@@ -1,4 +1,4 @@
-export type AuguryBridgeMessageType =
+export type BridgeMessageType =
   | 'task'
   | 'instability-period'
   | 'change-detection'

@@ -1,11 +1,11 @@
-import { AuguryBridgeMessage } from '@augury/core';
+import { BridgeMessage } from '@augury/core';
 import { ChangeDetectionInfo, EventDragInfo, InstabilityPeriodInfo, TaskInfo } from '@augury/core';
 import { Segment } from './segment.interface';
 
-export function mapTimelineMessageToSegment(message: AuguryBridgeMessage<any>): Segment<any> {
+export function mapTimelineMessageToSegment(message: BridgeMessage<any>): Segment<any> {
   switch (message.type) {
     case 'task':
-      const taskMessage = message as AuguryBridgeMessage<TaskInfo>;
+      const taskMessage = message as BridgeMessage<TaskInfo>;
 
       return {
         type: taskMessage.payload.zone === 'ng' ? 'child-zone-task' : 'root-zone-task',
@@ -15,7 +15,7 @@ export function mapTimelineMessageToSegment(message: AuguryBridgeMessage<any>): 
         originalMessage: taskMessage,
       };
     case 'instability-period':
-      const instabilityPeriodMessage = message as AuguryBridgeMessage<InstabilityPeriodInfo>;
+      const instabilityPeriodMessage = message as BridgeMessage<InstabilityPeriodInfo>;
 
       return {
         type: 'instability',
@@ -25,7 +25,7 @@ export function mapTimelineMessageToSegment(message: AuguryBridgeMessage<any>): 
         originalMessage: instabilityPeriodMessage,
       };
     case 'change-detection':
-      const changeDetectionMessage = message as AuguryBridgeMessage<ChangeDetectionInfo>;
+      const changeDetectionMessage = message as BridgeMessage<ChangeDetectionInfo>;
 
       return {
         type: 'change-detection',
@@ -35,7 +35,7 @@ export function mapTimelineMessageToSegment(message: AuguryBridgeMessage<any>): 
         originalMessage: changeDetectionMessage,
       };
     case 'drag': {
-      const dragMessage = message as AuguryBridgeMessage<EventDragInfo>;
+      const dragMessage = message as BridgeMessage<EventDragInfo>;
 
       return {
         type: 'drag',
