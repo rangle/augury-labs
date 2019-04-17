@@ -37,15 +37,11 @@ export class ModuleMethodsProbe extends Probe {
       const originalMethod = Class.prototype[methodName];
 
       Class.prototype[methodName] = function(...parameters) {
-        probe.emit(
-          () => new MethodInvokedEvent(probe, classType, Class, this, methodName, parameters),
-        );
+        probe.emit(() => new MethodInvokedEvent(classType, Class, this, methodName, parameters));
 
         const returnValue = originalMethod.apply(this, parameters);
 
-        probe.emit(
-          () => new MethodCompletedEvent(probe, classType, Class, this, methodName, returnValue),
-        );
+        probe.emit(() => new MethodCompletedEvent(classType, Class, this, methodName, returnValue));
 
         return returnValue;
       };

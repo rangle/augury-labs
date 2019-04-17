@@ -1,5 +1,5 @@
 import { AuguryEvent } from '../events';
-import { DragPeriod } from '../events/drag-period.class';
+import { TimePeriod } from '../events/time-period.class';
 import { ProbeManager } from './probe-manager';
 
 export abstract class Probe {
@@ -18,10 +18,10 @@ export abstract class Probe {
       throw new ReferenceError('Event Emitter has not been initialized.');
     }
 
-    const dragPeriod = new DragPeriod();
+    const timePeriod = new TimePeriod();
     const event = createEvent();
 
-    event.dragPeriod = dragPeriod;
+    event.timePeriod = timePeriod;
 
     this.probeManager.emit(event);
   }

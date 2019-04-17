@@ -11,7 +11,7 @@ export class InstabilityPeriodInfoProjection extends EventProjection<Instability
     if (event.isInstanceOf(ZoneUnstabilizedEvent)) {
       this.instabilityPeriodInfo = {
         startEventId: event.id,
-        startTimestamp: event.dragPeriod.startTimestamp,
+        startTimestamp: event.timePeriod.startTimestamp,
         drag: 0,
       };
 
@@ -27,7 +27,7 @@ export class InstabilityPeriodInfoProjection extends EventProjection<Instability
         this.instabilityPeriodInfo = {
           ...this.instabilityPeriodInfo,
           endEventId: event.id,
-          endTimestamp: event.dragPeriod.startTimestamp,
+          endTimestamp: event.timePeriod.startTimestamp,
           componentTree: zoneStabilizedEvent.componentTree,
         };
 

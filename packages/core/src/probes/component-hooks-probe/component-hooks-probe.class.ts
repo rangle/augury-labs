@@ -28,7 +28,6 @@ export class ComponentHooksProbe extends Probe {
           probe.emit(
             () =>
               new ComponentLifecycleMethodInvokedEvent(
-                probe,
                 hookMethod,
                 componentType,
                 componentInstance,

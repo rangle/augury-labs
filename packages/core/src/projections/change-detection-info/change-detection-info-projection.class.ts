@@ -10,7 +10,7 @@ export class ChangeDetectionInfoProjection extends EventProjection<ChangeDetecti
   private numberOfViewChecks: number = 0;
 
   public process(event: AuguryEvent): boolean {
-    if (event.probeName === 'ComponentHooksProbe') {
+    if (event.isInstanceOf(ComponentLifecycleMethodInvokedEvent)) {
       const componentLifecycleMethodInvokedEvent = event as ComponentLifecycleMethodInvokedEvent;
 
       this.changeDetectionInfo.drag += event.getAuguryDrag();
@@ -21,7 +21,7 @@ export class ChangeDetectionInfoProjection extends EventProjection<ChangeDetecti
             this.changeDetectionInfo = {
               ...this.changeDetectionInfo,
               startEventId: event.id,
-              startTimestamp: event.dragPeriod.startTimestamp,
+              startTimestamp: event.timePeriod.startTimestamp,
               componentsChecked: [],
             };
           }
@@ -37,7 +37,7 @@ export class ChangeDetectionInfoProjection extends EventProjection<ChangeDetecti
           this.changeDetectionInfo = {
             ...this.changeDetectionInfo,
             endEventId: event.id,
-            endTimestamp: event.dragPeriod.endTimestamp,
+            endTimestamp: event.timePeriod.endTimestamp,
           };
 
           if (this.numberOfViewChecks === this.changeDetectionInfo.componentsChecked.length) {

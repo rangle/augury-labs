@@ -1,33 +1,31 @@
-import { Probe } from '../probes';
-import { DragPeriod } from './drag-period.class';
+import { EventClassType } from './event-class-type.type';
+import { TimePeriod } from './time-period.class';
 
 export class AuguryEvent {
   private static NextId = 0;
 
   public readonly id: number;
-  public readonly probeName: string;
-  private timestamps: DragPeriod = null;
+  private timestamps: TimePeriod = null;
 
-  constructor(probe: Probe) {
+  constructor() {
     this.id = AuguryEvent.NextId++;
-    this.probeName = probe.constructor.name;
   }
 
-  public set dragPeriod(dragPeriod: DragPeriod) {
+  public set timePeriod(timePeriod: TimePeriod) {
     if (this.timestamps) {
       throw new Error('The drag period is already set!');
     }
 
-    dragPeriod.markComplete();
+    timePeriod.markComplete();
 
-    this.timestamps = dragPeriod;
+    this.timestamps = timePeriod;
   }
 
-  public get dragPeriod(): DragPeriod {
+  public get timePeriod(): TimePeriod {
     return this.timestamps;
   }
 
-  public isInstanceOf(clazz: any): boolean {
+  public isInstanceOf(clazz: EventClassType): boolean {
     return this.constructor.name === clazz.name;
   }
 
@@ -36,6 +34,6 @@ export class AuguryEvent {
   }
 
   public getAuguryDrag() {
-    return this.dragPeriod.getElapsedTime();
+    return this.timePeriod.getElapsedTime();
   }
 }

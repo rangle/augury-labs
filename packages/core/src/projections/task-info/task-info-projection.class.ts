@@ -21,7 +21,7 @@ export class TaskInfoProjection extends EventProjection<TaskInfo> {
         zone: event.isInstanceOf(ZoneTaskInvokedEvent) ? 'ng' : 'root',
         task: taskEvent.task,
         startEventId: event.id,
-        startTimestamp: event.dragPeriod.startTimestamp,
+        startTimestamp: event.timePeriod.startTimestamp,
         drag: 0,
       };
 
@@ -37,7 +37,7 @@ export class TaskInfoProjection extends EventProjection<TaskInfo> {
       ) {
         this.taskInfo = {
           ...this.taskInfo,
-          endTimestamp: event.dragPeriod.startTimestamp,
+          endTimestamp: event.timePeriod.startTimestamp,
         };
 
         return true;

@@ -7,8 +7,8 @@ export class EventDragInfoProjection extends EventProjection<EventDragInfo> {
 
   public process(event: AuguryEvent): boolean {
     this.eventDragInfo = {
-      startTimestamp: event.dragPeriod.startTimestamp,
-      endTimestamp: event.dragPeriod.endTimestamp,
+      startTimestamp: event.timePeriod.startTimestamp,
+      endTimestamp: event.timePeriod.endTimestamp,
     };
 
     return true;

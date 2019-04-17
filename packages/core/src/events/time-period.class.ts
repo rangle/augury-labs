@@ -1,4 +1,4 @@
-export class DragPeriod {
+export class TimePeriod {
   public startTimestamp: number;
   public endTimestamp: number;
 

@@ -9,7 +9,7 @@ function getComponentInstanceNgDoCheckTimestamps(
     if (event.hookMethod === 'ngDoCheck') {
       componentInstanceNgDoCheckTimestamps.set(
         event.componentInstance,
-        event.dragPeriod.startTimestamp,
+        event.timePeriod.startTimestamp,
       );
     }
 

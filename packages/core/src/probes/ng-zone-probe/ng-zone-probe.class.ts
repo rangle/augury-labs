@@ -23,20 +23,18 @@ export class NgZoneProbe extends Probe {
 
     ngZone._inner = ngZone._inner.fork({
       onInvokeTask: (delegate, current, target, task, applyThis, applyArgs) => {
-        probe.emit(() => new ZoneTaskInvokedEvent(probe, task));
+        probe.emit(() => new ZoneTaskInvokedEvent(task));
 
         try {
           return delegate.invokeTask(target, task, applyThis, applyArgs);
         } finally {
-          probe.emit(() => new ZoneTaskCompletedEvent(probe, task));
+          probe.emit(() => new ZoneTaskCompletedEvent(task));
         }
       },
     });
 
-    ngZone.onStable.subscribe(() =>
-      probe.emit(() => new ZoneStabilizedEvent(probe, getComponentTree())),
-    );
-    ngZone.onUnstable.subscribe(() => probe.emit(() => new ZoneUnstabilizedEvent(probe)));
+    ngZone.onStable.subscribe(() => probe.emit(() => new ZoneStabilizedEvent(getComponentTree())));
+    ngZone.onUnstable.subscribe(() => probe.emit(() => new ZoneUnstabilizedEvent()));
     ngZone._augury_instrumented_ = true;
 
     this.ngZone = ngZone;
