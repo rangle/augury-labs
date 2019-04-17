@@ -1,22 +1,32 @@
-import { AuguryEventName } from './augury-event-name.type';
+import { EventClassType } from './event-class-type.type';
+import { TimePeriod } from './time-period.class';
 
 export class AuguryEvent {
   private static NextId = 0;
 
   public readonly id: number;
-  public readonly payload: any;
-  public readonly creationAtTimestamp: number;
-  public readonly completedAtTimestamp: number;
+  private timestamps: TimePeriod = null;
 
-  constructor(
-    public readonly probeName: string,
-    public readonly name: AuguryEventName,
-    createPayload: () => any,
-  ) {
+  constructor() {
     this.id = AuguryEvent.NextId++;
-    this.creationAtTimestamp = performance.now();
-    this.payload = createPayload();
-    this.completedAtTimestamp = performance.now();
+  }
+
+  public set timePeriod(timePeriod: TimePeriod) {
+    if (this.timestamps) {
+      throw new Error('The drag period is already set!');
+    }
+
+    timePeriod.markComplete();
+
+    this.timestamps = timePeriod;
+  }
+
+  public get timePeriod(): TimePeriod {
+    return this.timestamps;
+  }
+
+  public isInstanceOf(clazz: EventClassType): boolean {
+    return this.constructor.name === clazz.name;
   }
 
   public isIdInRange(startEventId: number, endEventId: number): boolean {
@@ -24,6 +34,6 @@ export class AuguryEvent {
   }
 
   public getAuguryDrag() {
-    return this.completedAtTimestamp - this.creationAtTimestamp;
+    return this.timePeriod.getElapsedTime();
   }
 }

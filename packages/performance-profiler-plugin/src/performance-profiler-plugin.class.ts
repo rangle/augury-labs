@@ -6,9 +6,8 @@ import {
   EventDragInfoProjection,
   hasDragOccured,
   InstabilityPeriodInfoProjection,
-  NgTaskInfoProjection,
   Plugin,
-  RootTaskInfoProjection,
+  TaskInfoProjection,
 } from '@augury/core';
 import { PerformanceProfilerController } from './performance-profiler-controller.class';
 
@@ -19,12 +18,8 @@ export class PerformanceProfilerPlugin extends Plugin {
   private controller = new PerformanceProfilerController(this.bridge);
 
   public doInitialize() {
-    this.getAugury().registerEventProjection(new RootTaskInfoProjection(), rootTaskInfo =>
-      this.bridge.sendMessage({ type: 'task', payload: rootTaskInfo }),
-    );
-
-    this.getAugury().registerEventProjection(new NgTaskInfoProjection(), ngTaskInfo =>
-      this.bridge.sendMessage({ type: 'task', payload: ngTaskInfo }),
+    this.getAugury().registerEventProjection(new TaskInfoProjection(), taskInfo =>
+      this.bridge.sendMessage({ type: 'task', payload: taskInfo }),
     );
 
     this.getAugury().registerEventProjection(

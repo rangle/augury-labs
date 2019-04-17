@@ -1,13 +1,15 @@
-import { AuguryEvent } from '../../../events';
-import { ComponentTypeChangeDetectionFrequency } from '../../../projections/component-tree-changes-info/component-type-change-detection-frequency.interface';
+import { ComponentLifecycleMethodInvokedEvent } from '../../../events/component-lifecycle-method-events';
+import { ComponentTypeChangeDetectionFrequency } from '../../../projections/component-tree-changes-info';
 import { MergedComponentTreeNode } from './merged-component-tree-node.interface';
 
-function getComponentInstanceNgDoCheckTimestamps(events: AuguryEvent[]): Map<any, number> {
+function getComponentInstanceNgDoCheckTimestamps(
+  events: ComponentLifecycleMethodInvokedEvent[],
+): Map<any, number> {
   return events.reduce((componentInstanceNgDoCheckTimestamps, event) => {
-    if (event.payload.hook === 'ngDoCheck') {
+    if (event.hookMethod === 'ngDoCheck') {
       componentInstanceNgDoCheckTimestamps.set(
-        event.payload.componentInstance,
-        event.creationAtTimestamp,
+        event.componentInstance,
+        event.timePeriod.startTimestamp,
       );
     }
 
@@ -54,12 +56,12 @@ function recursivelyDeriveCheckTimeForComponentSubTree(
 
 export function getLifeCycleChecksPerComponentInstance(
   mergedComponentTreeNodes: MergedComponentTreeNode[],
-  lifeCycleMethodCallEvents: AuguryEvent[],
+  lifeCycleMethodInvokedEvents: ComponentLifecycleMethodInvokedEvent[],
   lifeCycleChecksPerComponentInstance = new Map<any, number>(),
 ): Map<any, number> {
   recursivelyDeriveCheckTimeForComponentSubTree(
     mergedComponentTreeNodes,
-    getComponentInstanceNgDoCheckTimestamps(lifeCycleMethodCallEvents),
+    getComponentInstanceNgDoCheckTimestamps(lifeCycleMethodInvokedEvents),
     lifeCycleChecksPerComponentInstance,
   );
 

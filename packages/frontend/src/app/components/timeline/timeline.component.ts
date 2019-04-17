@@ -84,6 +84,8 @@ export class TimelineComponent implements OnChanges {
   }
 
   private paint() {
+    this.lastPaintedTimestamp = performance.now();
+
     const boundaries = getTimelineGraphsBoundaries(
       this.timelineOverviewGraphElement.nativeElement,
       this.timelineDetailViewGraphElement.nativeElement,

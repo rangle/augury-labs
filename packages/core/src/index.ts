@@ -1,6 +1,6 @@
 export { auguryBootstrap } from './augury-bootstrap.function';
-export { AuguryCore } from './augury-core';
-export * from './probes/types';
+export { AuguryCore } from './augury-core.class';
+export * from './probes';
 export * from './events';
 export * from './projections';
 export * from './plugins';

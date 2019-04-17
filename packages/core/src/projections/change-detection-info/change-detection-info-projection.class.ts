@@ -1,4 +1,5 @@
 import { AuguryEvent } from '../../events';
+import { ComponentLifecycleMethodInvokedEvent } from '../../events/component-lifecycle-method-events';
 import { EventProjection } from '../event-projection.class';
 import { ChangeDetectionInfo } from './change-detection-info.interface';
 
@@ -9,21 +10,25 @@ export class ChangeDetectionInfoProjection extends EventProjection<ChangeDetecti
   private numberOfViewChecks: number = 0;
 
   public process(event: AuguryEvent): boolean {
-    if (event.probeName === 'ComponentHooksProbe') {
+    if (event.isInstanceOf(ComponentLifecycleMethodInvokedEvent)) {
+      const componentLifecycleMethodInvokedEvent = event as ComponentLifecycleMethodInvokedEvent;
+
       this.changeDetectionInfo.drag += event.getAuguryDrag();
 
-      switch (event.payload.hook) {
+      switch (componentLifecycleMethodInvokedEvent.hookMethod) {
         case 'ngDoCheck':
           if (!this.changeDetectionInfo.componentsChecked) {
             this.changeDetectionInfo = {
               ...this.changeDetectionInfo,
               startEventId: event.id,
-              startTimestamp: event.creationAtTimestamp,
+              startTimestamp: event.timePeriod.startTimestamp,
               componentsChecked: [],
             };
           }
 
-          this.changeDetectionInfo.componentsChecked.push(event.payload.instance);
+          this.changeDetectionInfo.componentsChecked.push(
+            componentLifecycleMethodInvokedEvent.componentInstance,
+          );
 
           break;
         case 'ngAfterViewChecked':
@@ -32,7 +37,7 @@ export class ChangeDetectionInfoProjection extends EventProjection<ChangeDetecti
           this.changeDetectionInfo = {
             ...this.changeDetectionInfo,
             endEventId: event.id,
-            endTimestamp: event.completedAtTimestamp,
+            endTimestamp: event.timePeriod.endTimestamp,
           };
 
           if (this.numberOfViewChecks === this.changeDetectionInfo.componentsChecked.length) {

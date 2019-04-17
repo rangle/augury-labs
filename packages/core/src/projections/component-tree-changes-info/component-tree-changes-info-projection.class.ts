@@ -1,4 +1,6 @@
 import { AuguryEvent } from '../../events';
+import { ComponentLifecycleMethodInvokedEvent } from '../../events/component-lifecycle-method-events';
+import { ZoneStabilizedEvent } from '../../events/zone';
 import { mergeComponentTrees } from '../../probes/types/component-tree-node';
 import {
   getComponentTypeChangeDetectionFrequency,
@@ -16,21 +18,23 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
   }
 
   public process(event: AuguryEvent): boolean {
-    if (event.name === 'onStable') {
+    if (event.isInstanceOf(ZoneStabilizedEvent)) {
+      const zoneStabilizedEvent = event as ZoneStabilizedEvent;
+
       if (event.id < this.startEventId) {
-        this.result.previousComponentTree = event.payload.componentTree;
+        this.result.previousComponentTree = zoneStabilizedEvent.componentTree;
       } else if (event.id >= this.endEventId) {
         if (this.result.nextComponentTree.length === 0) {
-          this.result.nextComponentTree = event.payload.componentTree;
+          this.result.nextComponentTree = zoneStabilizedEvent.componentTree;
         } else {
           return true;
         }
       }
     } else if (
-      event.name === 'component_lifecycle_hook_invoked' &&
+      event.isInstanceOf(ComponentLifecycleMethodInvokedEvent) &&
       event.isIdInRange(this.startEventId, this.endEventId)
     ) {
-      this.result.lifeCycleMethodCallEvents.push(event);
+      this.result.lifeCycleMethodInvokedEvents.push(event as ComponentLifecycleMethodInvokedEvent);
     }
 
     return false;
@@ -44,7 +48,7 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
 
     const lifeCycleChecksPerComponentInstance = getLifeCycleChecksPerComponentInstance(
       mergedComponentTree,
-      this.result.lifeCycleMethodCallEvents,
+      this.result.lifeCycleMethodInvokedEvents,
     );
 
     return {
@@ -64,7 +68,7 @@ export class ComponentTreeChangesInfoProjection extends EventProjection<Componen
     return {
       previousComponentTree: [],
       nextComponentTree: [],
-      lifeCycleMethodCallEvents: [],
+      lifeCycleMethodInvokedEvents: [],
     };
   }
 }

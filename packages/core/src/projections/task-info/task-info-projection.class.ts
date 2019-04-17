@@ -1,18 +1,27 @@
-import { AuguryEvent } from '../../events';
+import {
+  AuguryEvent,
+  RootTaskCompletedEvent,
+  RootTaskInvokedEvent,
+  TaskEventSupport,
+  ZoneTaskCompletedEvent,
+  ZoneTaskInvokedEvent,
+} from '../../events';
 import { EventProjection } from '../event-projection.class';
 import { TaskInfo } from './task-info.interface';
 
-export abstract class TaskInfoProjection extends EventProjection<TaskInfo> {
+export class TaskInfoProjection extends EventProjection<TaskInfo> {
   private taskInfo: Partial<TaskInfo> = {};
   private isTaskExecuting = false;
 
   public process(event: AuguryEvent): boolean {
-    if (event.name === this.getExecutingEventName()) {
+    if (event.isInstanceOf(ZoneTaskInvokedEvent) || event.isInstanceOf(RootTaskInvokedEvent)) {
+      const taskEvent = event as TaskEventSupport;
+
       this.taskInfo = {
-        zone: this.getZoneValue(),
-        task: event.payload.task,
+        zone: event.isInstanceOf(ZoneTaskInvokedEvent) ? 'ng' : 'root',
+        task: taskEvent.task,
         startEventId: event.id,
-        startTimestamp: event.creationAtTimestamp,
+        startTimestamp: event.timePeriod.startTimestamp,
         drag: 0,
       };
 
@@ -22,10 +31,13 @@ export abstract class TaskInfoProjection extends EventProjection<TaskInfo> {
     if (this.isTaskExecuting) {
       this.taskInfo.drag += event.getAuguryDrag();
 
-      if (event.name === this.getCompletedEventName()) {
+      if (
+        event.isInstanceOf(ZoneTaskCompletedEvent) ||
+        event.isInstanceOf(RootTaskCompletedEvent)
+      ) {
         this.taskInfo = {
           ...this.taskInfo,
-          endTimestamp: event.creationAtTimestamp,
+          endTimestamp: event.timePeriod.startTimestamp,
         };
 
         return true;
@@ -43,10 +55,4 @@ export abstract class TaskInfoProjection extends EventProjection<TaskInfo> {
     this.taskInfo = {};
     this.isTaskExecuting = false;
   }
-
-  protected abstract getExecutingEventName(): string;
-
-  protected abstract getCompletedEventName(): string;
-
-  protected abstract getZoneValue(): string;
 }

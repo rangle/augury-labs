@@ -1,4 +1,4 @@
-import { AuguryCore } from '../augury-core';
+import { AuguryCore } from '../augury-core.class';
 import { Plugin } from './plugin.class';
 
 export class PluginManager {
