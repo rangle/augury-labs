@@ -1,14 +1,14 @@
 import { BridgeMessageType } from './bridge-message-type.type';
 import { BridgeMessage } from './bridge-message.interface';
 
-function messageMatchesType(message: BridgeMessage<any>, types: BridgeMessageType[]) {
+function messageMatchesType(message: BridgeMessage, types: BridgeMessageType[]) {
   return types.includes(message.type);
 }
 
-export function isTimelineMessage(message: BridgeMessage<any>): boolean {
+export function isTimelineMessage(message: BridgeMessage): boolean {
   return messageMatchesType(message, ['task', 'instability-period', 'change-detection']);
 }
 
-export function isDragMessage(message: BridgeMessage<any>): boolean {
+export function isDragMessage(message: BridgeMessage): boolean {
   return messageMatchesType(message, ['drag']);
 }

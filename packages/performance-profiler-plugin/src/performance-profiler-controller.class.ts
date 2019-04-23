@@ -1,8 +1,8 @@
-import { AuguryPluginController } from '@augury/core';
+import { PopupController } from '@augury/core';
 
 declare const require;
 
-export class PerformanceProfilerController extends AuguryPluginController {
+export class PerformanceProfilerController extends PopupController {
   private static readonly WindowName = 'Augury Zone Monitor';
 
   constructor() {

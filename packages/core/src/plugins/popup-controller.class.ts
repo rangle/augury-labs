@@ -1,7 +1,7 @@
-import { AuguryPluginWindow } from './augury-plugin-window.interface';
+import { AuguryWindow } from '../augury-window.interface';
 
-export class AuguryPluginController {
-  public readonly window: AuguryPluginWindow;
+export class PopupController {
+  public readonly window: AuguryWindow;
   private readonly onUnload: () => void;
 
   constructor(protected readonly name: string) {
@@ -21,9 +21,9 @@ export class AuguryPluginController {
     this.window.document.body.appendChild(scriptElement);
   }
 
-  private initializeWindow(): AuguryPluginWindow {
+  private initializeWindow(): AuguryWindow {
     const parameters = ['titlebar=yes', 'location=no'].join(',');
-    const pluginWindow = open('', this.name, parameters) as AuguryPluginWindow;
+    const pluginWindow = open('', this.name, parameters) as AuguryWindow;
 
     if (!pluginWindow) {
       throw new Error('Please allow popup windows');

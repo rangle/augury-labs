@@ -59,8 +59,10 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
     //        full CD reducer should use before/after component tree reducer
     this.bridgeService.send({
       type: 'component-tree-changes',
-      startEventId: this.instabilityPeriodInfo.startEventId + 10, // @todo: hack because of above ^
-      endEventId: this.instabilityPeriodInfo.endEventId - 10,
+      payload: {
+        startEventId: this.instabilityPeriodInfo.startEventId + 10, // @todo: hack because of above ^
+        endEventId: this.instabilityPeriodInfo.endEventId - 10,
+      },
     });
   }
 

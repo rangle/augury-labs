@@ -3,4 +3,5 @@ export type BridgeMessageType =
   | 'instability-period'
   | 'change-detection'
   | 'drag'
+  | 'component-tree-changes'
   | 'component-tree-changes:response';

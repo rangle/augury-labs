@@ -2,6 +2,7 @@ import {
   Bridge,
   ChangeDetectionInfoProjection,
   ComponentTreeChangesInfoProjection,
+  DirectBridgeConnection,
   EventDragInfo,
   EventDragInfoProjection,
   hasDragOccured,
@@ -18,23 +19,25 @@ export class PerformanceProfilerPlugin extends Plugin {
   private controller = new PerformanceProfilerController();
 
   public doInitialize() {
-    const connection = Bridge.getInstance().createProducerConnection();
-    this.controller.window.bridgeConnection = Bridge.getInstance().createConsumerConnection();
+    const connection = new DirectBridgeConnection();
+    const bridge = new Bridge(connection);
+
+    this.controller.window.auguryBridge = bridge;
 
     this.getAugury().registerEventProjection(new TaskInfoProjection(), taskInfo =>
-      connection.send({ type: 'task', payload: taskInfo }),
+      bridge.send({ type: 'task', payload: taskInfo }),
     );
 
     this.getAugury().registerEventProjection(
       new InstabilityPeriodInfoProjection(),
       instabilityPeriodInfo =>
-        connection.send({ type: 'instability-period', payload: instabilityPeriodInfo }),
+        bridge.send({ type: 'instability-period', payload: instabilityPeriodInfo }),
     );
 
     this.getAugury().registerEventProjection(
       new ChangeDetectionInfoProjection(),
       changeDetectionInfo =>
-        connection.send({
+        bridge.send({
           type: 'change-detection',
           payload: changeDetectionInfo,
         }),
@@ -44,7 +47,7 @@ export class PerformanceProfilerPlugin extends Plugin {
       new EventDragInfoProjection(),
       (eventDragInfo: EventDragInfo) => {
         if (hasDragOccured(eventDragInfo)) {
-          connection.send({
+          bridge.send({
             type: 'drag',
             payload: eventDragInfo,
           });
@@ -52,12 +55,15 @@ export class PerformanceProfilerPlugin extends Plugin {
       },
     );
 
-    connection.listen(request => {
+    bridge.listen(request => {
       if (request.type === 'component-tree-changes') {
-        connection.send({
+        bridge.send({
           type: 'component-tree-changes:response',
           payload: this.getAugury().projectFirstResultFromHistory(
-            new ComponentTreeChangesInfoProjection(request.startEventId, request.endEventId),
+            new ComponentTreeChangesInfoProjection(
+              request.payload.startEventId,
+              request.payload.endEventId,
+            ),
           ),
         });
       }
