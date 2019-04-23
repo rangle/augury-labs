@@ -1,7 +1,8 @@
 import {
-  AuguryBridgeRequest,
+  Bridge,
   ChangeDetectionInfoProjection,
   ComponentTreeChangesInfoProjection,
+  DirectBridgeConnection,
   EventDragInfo,
   EventDragInfoProjection,
   hasDragOccured,
@@ -15,23 +16,28 @@ export class PerformanceProfilerPlugin extends Plugin {
   public cycles: any = {};
   public queuedTasks: any[] = [];
 
-  private controller = new PerformanceProfilerController(this.bridge);
+  private controller = new PerformanceProfilerController();
 
   public doInitialize() {
+    const connection = new DirectBridgeConnection();
+    const bridge = new Bridge(connection);
+
+    this.controller.window.auguryBridge = bridge;
+
     this.getAugury().registerEventProjection(new TaskInfoProjection(), taskInfo =>
-      this.bridge.sendMessage({ type: 'task', payload: taskInfo }),
+      bridge.send({ type: 'task', payload: taskInfo }),
     );
 
     this.getAugury().registerEventProjection(
       new InstabilityPeriodInfoProjection(),
       instabilityPeriodInfo =>
-        this.bridge.sendMessage({ type: 'instability-period', payload: instabilityPeriodInfo }),
+        bridge.send({ type: 'instability-period', payload: instabilityPeriodInfo }),
     );
 
     this.getAugury().registerEventProjection(
       new ChangeDetectionInfoProjection(),
       changeDetectionInfo =>
-        this.bridge.sendMessage({
+        bridge.send({
           type: 'change-detection',
           payload: changeDetectionInfo,
         }),
@@ -41,7 +47,7 @@ export class PerformanceProfilerPlugin extends Plugin {
       new EventDragInfoProjection(),
       (eventDragInfo: EventDragInfo) => {
         if (hasDragOccured(eventDragInfo)) {
-          this.bridge.sendMessage({
+          bridge.send({
             type: 'drag',
             payload: eventDragInfo,
           });
@@ -49,19 +55,18 @@ export class PerformanceProfilerPlugin extends Plugin {
       },
     );
 
-    this.bridge.listenToRequests(request => {
+    bridge.listen(request => {
       if (request.type === 'component-tree-changes') {
-        this.handleGetFullChangeDetectionRequest(request);
+        bridge.send({
+          type: 'component-tree-changes:response',
+          payload: this.getAugury().projectFirstResultFromHistory(
+            new ComponentTreeChangesInfoProjection(
+              request.payload.startEventId,
+              request.payload.endEventId,
+            ),
+          ),
+        });
       }
-    });
-  }
-
-  private handleGetFullChangeDetectionRequest(request: AuguryBridgeRequest) {
-    this.bridge.sendMessage({
-      type: 'component-tree-changes:response',
-      payload: this.getAugury().projectFirstResultFromHistory(
-        new ComponentTreeChangesInfoProjection(request.startEventId, request.endEventId),
-      ),
     });
   }
 }

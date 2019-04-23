@@ -2,6 +2,9 @@
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
   "editor.formatOnSave": true,
   "editor.trimAutoWhitespace": true
 }

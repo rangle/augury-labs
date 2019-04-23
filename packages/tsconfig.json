@@ -1,3 +1,8 @@
 {
-  "extends": "./tsconfig.base.json"
+  "files": [],
+  "references": [
+    { "path": "./core" },
+    { "path": "./performance-profiler-plugin" },
+    { "path": "./schematics" }
+  ]
 }

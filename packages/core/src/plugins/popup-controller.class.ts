@@ -1,11 +1,10 @@
-import { AuguryPluginWindow } from './augury-plugin-window.interface';
-import { AuguryBridge } from './bridge';
+import { AuguryWindow } from '../augury-window.interface';
 
-export class AuguryPluginController {
-  private readonly window: AuguryPluginWindow;
+export class PopupController {
+  public readonly window: AuguryWindow;
   private readonly onUnload: () => void;
 
-  constructor(protected readonly name: string, private readonly bridge: AuguryBridge) {
+  constructor(protected readonly name: string) {
     this.onUnload = this.kill.bind(this);
     this.window = this.initializeWindow();
   }
@@ -22,9 +21,9 @@ export class AuguryPluginController {
     this.window.document.body.appendChild(scriptElement);
   }
 
-  private initializeWindow(): AuguryPluginWindow {
+  private initializeWindow(): AuguryWindow {
     const parameters = ['titlebar=yes', 'location=no'].join(',');
-    const pluginWindow = open('', this.name, parameters) as AuguryPluginWindow;
+    const pluginWindow = open('', this.name, parameters) as AuguryWindow;
 
     if (!pluginWindow) {
       throw new Error('Please allow popup windows');
@@ -32,7 +31,6 @@ export class AuguryPluginController {
 
     pluginWindow.moveTo(0, 0);
     pluginWindow.resizeTo(screen.width, screen.height);
-    pluginWindow.bridge = this.bridge;
 
     window.addEventListener('unload', this.onUnload);
 

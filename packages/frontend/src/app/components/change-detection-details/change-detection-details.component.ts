@@ -49,8 +49,10 @@ export class ChangeDetectionDetailsComponent implements OnChanges, OnDestroy {
 
     this.bridge.send({
       type: 'component-tree-changes',
-      startEventId: this.changeDetectionInfo.startEventId,
-      endEventId: this.changeDetectionInfo.endEventId,
+      payload: {
+        startEventId: this.changeDetectionInfo.startEventId,
+        endEventId: this.changeDetectionInfo.endEventId,
+      },
     });
 
     this.runtimeInMilliseconds = round2(
