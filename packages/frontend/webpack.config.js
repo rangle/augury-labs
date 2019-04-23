@@ -13,6 +13,7 @@ const isProduction = NODE_ENV === 'production';
 module.exports = {
   mode: isProduction ? 'production' : 'development',
   devtool: isProduction ? false : ' source-map',
+  stats: 'errors-only',
 
   entry: {
     polyfills: './src/polyfills.ts',
