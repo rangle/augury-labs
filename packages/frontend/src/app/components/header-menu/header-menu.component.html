@@ -1,0 +1,5 @@
+<ul>
+  <li *ngFor="let tab of tabs; let i = index;">
+      <ag-button [ngClass]="{ 'active': i === activeTabId }" (pressed)="activeTabId = i">{{ tab }}</ag-button>
+    </li>
+</ul>
