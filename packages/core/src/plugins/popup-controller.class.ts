@@ -7,16 +7,11 @@ interface WindowSizeAndPosition {
 
 export class PopupController {
   public readonly window: AuguryWindow;
-  protected storageKey: string;
+  private storageKey = 'augury-popup-settings';
   private readonly onUnload: () => void;
 
   constructor(protected readonly name: string) {
     this.onUnload = this.kill.bind(this);
-    this.storageKey = `${this.name
-      .toLowerCase()
-      .split(' ')
-      .join('-')}-size-position`;
-
     this.window = this.initializeWindow();
   }
 
@@ -41,8 +36,10 @@ export class PopupController {
     }
 
     const sizeAndPosition = this.getWindowSizeAndPositionFromStorage();
-    pluginWindow.moveTo(sizeAndPosition.position.x, sizeAndPosition.position.y);
-    pluginWindow.resizeTo(sizeAndPosition.size.width, sizeAndPosition.size.height);
+    if (sizeAndPosition) {
+      pluginWindow.moveTo(sizeAndPosition.position.x, sizeAndPosition.position.y);
+      pluginWindow.resizeTo(sizeAndPosition.size.width, sizeAndPosition.size.height);
+    }
 
     window.addEventListener('unload', this.onUnload);
 
@@ -50,13 +47,8 @@ export class PopupController {
   }
 
   private getWindowSizeAndPositionFromStorage(): WindowSizeAndPosition {
-    const defaultSizeAndPosition = {
-      position: { x: 0, y: 0 },
-      size: { width: screen.width, height: screen.height },
-    };
     const fromStorage = localStorage.getItem(this.storageKey);
-
-    return !!fromStorage ? JSON.parse(fromStorage) : defaultSizeAndPosition;
+    return !!fromStorage ? JSON.parse(fromStorage) : null;
   }
 
   private storeWindowSizeAndPosition() {
