@@ -20,7 +20,7 @@
     "start": "npm run clean && npm run build:watch",
     "build": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
-    "build:watch": "cross-env NODE_ENV=development webpack --watch",
+    "build:watch": "cross-env NODE_ENV=development ng build --watch",
     "clean": "rimraf dist",
     "test": "npm run lint",
     "lint": "tslint --project .",
@@ -45,12 +45,16 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.7",
+    "@angular-devkit/build-ng-packagr": "~0.13.0",
     "@angular/cli": "^7.3.7",
     "@angular/compiler": "^7.2.11",
     "@angular/compiler-cli": "^7.2.11",
     "@ngtools/webpack": "^7.3.7",
     "@types/d3": "^5.7.1",
     "@types/d3-tip": "^3.5.5",
+    "ng-packagr": "^4.2.0",
+    "tsickle": ">=0.34.0",
+    "tslib": "^1.9.0",
     "typescript": "~3.1.6"
   }
 }
