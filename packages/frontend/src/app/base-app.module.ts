@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import {
   AppComponent,
@@ -25,14 +24,7 @@ import { UiLibraryModule } from './modules/ui-library/ui-library.module';
 import { BridgeService } from './services/bridge.service';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TooltipModule,
-    UiLibraryModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TooltipModule, UiLibraryModule],
   declarations: [
     AppComponent,
     ChangeDetectionDetailsComponent,
@@ -52,6 +44,5 @@ import { BridgeService } from './services/bridge.service';
     TimelineOptionsComponent,
   ],
   providers: [BridgeService],
-  bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class BaseAppModule {}
