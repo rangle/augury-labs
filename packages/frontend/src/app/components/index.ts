@@ -5,6 +5,7 @@ export * from './footer/footer.component';
 export * from './header/header.component';
 export * from './header-controls/header-controls.component';
 export * from './header-logo/header-logo.component';
+export * from './header-menu/header-menu.component';
 export * from './instability-details';
 export * from './legend';
 export * from './logo/logo.component';
