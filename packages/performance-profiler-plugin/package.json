@@ -24,16 +24,16 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -b .",
-    "build:prod": "npm run build",
-    "build:watch": "tsc -b . --watch",
+    "prebuild": "npm run clean",
+    "build": "cross-env NODE_ENV=development webpack",
+    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:watch": "cross-env NODE_ENV=development webpack --watch",
     "clean": "rimraf dist",
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
-    "lint:fix": "tslint --project . --fix",
-    "prebuild": "npm run clean"
+    "lint:fix": "tslint --project . --fix"
   },
   "dependencies": {
     "@augury/core": "^0.6.0-beta.0"
