@@ -19,9 +19,10 @@
   "scripts": {
     "start": "npm run clean && npm run build:watch",
     "build": "ng run frontend:build-elements:production",
+    "build:prod": "npm run build",
     "build:watch": "npm run build -- --watch",
     "build:angular": "ng build",
-    "build:angular:prod": "ng build:default --prod",
+    "build:angular:prod": "ng build --prod",
     "build:angular:watch": "npm run build:default -- --watch",
     "build:lib": "ng run frontend:build-lib",
     "build:lib:watch": "npm run build:lib -- --watch",
