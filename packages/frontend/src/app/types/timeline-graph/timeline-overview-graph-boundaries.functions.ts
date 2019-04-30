@@ -1,3 +1,5 @@
+import { TimelineOverviewGraphBoundaries } from './timeline-overview-graph-boundaries.interface';
+
 const Margins = {
   top: 20,
   bottom: 50,

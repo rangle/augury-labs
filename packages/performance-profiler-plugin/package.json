@@ -22,8 +22,9 @@
     "dist"
   ],
   "main": "dist/index.js",
-  "types": "dist/typings/index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "prebuild": "npm run clean",
     "build": "cross-env NODE_ENV=development webpack",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:watch": "cross-env NODE_ENV=development webpack --watch",

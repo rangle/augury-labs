@@ -18,6 +18,7 @@ import {
   getSegmentClasses,
 } from '../../types/segment/segment.functions';
 import { Segment } from '../../types/segment/segment.interface';
+import { TimelineDetailViewGraphBoundaries } from '../../types/timeline-graph/timeline-detail-view-graph-boundaries.interface';
 import { TimelineGraphAxes } from '../../types/timeline-graph/timeline-graph-axes.interface';
 import { TimelineGraphRowTypes } from '../../types/timeline-graph/timeline-graph-row-types.constant';
 import { scaleSelectionOnXAxis } from '../../types/timeline-graph/timeline-graph-scales.functions';
@@ -30,6 +31,7 @@ import {
 import { TimelineGraphsBoundaries } from '../../types/timeline-graph/timeline-graphs-boundaries.interface';
 import { getTimelineGraphsScales } from '../../types/timeline-graph/timeline-graphs-scales.functions';
 import { TimelineGraphsScales } from '../../types/timeline-graph/timeline-graphs-scales.interface';
+import { TimelineOverviewGraphBoundaries } from '../../types/timeline-graph/timeline-overview-graph-boundaries.interface';
 import { TimelineOptions } from '../../types/timeline-options/timeline-options.interface';
 import { isD3ZoomByBrush, updateD3RectangleData } from '../../util/d3-utils.functions';
 

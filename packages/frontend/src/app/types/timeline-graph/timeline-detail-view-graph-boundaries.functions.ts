@@ -1,3 +1,5 @@
+import { TimelineDetailViewGraphBoundaries } from './timeline-detail-view-graph-boundaries.interface';
+
 const Margins = {
   bottom: 20,
 };

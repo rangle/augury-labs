@@ -1,57 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { TooltipModule } from 'ng2-tooltip-directive';
-import {
-  AppComponent,
-  ChangeDetectionDetailsComponent,
-  FlameGraphComponent,
-  FooterComponent,
-  HeaderComponent,
-  HeaderControlsComponent,
-  HeaderLogoComponent,
-  HeaderMenuComponent,
-  InstabilityDetailsComponent,
-  LegendComponent,
-  LogoComponent,
-  MainComponent,
-  SegmentDetailsComponent,
-  TaskDetailsComponent,
-  TimelineComponent,
-  TimelineOptionsComponent,
-} from './components';
-import { UiLibraryModule } from './modules/ui-library/ui-library.module';
-import { BridgeService } from './services/bridge.service';
+
+import { BaseAppModule } from './base-app.module';
+import { AppComponent } from './components';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TooltipModule,
-    UiLibraryModule,
-  ],
-  declarations: [
-    AppComponent,
-    ChangeDetectionDetailsComponent,
-    FlameGraphComponent,
-    FooterComponent,
-    HeaderComponent,
-    HeaderControlsComponent,
-    HeaderLogoComponent,
-    HeaderMenuComponent,
-    InstabilityDetailsComponent,
-    LegendComponent,
-    LogoComponent,
-    MainComponent,
-    SegmentDetailsComponent,
-    TaskDetailsComponent,
-    TimelineComponent,
-    TimelineOptionsComponent,
-  ],
-  providers: [BridgeService],
+  imports: [BrowserModule, CommonModule, BaseAppModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
