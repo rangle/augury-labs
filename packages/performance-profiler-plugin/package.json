@@ -25,9 +25,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "npm run clean",
-    "build": "cross-env NODE_ENV=development webpack",
-    "build:prod": "cross-env NODE_ENV=production webpack",
-    "build:watch": "cross-env NODE_ENV=development webpack --watch",
+    "build": "webpack --mode=development",
+    "build:prod": "npm run build",
+    "build:watch": "webpack --watch --mode=development",
     "clean": "rimraf dist",
     "test": "jest",
     "test:watch": "jest --watch",
