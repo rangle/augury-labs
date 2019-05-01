@@ -1,6 +1,6 @@
 {
   "name": "@augury/schematics",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Schematics for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
