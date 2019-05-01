@@ -25,9 +25,9 @@
   "schematics": "./dist/collection.json",
   "scripts": {
     "start": "npm-run-all clean build:watch",
-    "build": "cross-env NODE_ENV=development webpack",
-    "build:prod": "cross-env NODE_ENV=production webpack",
-    "build:watch": "cross-env NODE_ENV=development webpack --watch",
+    "build": "webpack --mode=development",
+    "build:prod": "webpack --mode=production",
+    "build:watch": "webpack --watch --mode=development",
     "clean": "rimraf dist",
     "test": "jest",
     "test:watch": "jest --watch",
