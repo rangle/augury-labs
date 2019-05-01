@@ -1,7 +1,7 @@
 {
   "name": "@augury/unit-tester-plugin",
   "private": true,
-  "version": "0.6.0-beta.0",
+  "version": "0.6.0",
   "description": "Unit testing plugin for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -41,6 +41,6 @@
     "prebuild": "npm run clean"
   },
   "dependencies": {
-    "@augury/core": "^0.6.0-beta.0"
+    "@augury/core": "^0.6.0"
   }
 }

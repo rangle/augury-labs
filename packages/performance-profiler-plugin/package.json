@@ -1,6 +1,6 @@
 {
   "name": "@augury/performance-profiler-plugin",
-  "version": "0.6.0-beta.0",
+  "version": "0.6.0",
   "description": "Performance profiler plugin for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -36,9 +36,9 @@
     "lint:fix": "tslint --project . --fix"
   },
   "dependencies": {
-    "@augury/core": "^0.6.0-beta.0"
+    "@augury/core": "^0.6.0"
   },
   "devDependencies": {
-    "@augury/frontend": "^0.6.0-beta.0"
+    "@augury/frontend": "^0.6.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@augury/schematics",
-  "version": "0.6.0-beta.0",
+  "version": "0.6.0",
   "description": "Schematics for Augury Labs",
   "author": "rangle.io",
   "license": "MIT",
@@ -35,8 +35,6 @@
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix"
   },
-  "dependencies": {},
-  "devDependencies": {},
   "peerDependencies": {
     "@angular-devkit/core": "~7.3.7",
     "@angular-devkit/schematics": "~7.3.7",
