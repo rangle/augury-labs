@@ -1306,7 +1306,7 @@
   resolved "https://registry.yarnpkg.com/@ngtools/json-schema/-/json-schema-1.1.0.tgz#c3a0c544d62392acc2813a42c8a0dc6f58f86922"
   integrity sha1-w6DFRNYjkqzCgTpCyKDcb1j4aSI=
 
-"@ngtools/webpack@7.3.7", "@ngtools/webpack@^7.3.7":
+"@ngtools/webpack@7.3.7":
   version "7.3.7"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-7.3.7.tgz#52f7f44aec736c630db8ae9fc380a5f789a9e681"
   integrity sha512-u14/poGhv0aSQ3vwgX6DpIFN+TWviqOv4+uM4/AUnLGwvNS+p02BMIr3m+biX9dsLH+7EfATEuWOLkSkhaCjnA==
