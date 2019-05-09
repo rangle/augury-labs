@@ -26,7 +26,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "webpack --mode=development",
-    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:prod": "webpack --mode=production",
     "build:watch": "webpack --watch --mode=development",
     "clean": "rimraf dist",
     "test": "jest",

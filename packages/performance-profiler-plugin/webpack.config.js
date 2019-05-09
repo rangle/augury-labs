@@ -1,11 +1,9 @@
 const merge = require('webpack-merge');
 const webpackConfigBase = require('../webpack.config.base');
 
-const cfg = {
+module.exports = merge(webpackConfigBase, {
   devtool: 'eval',
   optimization: {
     concatenateModules: false,
   },
-};
-
-module.exports = merge(webpackConfigBase, cfg);
+});
