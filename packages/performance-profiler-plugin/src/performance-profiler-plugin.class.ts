@@ -2,12 +2,13 @@ import {
   Bridge,
   ChangeDetectionInfoProjection,
   ComponentTreeChangesInfoProjection,
-  DirectBridgeConnection,
+  // DirectBridgeConnection,
   EventDragInfo,
   EventDragInfoProjection,
   hasDragOccured,
   InstabilityPeriodInfoProjection,
   Plugin,
+  SocketBridgeConnection,
   TaskInfoProjection,
 } from '@augury/core';
 import { PerformanceProfilerController } from './performance-profiler-controller.class';
@@ -19,7 +20,8 @@ export class PerformanceProfilerPlugin extends Plugin {
   private controller = new PerformanceProfilerController();
 
   public doInitialize() {
-    const connection = new DirectBridgeConnection();
+    // const connection = new DirectBridgeConnection();
+    const connection = new SocketBridgeConnection();
     const bridge = new Bridge(connection);
 
     this.controller.window.auguryBridge = bridge;
