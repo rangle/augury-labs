@@ -6,6 +6,8 @@ import {
   EventDragInfo,
   EventDragInfoProjection,
   hasDragOccured,
+  InsightsInfo,
+  InsightsInfoProjection,
   InstabilityPeriodInfoProjection,
   Plugin,
   TaskInfoProjection,
@@ -52,6 +54,16 @@ export class PerformanceProfilerPlugin extends Plugin {
             payload: eventDragInfo,
           });
         }
+      },
+    );
+
+    this.getAugury().registerEventProjection(
+      new InsightsInfoProjection(),
+      (insight: InsightsInfo) => {
+        bridge.send({
+          type: 'insights',
+          payload: insight,
+        });
       },
     );
 

@@ -1,20 +1,21 @@
-<ag-header [recording]="recording"
-           (cleared)="clear()"
-           (started)="start()"
-           (stopped)="stop()">
+<ag-header [recording]="recording" (cleared)="clear()" (started)="start()" (stopped)="stop()">
 </ag-header>
 
 <ag-main>
-  <ag-timeline [segments]="timelineSegments"
-               [dragSegments]="dragSegments"
-               [selectedSegment]="selectedSegment"
-               [(timelineOptions)]="timelineOptions"
-               (segmentSelected)="selectSegment($event)">
-  </ag-timeline>
+  <ng-container *ngIf="activeTab$ | async as activeTab">
+    <ng-container *ngIf="activeTab.tabName === 'Performance Profiler'">
+      <ag-timeline [segments]="timelineSegments" [dragSegments]="dragSegments" [selectedSegment]="selectedSegment"
+        [(timelineOptions)]="timelineOptions" (segmentSelected)="selectSegment($event)">
+      </ag-timeline>
 
-  <ag-segment-details *ngIf="selectedSegment"
-                      [segment]="selectedSegment">
-  </ag-segment-details>
+      <ag-segment-details *ngIf="selectedSegment" [segment]="selectedSegment">
+      </ag-segment-details>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab.tabName === 'Insights'">
+      <ag-insights [insights]="insights"></ag-insights>
+    </ng-container>
+  </ng-container>
 </ag-main>
 
 <ag-footer></ag-footer>

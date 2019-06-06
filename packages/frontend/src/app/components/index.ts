@@ -7,6 +7,7 @@ export * from './header-controls/header-controls.component';
 export * from './header-logo/header-logo.component';
 export * from './header-menu/header-menu.component';
 export * from './instability-details';
+export * from './insights/insights.component';
 export * from './legend';
 export * from './logo/logo.component';
 export * from './main/main.component';

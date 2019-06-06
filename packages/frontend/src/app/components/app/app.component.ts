@@ -1,6 +1,8 @@
 import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 
-import { EventDragInfo, isDragMessage, isTimelineMessage } from '@augury/core';
+import { EventDragInfo, InsightsInfo, isDragMessage, isTimelineMessage } from '@augury/core';
+import { MenuTab, TabService } from 'app/services/tab.service';
+import { Observable } from 'rxjs';
 import { BridgeService } from '../../services/bridge.service';
 import { mapTimelineMessageToSegment } from '../../types/segment/segment.functions';
 import { Segment } from '../../types/segment/segment.interface';
@@ -18,21 +20,29 @@ export class AppComponent implements OnDestroy {
   public selectedSegment = null;
   public recording = true;
   public timelineOptions = createDefaultTimelineOptions();
+  public insights: InsightsInfo[] = [];
+  public activeTab$: Observable<MenuTab>;
 
   private subscription: any;
 
-  constructor(bridgeService: BridgeService) {
+  constructor(bridgeService: BridgeService, tabService: TabService) {
     this.subscription = bridgeService.subscribe(message => {
       if (this.recording) {
-        const segment = mapTimelineMessageToSegment(message);
+        if (message.type === 'insights') {
+          this.insights.push(message.payload);
+        } else {
+          const segment = mapTimelineMessageToSegment(message);
 
-        if (isTimelineMessage(message)) {
-          this.timelineSegments = this.timelineSegments.concat([segment]);
-        } else if (isDragMessage(message)) {
-          this.dragSegments.push(segment);
+          if (isTimelineMessage(message)) {
+            this.timelineSegments = this.timelineSegments.concat([segment]);
+          } else if (isDragMessage(message)) {
+            this.dragSegments.push(segment);
+          }
         }
       }
     });
+
+    this.activeTab$ = tabService.activeTab$;
   }
 
   public ngOnDestroy(): void {

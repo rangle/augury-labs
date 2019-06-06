@@ -37,5 +37,9 @@
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
     "prebuild": "npm run clean"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.133",
+    "lodash": "^4.17.11"
   }
 }

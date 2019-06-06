@@ -1,10 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-
-interface MenuTab {
-  id: number;
-  tabName: string;
-  active?: boolean;
-}
+import { MenuTab, TabService } from 'app/services/tab.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'ag-header-menu',
@@ -13,20 +9,17 @@ interface MenuTab {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderMenuComponent {
-  public tabs: MenuTab[] = [{ id: 0, tabName: 'Performance Profiler', active: true }];
+  public tabs$: Observable<MenuTab[]>;
+
+  constructor(private tabService: TabService) {
+    this.tabs$ = this.tabService.tabs$;
+  }
 
   public trackByTabId(index, tab: MenuTab) {
     return tab ? tab.id : null;
   }
 
   public onSetActiveTab(id: number) {
-    this.changeTabActiveStatus(this.tabs.find(tab => tab.active), false);
-    this.changeTabActiveStatus(this.tabs.find(tab => tab.id === id), true);
-  }
-
-  private changeTabActiveStatus(tab: MenuTab, active: boolean) {
-    if (tab) {
-      tab.active = active;
-    }
+    this.tabService.setActiveTab(id);
   }
 }

@@ -11,6 +11,7 @@ import {
   HeaderControlsComponent,
   HeaderLogoComponent,
   HeaderMenuComponent,
+  InsightsComponent,
   InstabilityDetailsComponent,
   LegendComponent,
   LogoComponent,
@@ -22,6 +23,7 @@ import {
 } from './components';
 import { UiLibraryModule } from './modules/ui-library/ui-library.module';
 import { BridgeService } from './services/bridge.service';
+import { TabService } from './services/tab.service';
 
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TooltipModule, UiLibraryModule],
@@ -42,7 +44,8 @@ import { BridgeService } from './services/bridge.service';
     TaskDetailsComponent,
     TimelineComponent,
     TimelineOptionsComponent,
+    InsightsComponent,
   ],
-  providers: [BridgeService],
+  providers: [BridgeService, TabService],
 })
 export class BaseAppModule {}

@@ -4,4 +4,5 @@ export type BridgeMessageType =
   | 'change-detection'
   | 'drag'
   | 'component-tree-changes'
-  | 'component-tree-changes:response';
+  | 'component-tree-changes:response'
+  | 'insights';

@@ -1,0 +1,12 @@
+<ul>
+  <ng-container *ngFor="let insight of insights">
+    <li *ngFor="let missingOnPush of insight.missingOnPushStrategy">
+      <b>{{ missingOnPush.componentInstance.constructor.name }}</b><br>
+      No changes noticed, consider adding <a
+        href="https://angular.io/api/core/ChangeDetectionStrategy#changedetectionstrategy">OnPush</a> strategy.
+      <br>
+      <pre>{{ missingOnPush.changes | json }}</pre>
+    </li>
+  </ng-container>
+  <li *ngIf="insights?.length === 0">No Insights at the moment...</li>
+</ul>

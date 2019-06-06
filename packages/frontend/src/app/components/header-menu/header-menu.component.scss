@@ -2,8 +2,16 @@
   flex-grow: 1;
   padding: 1rem;
 
+  @media only screen and (max-width: 768px) {
+    padding: 0;
+  }
+
   ul {
     list-style: none;
+
+    @media only screen and (max-width: 768px) {
+      padding: 0;
+    }
   }
 
   ul > li {
