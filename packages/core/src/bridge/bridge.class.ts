@@ -5,6 +5,10 @@ import { BridgeMessage } from './bridge-message.interface';
 export class Bridge {
   constructor(private connection: BridgeConnection<BridgeMessage>) {}
 
+  public initialize() {
+    this.connection.initialize();
+  }
+
   public send(message: BridgeMessage) {
     this.connection.send(message);
   }

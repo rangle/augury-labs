@@ -5,6 +5,10 @@ import { BridgeMessage } from '../bridge-message.interface';
 export class DirectBridgeConnection implements BridgeConnection<BridgeMessage> {
   constructor(public messages = new EventEmitter<BridgeMessage>()) {}
 
+  public initialize() {
+    // nothing special here
+  }
+
   public send(message: BridgeMessage) {
     this.messages.emit(message);
   }

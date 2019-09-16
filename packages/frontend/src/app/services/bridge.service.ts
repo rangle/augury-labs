@@ -7,13 +7,20 @@ import { AuguryWindow, Bridge, BridgeMessage, Subscription } from '@augury/core'
 @Injectable()
 export class BridgeService {
   private bridge: Bridge;
+  private subscription: Subscription;
 
-  constructor(private ngZone: NgZone) {
+  constructor(private zone: NgZone) {
     this.bridge = (window as AuguryWindow).auguryBridge;
+
+    this.zone.runOutsideAngular(() => {
+      console.log('ran outside');
+      this.bridge.initialize();
+      this.subscription = this.bridge.listen(message => this.zone.run(() => callback(message)));
+    });
   }
 
   public subscribe(callback: (message: BridgeMessage) => void): Subscription {
-    return this.bridge.listen(message => this.ngZone.run(() => callback(message)));
+    return this.subscription;
   }
 
   public send(message: BridgeMessage) {

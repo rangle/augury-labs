@@ -7,20 +7,24 @@ export class SocketBridgeConnection implements BridgeConnection<BridgeMessage> {
   private messages = new EventEmitter<BridgeMessage>();
 
   constructor() {
-    this.initialize();
+    // this.initialize();
+  }
+
+  public initialize() {
+    this.createSocket();
+    this.hookSocket();
   }
 
   public send(message: BridgeMessage) {
-    this.socket.send(JSON.stringify(message));
+    if (this.socket) {
+      this.socket.send(JSON.stringify(message));
+    }
   }
 
   public listen(handleIncomingMessage: (message: BridgeMessage) => void): Subscription {
-    return this.messages.subscribe(handleIncomingMessage);
-  }
-
-  private initialize() {
-    this.createSocket();
-    this.hookSocket();
+    if (this.socket) {
+      return this.messages.subscribe(handleIncomingMessage);
+    }
   }
 
   private createSocket() {
