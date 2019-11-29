@@ -48,7 +48,7 @@ export class FlameGraphComponent implements OnChanges, AfterViewChecked {
   @Input()
   public rootNode: FlameGraphNode;
 
-  @ViewChild('flameGraphContainer')
+  @ViewChild('flameGraphContainer', { static: true })
   public container: ElementRef;
 
   private isReady: boolean;

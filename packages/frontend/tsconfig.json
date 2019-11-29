@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
+    "downlevelIteration": true,
     "lib": ["dom", "es2018"],
+    "module": "esnext",
     "target": "es2015",
     "moduleResolution": "node",
     "declaration": false,

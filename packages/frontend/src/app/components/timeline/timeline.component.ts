@@ -65,8 +65,10 @@ export class TimelineComponent implements OnChanges {
   @Output()
   public timelineOptionsChange = new EventEmitter<TimelineOptions>();
 
-  @ViewChild('timelineOverviewGraph') public timelineOverviewGraphElement: ElementRef;
-  @ViewChild('timelineDetailViewGraph') public timelineDetailViewGraphElement: ElementRef;
+  @ViewChild('timelineOverviewGraph', { static: true })
+  public timelineOverviewGraphElement: ElementRef;
+  @ViewChild('timelineDetailViewGraph', { static: true })
+  public timelineDetailViewGraphElement: ElementRef;
 
   private lastPaintedTimestamp = performance.now();
 
