@@ -28,18 +28,13 @@ describe('Rules', () => {
 
   let appTree: UnitTestTree;
 
-  beforeEach(() => {
-    appTree = schematicRunner.runExternalSchematic(
-      '@schematics/angular',
-      'workspace',
-      workspaceOptions,
-    );
-    appTree = schematicRunner.runExternalSchematic(
-      '@schematics/angular',
-      'application',
-      appOptions,
-      appTree,
-    );
+  beforeEach(async () => {
+    appTree = await schematicRunner
+      .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
+      .toPromise();
+    appTree = await schematicRunner
+      .runExternalSchematicAsync('@schematics/angular', 'application', appOptions, appTree)
+      .toPromise();
   });
 
   test('package.json should get updated', async () => {

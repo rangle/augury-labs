@@ -36,8 +36,8 @@
     "lint:fix": "tslint --project . --fix"
   },
   "peerDependencies": {
-    "@angular-devkit/core": "~7.3.7",
-    "@angular-devkit/schematics": "~7.3.7",
-    "@schematics/angular": "^7.3.7"
+    "@angular-devkit/core": "^8.3.20",
+    "@angular-devkit/schematics": "^8.3.20",
+    "@schematics/angular": "^8.3.20"
   }
 }

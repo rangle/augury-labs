@@ -22,7 +22,7 @@ export class InstabilityDetailsComponent implements OnChanges, OnDestroy {
   @Input()
   public instabilityPeriodInfo: InstabilityPeriodInfo;
 
-  @ViewChild('componentTreeSvg')
+  @ViewChild('componentTreeSvg', { static: true })
   public componentTreeSvg: ElementRef;
 
   public componentTreeUI: ComponentTreeUI;

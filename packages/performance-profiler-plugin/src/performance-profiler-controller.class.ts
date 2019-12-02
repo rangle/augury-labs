@@ -8,10 +8,10 @@ export class PerformanceProfilerController extends PopupController {
   constructor() {
     super(PerformanceProfilerController.WindowName);
 
-    this.addScript(require('!!raw-loader!@augury/frontend/dist/runtime.js'));
-    this.addScript(require('!!raw-loader!@augury/frontend/dist/polyfills.js'));
+    this.addScript(require('!!raw-loader!@augury/frontend/dist/runtime-es2015.js'));
+    this.addScript(require('!!raw-loader!@augury/frontend/dist/polyfills-es2015.js'));
     this.addScript(require('!!raw-loader!@augury/frontend/dist/scripts.js'));
-    this.addScript(require('!!raw-loader!@augury/frontend/dist/main.js'));
+    this.addScript(require('!!raw-loader!@augury/frontend/dist/main-es2015.js'));
     this.writeHtml('<augury-ui></augury-ui>');
   }
 }
