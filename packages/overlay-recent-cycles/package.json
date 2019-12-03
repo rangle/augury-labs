@@ -28,7 +28,7 @@
     "build:prod": "npm run build",
     "build:watch": "tsc -b . --watch",
     "clean": "rimraf dist",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "lint": "tslint --project .",
