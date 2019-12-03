@@ -1,0 +1,40 @@
+{
+  "name": "@augury/overlay-recent-cycles-plugin",
+  "private": true,
+  "version": "0.6.0",
+  "description": "Overlay recent cycles for Augury Labs",
+  "author": "rangle.io",
+  "license": "MIT",
+  "homepage": "https://github.com/rangle/augury-labs#readme",
+  "keywords": [
+    "angular",
+    "augury",
+    "profiler",
+    "performance",
+    "integration"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "bugs": {
+    "url": "https://github.com/rangle/augury-labs/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc -b .",
+    "build:prod": "npm run build",
+    "build:watch": "tsc -b . --watch",
+    "clean": "rimraf dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "lint": "tslint --project .",
+    "lint:fix": "tslint --project . --fix"
+  },
+  "dependencies": {
+    "@augury/core": "^0.6.0"
+  }
+}
