@@ -1,0 +1,25 @@
+{
+  "rulesDirectory": ["node_modules/codelyzer"],
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rules": {
+    "no-console": false,
+    "no-namespace": false,
+    "object-literal-sort-keys": false,
+    "interface-name": [true, "never-prefix"],
+    "cyclomatic-complexity": [true, 10],
+    "eofline": false,
+    "jsdoc-format": false,
+    "max-classes-per-file": [false],
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "lowercase-first",
+        "named-imports-order": "lowercase-first",
+        "grouped-imports": true
+      }
+    ],
+    "quotemark": [true, "single", "avoid-escape"],
+    "trailing-comma": [false]
+  }
+}

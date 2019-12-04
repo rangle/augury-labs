@@ -1,0 +1,11 @@
+<al-outside-angular-demo-form [isRunning]="isRunning"
+                              [(runOutsideAngular)]="runOutsideAngular"
+                              (submitted)="run()">
+</al-outside-angular-demo-form>
+
+<p>
+  <button>this button has no bindings</button>
+  <button (click)="noop()">this button is bound to an empty function</button>
+</p>
+
+<h2>{{ currentNumber }}</h2>

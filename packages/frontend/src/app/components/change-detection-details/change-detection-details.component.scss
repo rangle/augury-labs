@@ -1,0 +1,20 @@
+:host {
+  display: block;
+
+  table {
+    font: normal 13px Arial, sans-serif;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 10px;
+
+    tbody td {
+      border: solid 1px #e3e8ec;
+      color: #627991;
+      font-size: 14px;
+      font-weight: 200;
+      letter-spacing: 0;
+      margin-bottom: 0;
+      padding: 10px;
+    }
+  }
+}

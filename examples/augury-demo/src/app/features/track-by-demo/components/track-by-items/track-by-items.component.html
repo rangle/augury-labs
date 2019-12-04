@@ -1,0 +1,12 @@
+<ng-container [ngSwitch]="useTrackBy">
+  <ng-container *ngSwitchCase="true">
+    <al-track-by-item *ngFor="let datum of data; trackBy: trackByDatum"
+                      [datum]="datum">
+    </al-track-by-item>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <al-track-by-item *ngFor="let datum of data"
+                      [datum]="datum">
+    </al-track-by-item>
+  </ng-container>
+</ng-container>

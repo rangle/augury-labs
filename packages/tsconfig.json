@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./core" },
+    { "path": "./performance-profiler-plugin" },
+    { "path": "./schematics" }
+  ]
+}

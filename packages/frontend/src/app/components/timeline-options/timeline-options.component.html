@@ -1,0 +1,8 @@
+<form [formGroup]="formGroup">
+  <label>
+    Show Augury Drag
+    <input type="checkbox"
+           [formControl]="formGroup.controls.showAuguryDrag"
+           (change)="changed.emit(formGroup.value)" />
+  </label>
+</form>

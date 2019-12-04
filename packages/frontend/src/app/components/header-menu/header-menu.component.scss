@@ -1,0 +1,21 @@
+:host {
+  flex-grow: 1;
+  padding: 1rem;
+
+  ul {
+    list-style: none;
+  }
+
+  ul > li {
+    display: inline-block;
+  }
+
+  ::ng-deep ag-button > button {
+    width: auto !important;
+  }
+
+  ::ng-deep ag-button.active > button {
+    background-color: #748aa1;
+    box-shadow: 0px 0px 1px 1px #666;
+  }
+}

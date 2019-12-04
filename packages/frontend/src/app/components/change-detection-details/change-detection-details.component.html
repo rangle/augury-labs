@@ -1,0 +1,20 @@
+<ag-card>
+  <ag-section-heading>Change Detection Run</ag-section-heading>
+
+  <ag-sub-section label="Runtime">
+    {{ runtimeInMilliseconds }}ms
+  </ag-sub-section>
+  <ag-sub-section label="Component Type Change Frequency">
+    <table>
+      <tbody>
+      <tr *ngFor="let componentTypeChangeDetectionFrequency of componentTypeChangeDetectionFrequencies">
+        <td> {{ componentTypeChangeDetectionFrequency.name }} </td>
+        <td> {{ componentTypeChangeDetectionFrequency.amount }} </td>
+      </tr>
+      </tbody>
+    </table>
+  </ag-sub-section>
+
+  <ag-flame-graph [rootNode]="rootFlameGraphNode">
+  </ag-flame-graph>
+</ag-card>

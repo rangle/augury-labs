@@ -1,0 +1,14 @@
+<form>
+  <label>
+    Use OnPush
+    <input type="checkbox"
+           [value]="useOnPush"
+           (change)="useOnPushChange.emit(!useOnPush)" />
+  </label>
+  <p>
+    <button (click)="listAdded.emit()">Add List</button>
+  </p>
+  <p>
+    <button (click)="counterIncremented.emit()">Increment Unrelated Counter</button> {{ counter }}
+  </p>
+</form>

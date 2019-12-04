@@ -1,0 +1,67 @@
+{
+  "name": "@augury/frontend",
+  "private": true,
+  "version": "0.6.0",
+  "description": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "keywords": [
+    "angular",
+    "debugging",
+    "tools"
+  ],
+  "bugs": {
+    "url": "https://github.com/rangle/augury-labs/issues"
+  },
+  "scripts": {
+    "start": "npm run clean && npm run build:watch",
+    "build": "ng run frontend:build-elements:production",
+    "build:prod": "npm run build",
+    "build:watch": "npm run build -- --watch",
+    "build:angular": "ng build",
+    "build:angular:prod": "ng build --prod",
+    "build:angular:watch": "npm run build:default -- --watch",
+    "build:lib": "ng run frontend:build-lib",
+    "build:lib:watch": "npm run build:lib -- --watch",
+    "build:lib:prod": "ng run frontend:build-lib:prod",
+    "clean": "rimraf dist",
+    "test": "npm run lint",
+    "lint": "tslint --project .",
+    "lint:fix": "tslint --project . --fix"
+  },
+  "dependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14",
+    "@angular/elements": "^8.2.14",
+    "@angular/forms": "^8.2.14",
+    "@angular/platform-browser": "^8.2.14",
+    "@angular/platform-browser-dynamic": "^8.2.14",
+    "@augury/core": "^0.6.0",
+    "core-js": "^2.5.4",
+    "d3": "^5.14.2",
+    "d3-flame-graph": "^2.1.8",
+    "d3-tip": "^0.9.1",
+    "document-register-element": "^1.14.3",
+    "ng2-tooltip-directive": "^2.1.9",
+    "rxjs": "~6.5.3",
+    "tslib": "^1.9.0",
+    "web-animations-js": "^2.3.2",
+    "zone.js": "~0.9.1"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.803.20",
+    "@angular-devkit/build-ng-packagr": "~0.803.20",
+    "@angular/cli": "^8.3.20",
+    "@angular/compiler": "^8.2.14",
+    "@angular/compiler-cli": "^8.2.14",
+    "@types/d3": "^5.7.2",
+    "@types/d3-tip": "^3.5.5",
+    "codelyzer": "^5.0.1",
+    "ng-packagr": "^5.4.0",
+    "tslib": "^1.9.0",
+    "typescript": "~3.5.3"
+  }
+}

@@ -1,0 +1,23 @@
+<ag-card>
+  <ag-section-heading>Zone Task Details</ag-section-heading>
+  <section>
+    <ag-sub-section label="Runtime">
+      {{ runtimeInMilliseconds }}ms
+    </ag-sub-section>
+    <ag-sub-section label="Zone">
+      {{ taskInfo.zone }}
+    </ag-sub-section>
+    <ag-sub-section label="Target Type">
+      {{ targetType }}
+    </ag-sub-section>
+    <ag-sub-section label="Source">
+      {{ taskInfo.task.source }}
+    </ag-sub-section>
+    <ag-sub-section label="Runtime">
+      {{ totalRuntimeInMilliseconds }}
+    </ag-sub-section>
+    <ag-sub-section label="Start Time (ms since initial page load)">
+      {{ startTimeInMilliseconds }}
+    </ag-sub-section>
+  </section>
+</ag-card>

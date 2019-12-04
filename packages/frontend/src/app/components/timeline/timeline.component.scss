@@ -1,0 +1,107 @@
+:host {
+  display: block;
+  flex-shrink: 0;
+  margin-right: 1rem;
+  width: 100%;
+
+  ag-card {
+    margin-bottom: 1rem;
+  }
+
+  #timeline-overview-axis,
+  #timeline-detail-axis {
+    font-size: 8px;
+  }
+
+  ::ng-deep #timeline-overview-brush {
+    > .selection {
+      fill: none;
+      stroke: #e1e9ee;
+      box-shadow: 0 2px 4px 0 #e5e9f2;
+      stroke-width: 5;
+    }
+
+    .overlay {
+      fill: rgba(255, 255, 255, 0.5);
+    }
+
+    &:hover {
+      .handle {
+        fill: #6dc7ff;
+      }
+    }
+  }
+
+  ::ng-deep .tick {
+    line {
+      visibility: hidden;
+    }
+
+    text {
+      fill: #888888;
+    }
+  }
+
+  ::ng-deep .segment {
+    margin-top: 10px;
+    transition: fill 150ms ease;
+
+    &.root-zone-task {
+      fill: #5a1eae;
+
+      &.selected {
+        fill: darken(#5a1eae, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#5a1eae, 10%);
+      }
+    }
+
+    &.child-zone-task {
+      fill: #95bcda;
+
+      &.selected {
+        fill: darken(#95bcda, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#95bcda, 10%);
+      }
+    }
+
+    &.instability {
+      fill: #d34627;
+
+      &.selected {
+        fill: darken(#d34627, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#d34627, 10%);
+      }
+    }
+
+    &.change-detection {
+      fill: #9b9b9b;
+
+      &.selected {
+        fill: darken(#9b9b9b, 20%);
+      }
+
+      &:hover:not(.selected) {
+        fill: darken(#9b9b9b, 10%);
+      }
+    }
+  }
+
+  ::ng-deep #timeline-detail-drag-segments rect {
+    fill: grey;
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  ::ng-deep .domain {
+    stroke: #d8d8d8;
+  }
+}

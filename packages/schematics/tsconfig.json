@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "declarationDir": "./dist/typings",
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "exclude": ["src/**/files/*", "**/*.spec.ts"],
+  "references": [{ "path": "../core" }]
+}

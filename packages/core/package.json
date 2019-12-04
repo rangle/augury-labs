@@ -1,0 +1,41 @@
+{
+  "name": "@augury/core",
+  "version": "0.6.0",
+  "description": "Provides the core infrastructure for Augury Labs",
+  "author": "rangle.io",
+  "license": "MIT",
+  "homepage": "https://github.com/rangle/augury-labs#readme",
+  "keywords": [
+    "angular",
+    "augury",
+    "devtool",
+    "debugger",
+    "inspector",
+    "profiler",
+    "performance"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "bugs": {
+    "url": "https://github.com/rangle/augury-labs/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b .",
+    "build:prod": "npm run build",
+    "build:watch": "tsc -b . --watch",
+    "clean": "rimraf dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "lint": "tslint --project .",
+    "lint:fix": "tslint --project . --fix",
+    "prebuild": "npm run clean"
+  }
+}

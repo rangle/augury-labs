@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "target": "es2015",
+    "lib": ["es2018", "dom"],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "paths": {
+      "@augury/*": ["./*/src"]
+    }
+  }
+}

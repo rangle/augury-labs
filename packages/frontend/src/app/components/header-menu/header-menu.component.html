@@ -1,0 +1,5 @@
+<ul>
+  <li *ngFor="let tab of tabs; trackBy: trackByTabId">
+      <ag-button [class.active]="tab.active" (pressed)="onSetActiveTab(tab.id)">{{ tab.tabName }}</ag-button>
+    </li>
+</ul>

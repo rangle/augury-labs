@@ -1,0 +1,10 @@
+<h5>This is a slow-checking component</h5>
+
+Slow computed value:
+<ng-container [ngSwitch]="useOnPush">
+  <al-hover-demo-with-on-push *ngSwitchCase="true">
+  </al-hover-demo-with-on-push>
+
+  <al-hover-demo-with-out-on-push *ngSwitchDefault>
+  </al-hover-demo-with-out-on-push>
+</ng-container>
