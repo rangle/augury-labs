@@ -14,6 +14,21 @@ export const getAnnotationsFromModule = module => {
   }
 };
 
+export const getAnnotationsFromBootstrapElement = module => {
+  const moduleAnnotations = getAnnotationsFromModule(module);
+  let bootstrapElementAnnotations;
+
+  if (
+    moduleAnnotations.bootstrap &&
+    moduleAnnotations.bootstrap.length &&
+    moduleAnnotations.bootstrap.length >= 1
+  ) {
+    bootstrapElementAnnotations = getAnnotationsFromModule(moduleAnnotations.bootstrap[0]);
+  }
+
+  return bootstrapElementAnnotations;
+};
+
 // TODO: ignoring all modules not defined with an annotated class
 // TODO: should consider circular module imports by leaving a flag on wrapped methods and not rewrapping
 export const getImportedModulesFromModule = module => {
