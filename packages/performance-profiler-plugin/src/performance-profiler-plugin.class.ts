@@ -2,7 +2,6 @@ import {
   Bridge,
   ChangeDetectionInfoProjection,
   ComponentTreeChangesInfoProjection,
-  ComponentTreeInfoProjection,
   DirectBridgeConnection,
   EventDragInfo,
   EventDragInfoProjection,
@@ -55,10 +54,6 @@ export class PerformanceProfilerPlugin extends Plugin {
         }
       },
     );
-
-    this.getAugury().registerEventProjection(new ComponentTreeInfoProjection(), e => {
-      console.log('Got new tree info projection: ', e);
-    });
 
     bridge.listen(request => {
       if (request.type === 'component-tree-changes') {
