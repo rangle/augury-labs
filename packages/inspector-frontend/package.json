@@ -1,0 +1,59 @@
+{
+  "name": "@augury/inspector-frontend",
+  "private": true,
+  "version": "0.6.1",
+  "description": "",
+  "keywords": [
+    "angular",
+    "augury",
+    "profiler",
+    "inspector",
+    "component-tree",
+    "debugging"
+  ],
+  "homepage": "https://github.com/rangle/augury-labs#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "scripts": {
+    "start": "npm run clean && npm run build:watch",
+    "build": "ng run inspector-frontend:build-elements:production",
+    "build:prod": "npm run build",
+    "build:watch": "npm run build -- --watch",
+    "build:angular": "ng build",
+    "build:angular:prod": "ng build --prod",
+    "build:angular:watch": "npm run build:default -- --watch",
+    "clean": "rimraf dist",
+    "test": "npm run lint",
+    "lint": "tslint --project .",
+    "lint:fix": "tslint --project . --fix"
+  },
+  "bugs": {
+    "url": "https://github.com/rangle/augury-labs/issues"
+  },
+  "dependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/compiler": "^8.2.14",
+    "@angular/core": "^8.2.14",
+    "@angular/elements": "^8.2.14",
+    "@angular/forms": "^8.2.14",
+    "@angular/platform-browser": "^8.2.14",
+    "@angular/platform-browser-dynamic": "^8.2.14",
+    "@augury/core": "^0.6.0",
+    "rxjs": "~6.5.3",
+    "tslib": "^1.10.0",
+    "zone.js": "~0.9.1",
+    "document-register-element": "^1.14.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.803.20",
+    "@angular/cli": "^8.3.20",
+    "@angular/compiler-cli": "^8.2.14",
+    "@angular/language-service": "^8.2.14",
+    "codelyzer": "^5.0.1",
+    "ts-node": "~7.0.0",
+    "typescript": "~3.5.3"
+  }
+}
