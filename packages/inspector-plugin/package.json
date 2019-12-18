@@ -1,0 +1,48 @@
+{
+  "name": "@augury/inspector-plugin",
+  "private": true,
+  "version": "0.6.0",
+  "description": "Angular app inspector plugin for Augury Labs",
+  "author": "rangle.io",
+  "license": "MIT",
+  "homepage": "https://github.com/rangle/augury-labs#readme",
+  "keywords": [
+    "angular",
+    "augury",
+    "profiler",
+    "performance",
+    "debugging",
+    "integration",
+    "e2e"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rangle/augury-labs"
+  },
+  "bugs": {
+    "url": "https://github.com/rangle/augury-labs/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "webpack --mode=development",
+    "build:prod": "webpack --mode=production",
+    "build:watch": "webpack --watch --mode=development",
+    "clean": "rimraf dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "lint": "tslint --project .",
+    "lint:fix": "tslint --project . --fix",
+    "prebuild": "npm run clean"
+  },
+  "dependencies": {
+    "@augury/core": "^0.6.0"
+  },
+  "devDependencies": {
+    "@augury/frontend": "^0.6.0"
+  }
+}
