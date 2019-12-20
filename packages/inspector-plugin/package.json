@@ -43,6 +43,6 @@
     "@augury/core": "^0.6.0"
   },
   "devDependencies": {
-    "@augury/frontend": "^0.6.0"
+    "@augury/inspector-frontend": "^0.6.0"
   }
 }
