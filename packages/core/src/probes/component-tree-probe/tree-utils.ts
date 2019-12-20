@@ -36,6 +36,9 @@ export const transform = (
 
   const node: Node = {
     id: serializedPath,
+    augury_token_id: element.componentInstance
+      ? Reflect.getMetadata(AUGURY_TOKEN_ID_METADATA_KEY, element.componentInstance.constructor)
+      : null,
     name,
     listeners,
     isComponent,
@@ -56,6 +59,9 @@ export const transform = (
       ? getDependencies(element.componentInstance)
       : [],
   };
+  /// Set before we search for children so that the value is cached and the
+  /// reference will be correct when transform runs on the child
+  cache.set(serializedPath, node);
 
   node.children = [];
 
@@ -73,11 +79,11 @@ export const transform = (
     return children.reduce((previous, current) => previous.concat(current), []);
   };
 
-  const childComponents = () => {
-    return getChildren(e => e.componentInstance != null);
+  const childHybridComponents = () => {
+    return getChildren(e => e.providerTokens && e.providerTokens.length > 0);
   };
 
-  transformChildren(childComponents());
+  transformChildren(childHybridComponents());
 
   count(1 + node.children.length);
 
@@ -91,7 +97,10 @@ const recursiveSearch = (children: any[], test: (element) => boolean): any[] => 
     if (test(c)) {
       result.push(c);
     } else {
-      Array.prototype.splice.apply(result, [result.length, 0, recursiveSearch(c.children, test)]);
+      Array.prototype.splice.apply(
+        result,
+        ([result.length, 0] as any).concat(recursiveSearch(c.children, test)),
+      );
     }
   }
 
