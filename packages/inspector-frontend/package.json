@@ -42,10 +42,14 @@
     "@angular/platform-browser": "^8.2.14",
     "@angular/platform-browser-dynamic": "^8.2.14",
     "@augury/core": "^0.6.0",
+    "basscss": "8.1.0",
+    "basscss-border-colors": "2.1.0",
+    "basscss-type-scale": "1.0.6",
+    "basscss-typography": "3.0.4",
+    "document-register-element": "^1.14.3",
     "rxjs": "~6.5.3",
     "tslib": "^1.10.0",
-    "zone.js": "~0.9.1",
-    "document-register-element": "^1.14.3"
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.20",

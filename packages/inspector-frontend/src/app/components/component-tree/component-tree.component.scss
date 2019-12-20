@@ -1,0 +1,11 @@
+:host > ag-node-item {
+  min-width: 100%;
+  display: table;
+  white-space: nowrap;
+}
+
+:host {
+  width: 100%;
+  min-height: min-content;
+  display: block;
+}
