@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@angular/common": "^8.2.14",
-    "@angular/core": "^8.2.14",
+    "@angular/core": "^11.0.5",
     "@angular/elements": "^8.2.14",
     "@angular/forms": "^8.2.14",
     "@angular/platform-browser": "^8.2.14",
