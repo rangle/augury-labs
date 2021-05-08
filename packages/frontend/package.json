@@ -60,7 +60,7 @@
     "@types/d3": "^5.7.2",
     "@types/d3-tip": "^3.5.5",
     "codelyzer": "^5.0.1",
-    "ng-packagr": "^5.4.0",
+    "ng-packagr": "^10.1.1",
     "tslib": "^1.9.0",
     "typescript": "~3.5.3"
   }
